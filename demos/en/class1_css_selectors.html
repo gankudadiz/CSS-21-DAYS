@@ -1,0 +1,1752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Selectors Basics - Demo</title>
+    <!-- PrismJS for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- PrismJS Components for syntax highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+    <!-- marked.js for Markdown rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ========== Base Styles ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+
+        /* Navigation */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Content */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* Tag */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+        .tag-high { background: #27ae60; color: white; }
+        .tag-medium { background: #f39c12; color: white; }
+        .tag-low { background: #95a5a6; color: white; }
+
+        /* Code Section */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-lang { font-size: 12px; color: #999; background: #ecf0f1; padding: 2px 8px; border-radius: 4px; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* Toggle Button */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+        .toggle-btn.active { background: #27ae60; }
+
+        /* Demo and Code Side by Side */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+
+        @media (max-width: 900px) {
+            .demo-code-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .tab-btn { padding: 10px 12px; font-size: 14px; }
+            section { padding: 15px; }
+        }
+
+        /* ========== Demo Specific Styles ========== */
+        /* 1. Basic Selectors Styles */
+        .element-demo span { color: #e74c3c !important; font-weight: bold !important; }
+        .class-demo .highlight { background-color: #f1c40f !important; color: #333 !important; padding: 5px 10px !important; border-radius: 3px !important; }
+        #unique-element { background-color: #9b59b6 !important; color: white !important; padding: 10px !important; border-radius: 5px !important; }
+
+        /* 2. Combinator Styles */
+        .descendant-demo .child p { color: #27ae60 !important; font-style: italic !important; }
+        .child-selector-demo > p { background-color: #3498db !important; color: white !important; padding: 8px !important; margin: 5px 0 !important; border-radius: 4px !important; }
+        .child-selector-demo .nested { padding-left: 20px !important; background-color: #ecf0f1 !important; }
+        .adjacent-demo h4 + p { background-color: #e74c3c !important; color: white !important; padding: 10px !important; border-radius: 4px !important; }
+        .sibling-demo h4 ~ p { color: #7f8c8d !important; padding: 5px 0 !important; }
+
+        /* 3. Attribute Selector Styles */
+        .attribute-demo a { display: block !important; padding: 8px !important; margin: 5px 0 !important; color: #3498db !important; }
+        .attribute-demo a[href] { border-left: 3px solid #3498db !important; padding-left: 10px !important; }
+        .attribute-demo a[target="_blank"] { background-color: #e8f4fd !important; }
+        .attribute-demo a[href^="https"] { color: #27ae60 !important; }
+        .attribute-demo a[href$=".pdf"] { background-color: #ffeaa7 !important; }
+        .attribute-demo input[type="text"] { border: 2px solid #3498db !important; padding: 8px !important; width: 200px !important; }
+        .attribute-demo input[type="email"] { border: 2px solid #9b59b6 !important; padding: 8px !important; width: 200px !important; }
+        .attribute-demo input[type="password"] { border: 2px solid #e74c3c !important; padding: 8px !important; width: 200px !important; }
+
+        /* 4. Pseudo-class Styles */
+        .pseudo-class-demo .btn { padding: 10px 20px !important; border: none !important; border-radius: 5px !important; cursor: pointer !important; margin: 5px !important; transition: all 0.3s !important; background-color: #3498db !important; color: white !important; }
+        .pseudo-class-demo .btn:hover { background-color: #2980b9 !important; transform: translateY(-2px) !important; box-shadow: 0 4px 8px rgba(0,0,0,0.2) !important; }
+        .pseudo-class-demo .btn:active { transform: translateY(0) !important; }
+        .pseudo-class-demo input:focus { outline: none !important; border: 3px solid #f39c12 !important; box-shadow: 0 0 10px rgba(243, 156, 18, 0.5) !important; }
+        .nth-child-demo ul { list-style: none !important; padding: 10px !important; background: #ecf0f1 !important; border-radius: 5px !important; }
+        .nth-child-demo li { padding: 8px 15px !important; margin: 5px 0 !important; background: white !important; border-radius: 3px !important; }
+        .nth-child-demo li:first-child { background-color: #3498db !important; color: white !important; font-weight: bold !important; }
+        .nth-child-demo li:last-child { background-color: #27ae60 !important; color: white !important; font-weight: bold !important; }
+        .nth-child-demo li:nth-child(3) { background-color: #e74c3c !important; color: white !important; }
+        .nth-child-demo li:nth-child(even) { background-color: #f8f9fa !important; border-left: 4px solid #3498db !important; }
+        .nth-child-demo li:nth-child(odd) { background-color: #fff !important; border-left: 4px solid #e74c3c !important; }
+        .not-demo p { padding: 10px !important; margin: 5px 0 !important; background: #ecf0f1 !important; border-radius: 4px !important; }
+        .not-demo p:not(.exclude) { background-color: #d5f5e3 !important; border-left: 4px solid #27ae60 !important; }
+        .only-child-demo :only-child { background-color: #fdebd0 !important; padding: 10px !important; border-radius: 4px !important; border: 2px dashed #e67e22 !important; }
+
+        /* 5. Pseudo-element Styles */
+        .before-after-demo h4::before { content: "🔥 " !important; }
+        .before-after-demo h4::after { content: " ✨" !important; color: gold !important; }
+        .first-line-demo p::first-line { font-weight: bold !important; color: #e74c3c !important; }
+        .first-letter-demo p::first-letter { font-size: 36px !important; float: left !important; margin-right: 8px !important; color: #3498db !important; font-weight: bold !important; }
+        .selection-demo p::selection { background-color: #f1c40f !important; color: #333 !important; }
+
+        /* 6. Priority Styles */
+        .priority-demo .text { color: blue !important; }
+        .priority-demo p.text { color: green !important; }
+        #special-text.text { color: purple !important; }
+        .priority-result { padding: 20px !important; background-color: #34495e !important; color: white !important; border-radius: 8px !important; margin: 15px 0 !important; }
+
+        /* ========== Modal Styles ========== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-container {
+            background: #f5f5f5;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            margin: auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #2c3e50;
+            color: white;
+        }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+
+        .modal-body {
+            padding: 20px;
+            max-height: calc(90vh - 60px);
+            overflow-y: auto;
+            background: white;
+        }
+
+        /* Markdown Content Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content p { margin: 12px 0; color: #555; }
+        .markdown-content ul, .markdown-content ol { margin: 10px 0; padding-left: 25px; }
+        .markdown-content li { margin: 6px 0; color: #555; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th, .markdown-content td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .markdown-content th { background: #3498db; color: white; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content hr { border: none; border-top: 2px solid #e0e0e0; margin: 20px 0; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content a { color: #3498db; text-decoration: none; }
+        .markdown-content a:hover { text-decoration: underline; }
+        .markdown-content strong { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>CSS Selectors Basics - Demo</h1>
+
+    <!-- Header Navigation -->
+    <div class="header-nav">
+        <div>
+            <strong>📚 CSS Selectors Basics</strong>
+            <span style="color: #999; margin-left: 10px;">Day 1 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="window.openDocModal()" class="doc-link">
+            📖 View Full Documentation
+        </a>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="window.openTab(event, 'tab1')">📋 Basic Selectors</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab2')">🔗 Combinators</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab3')">📎 Attribute</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab4')">🎭 Pseudo-classes</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab5')">✨ Pseudo-elements</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab6')">⚖️ Specificity</button>
+        </div>
+
+        <!-- Tab 1: Basic Selectors -->
+        <div id="tab1" class="tab-pane active">
+            <h2>1. Basic Selectors</h2>
+
+            <!-- Universal Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.0 Universal Selector <span class="recommend-tag tag-low">Niche ⭐☆☆☆☆</span></h3>
+                    <div class="demo-box">
+                        <p>Default styles for all elements (rarely used directly)</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Universal: Select all elements, use with caution */
+* {
+    margin: 0;
+    padding: 0;
+}
+
+/* Modern alternative (recommended): Use box-sizing: inherit
+.box {
+    box-sizing: border-box;
+}
+*, *::before, *::after {
+    box-sizing: inherit;
+} */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Element Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.1 Element Selector <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Global styles, paragraph styling</p>
+                    <div class="demo-box element-demo">
+                        <p>Normal paragraph (not affected)</p>
+                        <span>This span element (selected, red bold)</span>
+                        <p>Another normal paragraph</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Element selector: Select all span elements */
+.element-demo span {
+    color: #e74c3c;
+    font-weight: bold;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Class Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.2 Class Selector <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Component development, UI libraries, Bootstrap/Tailwind</p>
+                    <div class="demo-box class-demo">
+                        <p>Normal paragraph</p>
+                        <p class="highlight">Highlighted paragraph (yellow bg)</p>
+                        <p>Normal paragraph</p>
+                        <div class="highlight">Highlighted div</div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Class selector: Select all .highlight class */
+.highlight {
+    background-color: #f1c40f;
+    color: #333;
+    padding: 5px 10px;
+    border-radius: 3px;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ID Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.3 ID Selector <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Mainly for JavaScript, use sparingly in CSS</p>
+                    <div class="demo-box">
+                        <div id="unique-element">ID selector element (purple bg)</div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ID selector: Select element with id="unique-element" */
+#unique-element {
+    background-color: #9b59b6;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Combinators -->
+        <div id="tab2" class="tab-pane">
+            <h2>2. Combinators</h2>
+
+            <!-- Descendant Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.1 Descendant Selector (space) <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Navigation menus, card components, nested list styles</p>
+                    <div class="demo-box descendant-demo">
+                        <div class="child">
+                            <p>First paragraph (affected, green italic)</p>
+                            <div><p>Nested paragraph (also affected)</p></div>
+                        </div>
+                        <p>Outer paragraph (not affected)</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Descendant selector: Select all p inside .container */
+.descendant-demo .child p {
+    color: #27ae60;
+    font-style: italic;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Child Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.2 Child Selector (>) <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Style only direct children, avoid nested pollution</p>
+                    <div class="demo-box child-selector-demo">
+                        <p>Direct child 1 (blue bg)</p>
+                        <p>Direct child 2 (blue bg)</p>
+                        <div class="nested"><p>Nested paragraph (not affected)</p></div>
+                        <p>Direct child 3 (blue bg)</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Child selector: Select only direct p children */
+.child-selector-demo > p {
+    background-color: #3498db;
+    color: white;
+    padding: 8px;
+    margin: 5px 0;
+    border-radius: 4px;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adjacent Sibling Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.3 Adjacent Sibling (+) <span class="recommend-tag tag-low">Niche ⭐⭐☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Form validation hints, special paragraphs after headings</p>
+                    <div class="demo-box adjacent-demo">
+                        <h4>Heading h4</h4>
+                        <p>Paragraph immediately after h4 (red bg)</p>
+                        <p>Another paragraph (not affected)</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Adjacent sibling: First p after h4 */
+.adjacent-demo h4 + p {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px;
+    border-radius: 4px;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- General Sibling Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.4 General Sibling Selector (~) <span class="recommend-tag tag-low">Niche ⭐☆☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Rarely used, can be replaced with JavaScript</p>
+                    <div class="demo-box sibling-demo">
+                        <h4>Heading h4</h4>
+                        <p>All siblings after h4 (gray)</p>
+                        <p>Another paragraph</p>
+                        <p>Third paragraph</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* General sibling: All p after h4 */
+.sibling-demo h4 ~ p {
+    color: #7f8c8d;
+    padding: 5px 0;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Attribute Selectors -->
+        <div id="tab3" class="tab-pane">
+            <h2>3. Attribute Selectors</h2>
+
+            <!-- Attribute Presence -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.1 Attribute Presence <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Links with href get decoration, disabled form styles</p>
+                    <div class="demo-box attribute-demo">
+                        <a href="https://www.baidu.com">Baidu (has href, left border)</a>
+                        <a>No href link (not affected)</a>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* a tags with href attribute */
+a[href] {
+    border-left: 3px solid #3498db;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attribute Exact Match -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.2 Attribute Exact Match <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Different input types, button variants</p>
+                    <div class="demo-box attribute-demo">
+                        <label>Text: <input type="text" placeholder="type='text'"></label>
+                        <label>Email: <input type="email" placeholder="type='email'"></label>
+                        <label>Password: <input type="password" placeholder="type='password'"></label>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Attribute exact match */
+input[type="text"] { border-color: #3498db; }
+input[type="email"] { border-color: #9b59b6; }
+input[type="password"] { border-color: #e74c3c; }</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attribute Start/End Match -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.3 Attribute Start/End Match <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: External link icons, file type icons, https indicators</p>
+                    <div class="demo-box attribute-demo">
+                        <a href="https://www.baidu.com">Baidu (has href, left border)</a>
+                        <a href="https://www.google.com" target="_blank">Google (new window, light blue bg)</a>
+                        <a href="https://www.github.com">GitHub (https start, green)</a>
+                        <a href="document.pdf">PDF file (yellow bg)</a>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Attribute value starts with https */
+a[href^="https"] { color: #27ae60; }
+
+/* Attribute value ends with .pdf */
+a[href$=".pdf"] { background-color: #ffeaa7; }
+
+/* Attribute value contains specified value */
+a[target="_blank"] { background-color: #e8f4fd; }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Pseudo-classes -->
+        <div id="tab4" class="tab-pane">
+            <h2>4. Pseudo-classes</h2>
+
+            <!-- User Action Pseudo-classes -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>4.1 User Action Pseudo-classes <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Button hover animations, form validation feedback, link click feedback</p>
+                    <div class="demo-box pseudo-class-demo">
+                        <button class="btn">Hover Test (:hover)</button>
+                        <button class="btn">Click Test (:active)</button>
+                        <br><br>
+                        <label>Focus Test: <input type="text" placeholder="Click here :focus"></label>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Hover state */
+.btn:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Active state */
+.btn:active { transform: translateY(0); }
+
+/* Focus state */
+input:focus {
+    outline: none;
+    border: 3px solid #f39c12;
+    box-shadow: 0 0 10px rgba(243, 156, 18, 0.5);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Structural Pseudo-classes -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>4.2 Structural Pseudo-classes <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Table zebra stripes, nav active states, list first/last styles</p>
+                    <div class="demo-box nth-child-demo">
+                        <ul>
+                            <li>First (:first-child, blue)</li>
+                            <li>Second</li>
+                            <li>Third (:nth-child(3), red)</li>
+                            <li>Fourth (even, light gray blue border)</li>
+                            <li>Fifth (odd, white red border)</li>
+                            <li>Last (:last-child, green)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* First child */
+li:first-child {
+    background-color: #3498db;
+    color: white;
+}
+
+/* Last child */
+li:last-child {
+    background-color: #27ae60;
+    color: white;
+}
+
+/* Third child */
+li:nth-child(3) {
+    background-color: #e74c3c;
+    color: white;
+}
+
+/* Even children */
+li:nth-child(even) {
+    background-color: #f8f9fa;
+    border-left: 4px solid #3498db;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- :not() Selector -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>4.3 :not() Negation Selector <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Exclude specific classes, hide designated elements</p>
+                    <div class="demo-box not-demo">
+                        <p>Normal paragraph (green left border)</p>
+                        <p class="exclude">Excluded paragraph (gray bg)</p>
+                        <p>Another normal paragraph</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Paragraphs excluding .exclude class */
+p:not(.exclude) {
+    background-color: #d5f5e3;
+    border-left: 4px solid #27ae60;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- only-child -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>4.4 :only-child Only Child <span class="recommend-tag tag-low">Niche ⭐⭐☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Single cards, special styles for items without siblings</p>
+                    <div class="demo-box">
+                        <div class="only-child-demo">
+                            <span>I am the only child (orange border)</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Only child */
+span:only-child {
+    background-color: #fdebd0;
+    border: 2px dashed #e67e22;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Pseudo-elements -->
+        <div id="tab5" class="tab-pane">
+            <h2>5. Pseudo-elements</h2>
+
+            <!-- before/after -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>5.1 ::before and ::after <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Clearfix, decorative icons, CSS drawing</p>
+                    <div class="demo-box before-after-demo">
+                        <h4>Decorated Heading</h4>
+                        <p>Heading will have fire and star decorations</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Add content before element */
+h4::before {
+    content: "🔥 ";
+}
+
+/* Add content after element */
+h4::after {
+    content: " ✨";
+    color: gold;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- first-letter -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>5.2 ::first-letter <span class="recommend-tag tag-low">Niche ⭐⭐☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Drop caps, magazine layouts, special typography</p>
+                    <div class="demo-box first-letter-demo">
+                        <p>This is the first letter, displayed large and uppercase. This is a common typographic effect used at the beginning of articles.</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* First letter style */
+p::first-letter {
+    font-size: 36px;
+    float: left;
+    margin-right: 8px;
+    color: #3498db;
+    font-weight: bold;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- first-line -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>5.3 ::first-line <span class="recommend-tag tag-low">Niche ⭐☆☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Rarely used, first line length changes with responsive design</p>
+                    <div class="demo-box first-line-demo">
+                        <p>This is the first line, will be bold. When browser window width changes, the first line content also changes. ::first-line pseudo-element automatically adapts to available width.</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* First line style */
+p::first-line {
+    font-weight: bold;
+    color: #e74c3c;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- selection -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>5.4 ::selection Selected Text <span class="recommend-tag tag-low">Niche ⭐☆☆☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Custom selected text color, branding details</p>
+                    <div class="demo-box selection-demo">
+                        <p>Select text to see effect (yellow bg). Try selecting text to see custom styles.</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Selected text style */
+::selection {
+    background-color: #f1c40f;
+    color: #333;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Specificity -->
+        <div id="tab6" class="tab-pane">
+            <h2>6. Selector Specificity</h2>
+
+            <h3>Specificity Calculation Table</h3>
+            <table style="width:100%; border-collapse: collapse; margin: 15px 0;">
+                <tr style="background: #3498db; color: white;">
+                    <th style="padding: 10px; text-align: left;">Selector Type</th>
+                    <th style="padding: 10px; text-align: left;">Weight</th>
+                </tr>
+                <tr style="background: #f8f9fa;"><td style="padding: 10px;">!important</td><td style="padding: 10px;">Highest (use with caution)</td></tr>
+                <tr><td style="padding: 10px;">Inline style (style attribute)</td><td style="padding: 10px;">1000</td></tr>
+                <tr style="background: #f8f9fa;"><td style="padding: 10px;">ID selector (#id)</td><td style="padding: 10px;">100</td></tr>
+                <tr><td style="padding: 10px;">Class, Attribute, Pseudo-class</td><td style="padding: 10px;">10</td></tr>
+                <tr style="background: #f8f9fa;"><td style="padding: 10px;">Element, Pseudo-element</td><td style="padding: 10px;">1</td></tr>
+            </table>
+
+            <!-- Specificity Demo -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>Practical Demo <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Resolve style conflicts, debug CSS</p>
+                    <div class="demo-box priority-result">
+                        <p class="text">Class selector .text (blue)</p>
+                        <p class="text">Element + class p.text (green, higher specificity)</p>
+                        <p id="special-text" class="text">ID + class #special-text (purple, highest)</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Specificity: 10 */
+.priority-result .text { color: blue; }
+
+/* Specificity: 11 (1+10) */
+.priority-result p.text { color: green; }
+
+/* Specificity: 110 (100+10) */
+#special-text.text { color: purple; }
+
+/*
+ * Final result: purple (highest specificity)
+ * Specificity calculation: ID(100) + class(10) = 110
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Summary Section -->
+    <section style="background-color: #2c3e50; color: white;">
+        <h2 style="color: white; border-left-color: white;">🎉 Learning Summary</h2>
+
+        <h3 style="color: #fff;">🔴 Daily Practice (High Priority)</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>✅ Class selector `.class` - ⭐⭐⭐⭐⭐ Scenario: Component development, UI libraries</li>
+            <li>✅ Descendant selector ` ` - ⭐⭐⭐⭐⭐ Scenario: Nested structure styles</li>
+            <li>✅ `:hover` - ⭐⭐⭐⭐⭐ Scenario: Button interaction effects</li>
+            <li>✅ Specificity calculation - ⭐⭐⭐⭐⭐ Scenario: Resolve style conflicts</li>
+            <li>✅ `::before/::after` - ⭐⭐⭐⭐⭐ Scenario: Clearfix, decorative elements</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-top: 15px;">🟠 Proficient Level</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>🔸 Child selector `>` - ⭐⭐⭐⭐☆ Scenario: Direct child control</li>
+            <li>🔸 Attribute selector `[]` - ⭐⭐⭐⭐☆ Scenario: Form style differentiation</li>
+            <li>🔸 `:nth-child()` - ⭐⭐⭐⭐☆ Scenario: Table zebra stripes</li>
+            <li>🔸 Element selector `p` - ⭐⭐⭐⭐☆ Scenario: Global styles reset</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-top: 15px;">🟡 Understand</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>🔸 ID selector `#id` - ⭐⭐⭐☆☆ Scenario: JS element access</li>
+            <li>🔸 `:focus` - ⭐⭐⭐☆☆ Scenario: Form focus feedback</li>
+            <li>🔸 `:not()` - ⭐⭐⭐☆☆ Scenario: Exclude specific elements</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-top: 15px;">🟢 Additional Knowledge (Niche)</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>🔹 Universal selector `*` - ⭐☆☆☆☆ Scenario: CSS reset (not recommended)</li>
+            <li>🔹 Sibling selectors `+/~` - ⭐⭐☆☆☆ Scenario: Rarely used</li>
+            <li>🔹 `::selection` - ⭐☆☆☆☆ Scenario: Branding details</li>
+            <li>🔹 `::first-letter` - ⭐⭐☆☆☆ Scenario: Special typography</li>
+        </ul>
+
+        <p style="margin-top: 15px;"><strong>Next:</strong> Learn Box Model</p>
+        <a href="javascript:void(0);" onclick="window.openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">📖 View Full Documentation</a>
+    </section>
+
+    <!-- Markdown Document Modal -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">📚 CSS Selectors Basics - Full Documentation</span>
+                <button class="modal-close" onclick="window.closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown Content (inline to avoid CORS) -->
+    <script type="text/plain" id="mdContent">
+# CSS Selectors Basics
+
+> 📊 **Recommended Rating**: ⭐⭐⭐⭐⭐
+> Fundamentals of fundamentals, **must master**, used throughout frontend development career
+
+---
+
+## What are CSS Selectors?
+
+CSS selectors are used to **target HTML elements**, telling the browser which elements to apply styles to.
+
+```css
+/* Select all p elements */
+p {
+  color: red;
+}
+```
+
+---
+
+## 1. Basic Selectors
+
+> 💡 **Core knowledge**, class and ID selectors are the most used in daily development
+
+### 1.0 Universal Selector (*)
+
+**Rating**: ⭐☆☆☆☆ (1/5)
+**Frequency**: **Very Low** - Niche knowledge
+**Scenario**: CSS reset only, modern development has better alternatives
+
+Selects all elements on the page.
+
+```css
+* {
+  margin: 0;
+  padding: 0;
+}
+```
+
+**Modern Alternative (Recommended)**:
+```css
+/* Recommended: Set box-sizing on html only, children inherit */
+html {
+  box-sizing: border-box;
+}
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+```
+
+**Note**: Use with caution, affects all element performance, and universal selector specificity is 0.
+
+---
+
+### 1.1 Element Selector (Tag Selector)
+
+**Rating**: ⭐⭐⭐⭐☆ (4/5)
+**Frequency**: **High** - Popular scenario
+**Scenario**: Global styles reset, paragraph styling, default HTML tag styles
+
+Directly use HTML tag names as selectors.
+
+```css
+/* Select all p elements */
+p {
+  color: blue;
+}
+
+/* Select all div elements */
+div {
+  padding: 10px;
+}
+
+/* Select all h1 elements */
+h1 {
+  font-size: 24px;
+}
+```
+
+**Note**: Selects all elements with that tag on the page.
+
+---
+
+### 1.2 Class Selector (.class)
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Most commonly used
+**Scenario**: Component development, UI libraries (Bootstrap/Tailwind), reusable styles
+
+Use `.` followed by class name, can be reused.
+
+**HTML**:
+```html
+<p class="highlight">This is a highlighted paragraph</p>
+<div class="highlight">This is a highlighted div</div>
+```
+
+**CSS**:
+```css
+.highlight {
+  background-color: yellow;
+  color: red;
+}
+```
+
+**Note**:
+- Class names can be reused
+- An element can have multiple classes: `class="class1 class2"`
+- Class names start with letters, can contain letters, numbers, `-`, `_`
+
+---
+
+### 1.3 ID Selector (#id)
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: Mainly for JavaScript element access, use sparingly in CSS
+
+Use `#` followed by ID name, **ID should be unique on the page**.
+
+**HTML**:
+```html
+<p id="unique-paragraph">This is a unique paragraph</p>
+```
+
+**CSS**:
+```css
+#unique-paragraph {
+  font-weight: bold;
+  color: green;
+}
+```
+
+**Note**:
+- Each ID should be unique on the page
+- Commonly used in JavaScript to get elements
+- Higher specificity than class selector
+
+---
+
+## 2. Combinators
+
+> 💡 **High frequency use**, descendant and child selectors are mainstays for layout and component styling
+
+### 2.1 Descendant Selector (space)
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Used almost daily
+**Scenario**: Navigation menus, card components, nested list styles, complex layouts
+
+Selects all specified descendants **inside** an element.
+
+```css
+/* Select all p elements inside div */
+div p {
+  color: red;
+}
+
+/* Select all .list-item inside .container */
+.container .list-item {
+  padding: 5px;
+}
+```
+
+---
+
+### 2.2 Child Selector (>)
+
+**Rating**: ⭐⭐⭐⭐☆ (4/5)
+**Frequency**: **High** - Popular scenario
+**Scenario**: Style only direct children, avoid style pollution of deep nesting, component boundary control
+
+Only selects **direct child elements** of an element, not including grandchild elements.
+
+```css
+/* Select direct li children of ul */
+ul > li {
+  list-style: none;
+}
+
+/* Select direct .button children of .container */
+.container > .button {
+  margin: 10px;
+}
+```
+
+---
+
+### 2.3 Adjacent Sibling Selector (+)
+
+**Rating**: ⭐⭐☆☆☆ (2/5)
+**Frequency**: **Lower** - Niche knowledge
+**Scenario**: Form validation hints, special paragraphs after headings, rarely used
+
+Selects the **first sibling element immediately following**.
+
+```css
+/* Select first p element after h2 */
+h2 + p {
+  color: blue;
+  font-style: italic;
+}
+```
+
+---
+
+### 2.4 General Sibling Selector (~)
+
+**Rating**: ⭐☆☆☆☆ (1/5)
+**Frequency**: **Very Low** - Niche knowledge
+**Scenario**: Almost never used, can be replaced with JavaScript or simpler selectors
+
+Selects **all sibling elements after**.
+
+```css
+/* Select all p elements after h2 */
+h2 ~ p {
+  color: gray;
+}
+```
+
+---
+
+## 3. Attribute Selectors
+
+> 💡 **Essential for form development**, frequently used in TailwindCSS and modern frameworks
+
+Select elements based on their attributes.
+
+### 3.1 Attribute Presence Match
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: Add decoration to links with href, disabled form styles
+
+```css
+/* a tags with href attribute */
+a[href] {
+  color: blue;
+}
+
+/* input with disabled attribute */
+input[disabled] {
+  opacity: 0.5;
+}
+```
+
+### 3.2 Attribute Exact Match
+
+**Rating**: ⭐⭐⭐⭐☆ (4/5)
+**Frequency**: **High** - Popular scenario
+**Scenario**: Different input type styles, button variants, distinguish layout components
+
+```css
+/* input with type="text" */
+input[type="text"] {
+  border: 1px solid #ccc;
+}
+
+/* input with type="email" */
+input[type="email"] {
+  background-color: lightblue;
+}
+
+/* button with class="btn primary" */
+button[class="btn primary"] {
+  background-color: blue;
+}
+```
+
+### 3.3 Attribute Value Start Match (^=)
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: External link indicators, https secure sites, URL prefix checking
+
+```css
+/* Links with href starting with https */
+a[href^="https"] {
+  color: green;
+}
+
+/* Elements with data-type starting with "icon-" */
+[data-type^="icon-"] {
+  font-family: iconfont;
+}
+```
+
+### 3.4 Attribute Value End Match ($=)
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: File type icons (.pdf/.doc), resource type differentiation
+
+```css
+/* Links with href ending with .pdf */
+a[href$=".pdf"] {
+  background-color: #f0f0f0;
+}
+
+/* Images with src ending with .jpg */
+img[src$=".jpg"] {
+  border-radius: 4px;
+}
+```
+
+### 3.5 Attribute Value Contains Match (*=)
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: data attribute judgment, partial class name matching
+
+```css
+/* Elements with data-status containing "active" */
+[data-status*="active"] {
+  border-color: green;
+}
+
+/* Elements with class containing "btn" */
+[class*="btn"] {
+  padding: 8px 16px;
+}
+```
+
+---
+
+## 4. Pseudo-classes
+
+> 💡 **Interaction core**, :hover and :focus are foundations of UI interaction
+
+Add special states to elements.
+
+### 4.1 User Action Pseudo-classes
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Must learn
+**Scenario**: Button hover animations, form validation feedback, link click feedback, card interaction
+
+```css
+/* Mouse hover */
+.button:hover {
+  background-color: blue;
+}
+
+/* Focus state */
+input:focus {
+  outline: 2px solid blue;
+}
+
+/* Active state */
+a:active {
+  color: red;
+}
+
+/* Visited link */
+a:visited {
+  color: purple;
+}
+```
+
+### 4.2 Structural Pseudo-classes
+
+**Rating**: ⭐⭐⭐⭐☆ (4/5)
+**Frequency**: **High** - Popular scenario
+**Scenario**: Table zebra stripes, nav active states, list first/last styles, pagination components
+
+```css
+/* First child */
+li:first-child {
+  font-weight: bold;
+}
+
+/* Last child */
+li:last-child {
+  color: gray;
+}
+
+/* Child at specified position (starting from 1) */
+li:nth-child(2) {
+  color: blue;
+}
+
+/* Even children */
+li:nth-child(even) {
+  background-color: #f0f0f0;
+}
+
+/* Odd children */
+li:nth-child(odd) {
+  background-color: #e0e0e0;
+}
+
+/* nth from last child */
+li:nth-last-child(1) {
+  border: 1px solid red;
+}
+```
+
+### 4.3 :not() Negation Pseudo-class
+
+**Rating**: ⭐⭐⭐☆☆ (3/5)
+**Frequency**: **Medium**
+**Scenario**: Exclude specific classes, hide designated elements, inverse styling, form validation
+
+```css
+/* Paragraphs excluding .special class */
+p:not(.special) {
+  color: gray;
+}
+
+/* Exclude disabled inputs */
+input:not([disabled]) {
+  background: white;
+}
+```
+
+### 4.4 :only-child Only Child
+
+**Rating**: ⭐⭐☆☆☆ (2/5)
+**Frequency**: **Lower** - Niche knowledge
+**Scenario**: Single cards, special styles for items without siblings
+
+```css
+/* Only child */
+span:only-child {
+  color: red;
+}
+```
+
+### 4.5 :empty Empty Elements
+
+**Rating**: ⭐☆☆☆☆ (1/5)
+**Frequency**: **Very Low** - Niche knowledge
+**Scenario**: Hide empty containers, debug empty element issues
+
+```css
+/* Empty elements */
+div:empty {
+  display: none;
+}
+```
+
+---
+
+## 5. Pseudo-elements
+
+> 💡 **Decoration tool**, ::before and ::after are great helpers in CSS layout
+
+Add virtual elements or modify specific parts of elements.
+
+### 5.1 ::before and ::after
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐
+**Scenario**: Clearfix, add decorative icons, CSS drawing required, content insertion
+
+```css
+/* Add content before element */
+h2::before {
+  content: "★ ";
+  color: gold;
+}
+
+/* Add content after element */
+h2::after {
+  content: " - Title End";
+  color: gray;
+  font-size: 12px;
+}
+
+/* Clearfix (classic usage) */
+.clearfix::after {
+  content: "";
+  display: block;
+  clear: both;
+}
+```
+
+### 5.2 ::first-letter First Letter
+
+**Rating**: ⭐⭐☆☆☆ (2/5)
+**Frequency**: **Lower** - Niche knowledge
+**Scenario**: Drop caps, magazine layouts, special typography effects
+
+```css
+/* First letter style */
+p::first-letter {
+  font-size: 24px;
+  float: left;
+  margin-right: 5px;
+}
+```
+
+### 5.3 ::first-line First Line
+
+**Rating**: ⭐☆☆☆☆ (1/5)
+**Frequency**: **Very Low** - Niche knowledge
+**Scenario**: Almost never used, first line length changes with responsive design
+
+```css
+/* First line style */
+p::first-line {
+  font-weight: bold;
+  color: blue;
+}
+```
+
+### 5.4 ::selection Selected Text
+
+**Rating**: ⭐☆☆☆☆ (1/5)
+**Frequency**: **Very Low** - Niche knowledge
+**Scenario**: Custom selected text color, branding details
+
+```css
+/* Selected text style */
+::selection {
+  background-color: yellow;
+  color: black;
+}
+```
+
+---
+
+## 6. Selector Specificity (Weight)
+
+> 💡 **Interview favorite**, understanding specificity is key to resolving style conflicts
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐
+**Scenario**: Resolve style conflicts, bug debugging, CSS architecture design, framework development
+
+When multiple selectors target the same element, the one with higher specificity wins.
+
+### Specificity Calculation
+
+| Selector Type | Weight | Scenario |
+|---------------|--------|----------|
+| `!important` | Highest (use with caution) | Force override, but breaks CSS architecture |
+| Inline style (style attribute) | 1000 | JS dynamic styles, temporary override |
+| ID selector | 100 | Less used, mainly reserved for JS |
+| Class, Attribute, Pseudo-class | 10 | Daily development workhorse |
+| Element, Pseudo-element | 1 | Base styles, global reset |
+| Universal, Combinators | 0 | Not involved in specificity calculation |
+
+### Examples
+
+```css
+/* Specificity: 1 */
+p { color: red; }
+
+/* Specificity: 10 */
+.highlight { color: blue; }
+
+/* Specificity: 100 */
+#unique { color: green; }
+
+/* Specificity: 11 (1+10) */
+p.highlight { color: yellow; }
+```
+
+### Practical Specificity
+
+```css
+/* Specificity: 100 */
+#header .nav li a {
+  color: red;
+}
+
+/* Specificity: 11 (10+1) */
+.nav a {
+  color: blue; /* Will not take effect due to lower specificity */
+}
+```
+
+---
+
+## 7. Best Practices
+
+> 💡 **Essential for advancement**, write maintainable CSS code
+
+### 7.1 Recommended
+
+```css
+/* ✅ Recommended: Use class selectors */
+.button {
+  padding: 10px 20px;
+}
+
+/* ✅ Recommended: Simple selectors */
+.nav-item {
+  color: blue;
+}
+
+/* ✅ Recommended: Use BEM naming convention */
+.block__element--modifier {
+  padding: 10px;
+}
+```
+
+### 7.2 Not Recommended
+
+```css
+/* ❌ Avoid: Overly deep descendant selectors */
+body .container .sidebar .nav .link {
+  color: red;
+}
+
+/* ❌ Avoid: Excessive use of IDs */
+#header #nav #links a {
+  color: blue;
+}
+
+/* ❌ Avoid: Universal selector abuse */
+* {
+  box-sizing: border-box;
+}
+```
+
+---
+
+## 8. Quick Reference
+
+> 📋 **Bookmark for reference**
+
+| Selector | Example | Rating | Frequency | Hot/Niche |
+|----------|---------|--------|-----------|-----------|
+| `*` | `*` | ⭐☆☆☆☆ | Very Low | Niche |
+| `element` | `p` | ⭐⭐⭐⭐☆ | High | Hot |
+| `.class` | `.btn` | ⭐⭐⭐⭐⭐ | Very High | Hot |
+| `#id` | `#header` | ⭐⭐⭐☆☆ | Medium | Common |
+| `element.class` | `p.active` | ⭐⭐⭐⭐☆ | High | Hot |
+| `ancestor descendant` | `div p` | ⭐⭐⭐⭐⭐ | Very High | Hot |
+| `parent > child` | `ul > li` | ⭐⭐⭐⭐☆ | High | Hot |
+| `prev + next` | `h2 + p` | ⭐⭐☆☆☆ | Lower | Niche |
+| `prev ~ siblings` | `h2 ~ p` | ⭐☆☆☆☆ | Very Low | Niche |
+| `[attr]` | `[href]` | ⭐⭐⭐☆☆ | Medium | Common |
+| `[attr=value]` | `[type="text"]` | ⭐⭐⭐⭐☆ | High | Hot |
+| `[attr^=value]` | `[href^="https"]` | ⭐⭐⭐☆☆ | Medium | Common |
+| `[attr$=value]` | `[href$=".pdf"]` | ⭐⭐⭐☆☆ | Medium | Common |
+| `:hover` | `a:hover` | ⭐⭐⭐⭐⭐ | Very High | Hot |
+| `:focus` | `input:focus` | ⭐⭐⭐☆☆ | Medium | Common |
+| `:active` | `a:active` | ⭐⭐⭐⭐☆ | High | Hot |
+| `:first-child` | `li:first-child` | ⭐⭐⭐⭐☆ | High | Hot |
+| `:last-child` | `li:last-child` | ⭐⭐⭐⭐☆ | High | Hot |
+| `:nth-child(n)` | `li:nth-child(2)` | ⭐⭐⭐⭐☆ | High | Hot |
+| `:not()` | `p:not(.x)` | ⭐⭐⭐☆☆ | Medium | Common |
+| `::before` / `::after` | `::before` | ⭐⭐⭐⭐⭐ | Very High | Hot |
+| `::first-letter` | `::first-letter` | ⭐⭐☆☆☆ | Lower | Niche |
+| `::selection` | `::selection` | ⭐☆☆☆☆ | Very Low | Niche |
+
+---
+
+## 9. Learning Suggestions
+
+> 🎯 **Learning suggestion**: Prioritize high-rated content
+
+### Daily Practice
+
+| Priority | Topic | Rating | Frequency | Scenario |
+|----------|-------|--------|-----------|----------|
+| 🔴 Highest | Class selector `.class` | ⭐⭐⭐⭐⭐ | Very High | Component development |
+| 🔴 Highest | Descendant selector ` ` | ⭐⭐⭐⭐⭐ | Very High | Nested structure styles |
+| 🔴 Highest | `:hover` | ⭐⭐⭐⭐⭐ | Very High | Hover effects |
+| 🔴 Highest | Specificity calculation | ⭐⭐⭐⭐⭐ | Very High | Specificity understanding |
+| 🔴 Highest | `::before/::after` | ⭐⭐⭐⭐⭐ | Very High | Clearfix |
+| 🟠 High | Child selector `>` | ⭐⭐⭐⭐☆ | High | Direct children |
+| 🟠 High | Attribute selector `[]` | ⭐⭐⭐⭐☆ | High | Form styles |
+| 🟠 High | `:nth-child()` | ⭐⭐⭐⭐☆ | High | List styles |
+| 🟠 High | Element selector `p` | ⭐⭐⭐⭐☆ | High | Global styles |
+| 🟡 Medium | ID selector `#id` | ⭐⭐⭐☆☆ | Medium | JS integration |
+| 🟡 Medium | `:focus` | ⭐⭐⭐☆☆ | Medium | Form focus |
+| 🟡 Medium | `:not()` | ⭐⭐⭐☆☆ | Medium | Exclude styles |
+| 🟢 Low | `:only-child` | ⭐⭐☆☆☆ | Lower | Only child |
+| 🟢 Low | Sibling selectors `+/~` | ⭐⭐☆☆☆ | Lower | Specific scenarios |
+| 🟢 Low | `::first-letter` | ⭐⭐☆☆☆ | Lower | Special typography |
+| 🟢 Low | `::selection` | ⭐☆☆☆☆ | Very Low | Branding details |
+
+---
+
+## 10. Summary
+
+### Learning Priority Quick Reference
+
+| Priority | Selector Type | Rating | Scenario |
+|----------|---------------|--------|----------|
+| 🔴 Highest | Class, Descendant, :hover, Specificity, ::before/::after | ⭐⭐⭐⭐⭐ | Daily development essentials |
+| 🟠 High | Element, Child, Attribute, :nth-child() | ⭐⭐⭐⭐☆ | Proficient mastery |
+| 🟡 Medium | ID, :focus, :not(), :first-child/:last-child | ⭐⭐⭐☆☆ | Understanding is enough |
+| 🟢 Low | Universal, Sibling, ::first-line, ::selection | ⭐⭐☆☆☆ | Supplementary knowledge |
+
+### 💡 Practical Work Suggestions
+
+1. **Use class selectors 90% of the time** - This is the core of CSS development
+2. **Use ID selectors sparingly** - Mainly reserved for JavaScript
+3. **Use descendant selectors reasonably** - Avoid nesting too deep (more than 3 levels)
+4. **Master specificity** - Quickly locate issues when style conflicts occur
+5. **Use developer tools wisely** - Chrome DevTools is the best tool for learning CSS
+
+### 🎯 Hot vs Niche Scenarios Summary
+
+**Hot scenarios (used daily)**:
+- Class selectors `.btn`, `.card`, `.header`
+- Descendant selectors `.nav .nav-item`, `.card .title`
+- `:hover` button hover, link color change
+- `::before/::after` clearfix, decorative icons
+- `input[type="text"]` form style differentiation
+- `:nth-child(even)` table/list zebra stripes
+
+**Niche scenarios (occasionally used)**:
+- Universal selector `*` CSS reset
+- Sibling selectors `+`, `~` form validation hints
+- `::selection` branding details
+- `::first-letter` magazine layout effects
+- `:only-child` single card styles
+
+---
+
+## Next Steps
+
+After mastering CSS selectors, next topic: **Box Model**
+    </script>
+
+    <!-- Code highlighting scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+    <!-- Tabs and code toggle scripts -->
+    <script>
+        // Tab switching
+        window.openTab = function(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        };
+
+        // Code display toggle
+        window.toggleCode = function(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = 'Hide Code';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = 'Show Code';
+                btn.classList.remove('active');
+            }
+        };
+
+        // Open documentation modal
+        window.openDocModal = function() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            // Get markdown content from embedded script
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            // Configure marked.js
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            // Render markdown
+            var html = marked.parse(markdown);
+            contentDiv.innerHTML = html;
+
+            // Re-apply code highlighting
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        };
+
+        // Close documentation modal
+        window.closeDocModal = function() {
+            document.getElementById('docModal').classList.remove('active');
+        };
+
+        // Click overlay to close
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                window.closeDocModal();
+            }
+        });
+
+        // ESC key to close modal
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                window.closeDocModal();
+            }
+        });
+    </script>
+</body>
+</html>

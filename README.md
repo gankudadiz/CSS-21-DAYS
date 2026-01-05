@@ -25,8 +25,7 @@ css-21-days/
 ├── README.md              # 项目介绍（中英双语）
 ├── LICENSE                # MIT License
 ├── plan/                  # 规划文档 | Planning Documents
-│   ├── learning-path.md   # 21天学习路径
-│   └── writing-guide.md   # 文档编写规范
+│   └── learning-path.md   # 21天学习路径
 ├── docs/                  # 学习文档 | Documentation
 │   ├── zh/                # 中文版 | Chinese Version
 │   │   ├── class1_css选择器基础.md

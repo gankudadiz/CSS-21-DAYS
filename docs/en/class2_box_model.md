@@ -253,9 +253,27 @@ When two block elements are stacked vertically, their vertical margins collapse 
 
 **Solutions**:
 ```css
-/* Method 1: Use BFC (Block Formatting Context) */
+/* Method 1: Use BFC (Block Formatting Context)
+ *
+ * What is BFC?
+ * BFC (Block Formatting Context) is an independent rendering region.
+ * Elements inside a BFC are isolated from external elements and won't affect each other.
+ *
+ * Three Core Features of BFC:
+ * 1. Prevent margin collapsing: Margins inside BFC won't merge with external margins
+ * 2. Contain floats: BFC includes the height of internal floated elements (clear floats)
+ * 3. No overlap with floats: BFC area won't overlap with external floated elements
+ *
+ * Ways to Trigger BFC (choose one):
+ * - overflow: hidden/auto (common, but may clip content)
+ * - display: flow-root (recommended, no side effects)
+ * - float: left/right
+ * - position: absolute/fixed
+ * - display: inline-block
+ * - display: table-cell
+ */
 .wrapper {
-  overflow: hidden; /* or use display: flow-root */
+  overflow: hidden; /* or use display: flow-root (recommended) */
 }
 
 .box1 {
@@ -308,10 +326,14 @@ When a child element's margin is adjacent to the parent element's margin, they c
   padding-top: 1px; /* or border-top: 1px solid transparent; */
 }
 
-/* Method 2: Trigger parent BFC */
+/* Method 2: Trigger parent BFC
+ *
+ * After triggering BFC, the parent creates an independent rendering area.
+ * Child margins only work within the BFC and won't collapse with parent margins.
+ */
 .parent {
   overflow: hidden;
-  /* or display: flow-root */
+  /* or display: flow-root (recommended, no side effects) */
 }
 
 /* Method 3: Use padding instead of child margin */
@@ -329,7 +351,7 @@ When a child element's margin is adjacent to the parent element's margin, they c
 - **Floating elements**: Floating element margins don't collapse with neighbors
 - **Absolutely positioned elements**: position: absolute/fixed elements
 - **Inline elements**: Only left/right margins work, and they don't collapse
-- **Inside BFC**: Margins inside a BFC element don't collapse with outside
+- **Inside BFC**: Elements with BFC (e.g., overflow:hidden) form an independent container where margins won't collapse with outside
 - **Flex layout**: Margins of elements inside Flex container don't collapse
 - **Grid layout**: Margins of elements inside Grid container don't collapse
 

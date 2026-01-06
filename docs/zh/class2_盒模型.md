@@ -253,9 +253,27 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
 
 **解决方法**：
 ```css
-/* 方法1：使用BFC（块级格式化上下文） */
+/* 方法1：使用BFC（块级格式化上下文）
+ *
+ * 什么是BFC？
+ * BFC（Block Formatting Context，块级格式化上下文）是一个独立的渲染区域，
+ * 处于BFC内部的元素与外部元素相互隔离，不会相互影响。
+ *
+ * BFC的三大核心特性：
+ * 1. 阻止外边距合并：BFC内部的外边距不会与外部的外边距合并
+ * 2. 包含浮动元素：BFC会包含内部浮动元素的高度（清除浮动）
+ * 3. 不与浮动重叠：BFC区域不会与外部的浮动元素重叠
+ *
+ * 触发BFC的方式（任选其一）：
+ * - overflow: hidden/auto（常用，但可能裁剪内容）
+ * - display: flow-root （推荐，不会产生副作用）
+ * - float: left/right
+ * - position: absolute/fixed
+ * - display: inline-block
+ * - display: table-cell
+ */
 .wrapper {
-  overflow: hidden; /* 或使用 display: flow-root */
+  overflow: hidden; /* 或使用 display: flow-root（推荐） */
 }
 
 .box1 {
@@ -308,10 +326,14 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
   padding-top: 1px; /* 或 border-top: 1px solid transparent; */
 }
 
-/* 方法2：触发父元素的BFC */
+/* 方法2：触发父元素的BFC
+ *
+ * 触发BFC后，父元素内部形成一个独立的渲染区域，
+ * 子元素的外边距只在BFC内部起作用，不会与父元素的外边距合并。
+ */
 .parent {
   overflow: hidden;
-  /* 或 display: flow-root */
+  /* 或 display: flow-root（推荐，无副作用） */
 }
 
 /* 方法3：使用内边距代替子元素外边距 */
@@ -329,7 +351,7 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
 - **浮动元素**：浮动元素的外边距不会与相邻元素合并
 - **绝对定位元素**：position: absolute/fixed 的元素
 - **行内元素**：只有左右外边距，左右外边距不合并
-- **BFC内部**：触发BFC的元素内部外边距不会与外部合并
+- **BFC内部**：触发BFC的元素（如设置overflow:hidden）形成独立容器，内部外边距不会与外部合并
 - **Flex布局**：Flex容器内的元素外边距不合并
 - **Grid布局**：Grid容器内的元素外边距不合并
 

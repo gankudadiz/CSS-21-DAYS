@@ -309,29 +309,58 @@
             margin: 0 10px;
         }
 
-        /* padding样式 */
+        /* padding样式 - 内边距区域使用浅紫色，内容区使用深紫色 */
         .padding-demo .padding-box {
-            background-color: #9b59b6;
-            color: white;
+            background-color: #e8d5f0; /* 内边距区域（浅紫色） */
+            color: #333;
             padding: 20px;
         }
 
-        .padding-demo .padding-sides {
-            background-color: #9b59b6;
+        /* 内容区 - 使用深紫色突出显示 */
+        .padding-demo .padding-box .content {
+            background-color: #9b59b6; /* 内容区（深紫色） */
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-sides {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 10px 30px;
         }
 
-        .padding-demo .padding-three {
+        .padding-demo .padding-sides .content {
             background-color: #9b59b6;
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-three {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 10px 30px 20px;
         }
 
-        .padding-demo .padding-all {
+        .padding-demo .padding-three .content {
             background-color: #9b59b6;
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-all {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 25px;
+        }
+
+        .padding-demo .padding-all .content {
+            background-color: #9b59b6;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
         }
 
         /* border样式 */
@@ -626,7 +655,9 @@
                     <h3>2.1 四值写法 <span class="recommend-tag tag-high">热门 ⭐⭐⭐⭐⭐</span></h3>
                     <p style="color: #666; font-size: 12px; margin: 5px 0;">padding: 上 右 下 左</p>
                     <div class="demo-box padding-demo">
-                        <div class="padding-box">四值写法<br>padding: 20px<br>（各边相同）</div>
+                        <div class="padding-box">
+                            <div class="content">四值写法<br>padding: 20px<br>（各边相同）</div>
+                        </div>
                     </div>
                 </div>
                 <div class="code-section">
@@ -656,8 +687,12 @@
                     <h3>2.2 两值/三值写法 <span class="recommend-tag tag-high">热门 ⭐⭐⭐⭐☆</span></h3>
                     <p style="color: #666; font-size: 12px; margin: 5px 0;">两值：上下 左右 | 三值：上 左右 下</p>
                     <div class="demo-box padding-demo">
-                        <div class="padding-sides" style="margin-bottom: 10px;">两值: 10px 30px<br>(上下 左右)</div>
-                        <div class="padding-three">三值: 10px 30px 20px<br>(上 左右 下)</div>
+                        <div class="padding-sides" style="margin-bottom: 10px;">
+                            <div class="content">两值: 10px 30px<br>(上下 左右)</div>
+                        </div>
+                        <div class="padding-three">
+                            <div class="content">三值: 10px 30px 20px<br>(上 左右 下)</div>
+                        </div>
                     </div>
                 </div>
                 <div class="code-section">
@@ -830,19 +865,32 @@
                         <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
                     </div>
                     <div class="code-block" style="display:none;">
-<pre><code class="language-css">/* 水平居中 */
+<pre><code class="language-css">/* 水平居中 - 适用于块级元素 */
 .center-auto {
-    width: 200px;
-    margin: 0 auto;
+    width: 200px;           /* ⚠️ 关键：必须设置 width，否则 auto 无法计算 */
+    margin: 0 auto;         /* 上下0，左右auto（自动分配剩余空间） */
     background-color: #27ae60;
     color: white;
     padding: 15px;
 }
 
 /*
- * margin: 0 auto;
- * 第一个值 0：上下外边距
- * 第二个值 auto：左右外边距自动（水平居中）
+ * margin: 0 auto 实现水平居中的原理：
+ * 1. 第一个值 0：上下外边距为0
+ * 2. 第二个值 auto：左右外边距自动分配
+ *    - 浏览器计算：(父容器宽度 - 元素宽度) / 2
+ *    - 左右外边距相等，元素自然居中
+ *
+ * ⚠️ 重要注意事项：
+ * - 必须给块级元素设置 width（不能是 auto）
+ * - 元素必须是块级 display: block（默认就是）
+ * - 父容器必须有确定的宽度
+ *
+ * ❌ 错误示例：
+ * .center-auto { margin: 0 auto; }  /* 没写 width，不会居中 */
+ *
+ * ✅ 正确示例：
+ * .center-auto { width: 200px; margin: 0 auto; }
  */</code></pre>
                     </div>
                 </div>
@@ -942,18 +990,29 @@
                         <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
                     </div>
                     <div class="code-block" style="display:none;">
-<pre><code class="language-css">/* 解决方案：触发BFC */
+<pre><code class="language-css">/* 解决方案：触发BFC
+ *
+ * 什么是BFC？
+ * BFC（Block Formatting Context，块级格式化上下文）是一个独立的渲染区域。
+ * 在BFC内部的元素与外部元素隔离，不会发生外边距合并。
+ *
+ * BFC的核心作用：
+ * 1. 阻止外边距合并 - BFC内部的外边距不会与外部合并
+ * 2. 包含浮动元素 - BFC会包含内部浮动元素的高度
+ * 3. 不与浮动重叠 - BFC区域不会与外部浮动元素重叠
+ */
 .bfc-wrapper {
-    overflow: hidden;
+    overflow: hidden; /* 触发BFC */
     background-color: #f8f9fa;
     padding: 10px;
 }
 
-/* 其他BFC触发方式：
- * - display: flow-root
+/* 其他BFC触发方式（任选其一）：
+ * - display: flow-root（推荐，无副作用）
  * - float: left/right
  * - position: absolute/fixed
  * - display: inline-block
+ * - display: table-cell
  */</code></pre>
                     </div>
                 </div>
@@ -1447,9 +1506,27 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
 
 **解决方法**：
 ```css
-/* 方法1：使用BFC（块级格式化上下文） */
+/* 方法1：使用BFC（块级格式化上下文）
+ *
+ * 什么是BFC？
+ * BFC（Block Formatting Context，块级格式化上下文）是一个独立的渲染区域，
+ * 处于BFC内部的元素与外部元素相互隔离，不会相互影响。
+ *
+ * BFC的三大核心特性：
+ * 1. 阻止外边距合并：BFC内部的外边距不会与外部的外边距合并
+ * 2. 包含浮动元素：BFC会包含内部浮动元素的高度（清除浮动）
+ * 3. 不与浮动重叠：BFC区域不会与外部的浮动元素重叠
+ *
+ * 触发BFC的方式（任选其一）：
+ * - overflow: hidden/auto（常用，但可能裁剪内容）
+ * - display: flow-root （推荐，不会产生副作用）
+ * - float: left/right
+ * - position: absolute/fixed
+ * - display: inline-block
+ * - display: table-cell
+ */
 .wrapper {
-  overflow: hidden; /* 或使用 display: flow-root */
+  overflow: hidden; /* 或使用 display: flow-root（推荐） */
 }
 
 .box1 {
@@ -1502,10 +1579,14 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
   padding-top: 1px; /* 或 border-top: 1px solid transparent; */
 }
 
-/* 方法2：触发父元素的BFC */
+/* 方法2：触发父元素的BFC
+ *
+ * 触发BFC后，父元素内部形成一个独立的渲染区域，
+ * 子元素的外边距只在BFC内部起作用，不会与父元素的外边距合并。
+ */
 .parent {
   overflow: hidden;
-  /* 或 display: flow-root */
+  /* 或 display: flow-root（推荐，无副作用） */
 }
 
 /* 方法3：使用内边距代替子元素外边距 */
@@ -1523,7 +1604,7 @@ CSS中每个元素都被视为一个矩形盒子，由内到外由四个部分�
 - **浮动元素**：浮动元素的外边距不会与相邻元素合并
 - **绝对定位元素**：position: absolute/fixed 的元素
 - **行内元素**：只有左右外边距，左右外边距不合并
-- **BFC内部**：触发BFC的元素内部外边距不会与外部合并
+- **BFC内部**：触发BFC的元素（如设置overflow:hidden）形成独立容器，内部外边距不会与外部合并
 - **Flex布局**：Flex容器内的元素外边距不合并
 - **Grid布局**：Grid容器内的元素外边距不合并
 

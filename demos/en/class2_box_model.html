@@ -309,29 +309,58 @@
             margin: 0 10px;
         }
 
-        /* Padding Styles */
+        /* Padding Styles - padding area in light purple, content in dark purple */
         .padding-demo .padding-box {
-            background-color: #9b59b6;
-            color: white;
+            background-color: #e8d5f0; /* padding area (light purple) */
+            color: #333;
             padding: 20px;
         }
 
-        .padding-demo .padding-sides {
-            background-color: #9b59b6;
+        /* Content area - dark purple for contrast */
+        .padding-demo .padding-box .content {
+            background-color: #9b59b6; /* content area (dark purple) */
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-sides {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 10px 30px;
         }
 
-        .padding-demo .padding-three {
+        .padding-demo .padding-sides .content {
             background-color: #9b59b6;
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-three {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 10px 30px 20px;
         }
 
-        .padding-demo .padding-all {
+        .padding-demo .padding-three .content {
             background-color: #9b59b6;
             color: white;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .padding-demo .padding-all {
+            background-color: #e8d5f0;
+            color: #333;
             padding: 25px;
+        }
+
+        .padding-demo .padding-all .content {
+            background-color: #9b59b6;
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
         }
 
         /* Border Styles */
@@ -626,7 +655,9 @@
                     <h3>2.1 Four Values <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
                     <p style="color: #666; font-size: 12px; margin: 5px 0;">padding: top right bottom left</p>
                     <div class="demo-box padding-demo">
-                        <div class="padding-box">Four Values<br>padding: 20px<br>(all sides equal)</div>
+                        <div class="padding-box">
+                            <div class="content">Four Values<br>padding: 20px<br>(all sides equal)</div>
+                        </div>
                     </div>
                 </div>
                 <div class="code-section">
@@ -656,8 +687,12 @@
                     <h3>2.2 Two/Three Values <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
                     <p style="color: #666; font-size: 12px; margin: 5px 0;">Two: top/bottom left/right | Three: top left/right bottom</p>
                     <div class="demo-box padding-demo">
-                        <div class="padding-sides" style="margin-bottom: 10px;">Two values: 10px 30px<br>(top/bottom left/right)</div>
-                        <div class="padding-three">Three values: 10px 30px 20px<br>(top left/right bottom)</div>
+                        <div class="padding-sides" style="margin-bottom: 10px;">
+                            <div class="content">Two values: 10px 30px<br>(top/bottom left/right)</div>
+                        </div>
+                        <div class="padding-three">
+                            <div class="content">Three values: 10px 30px 20px<br>(top left/right bottom)</div>
+                        </div>
                     </div>
                 </div>
                 <div class="code-section">
@@ -830,19 +865,32 @@
                         <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
                     </div>
                     <div class="code-block" style="display:none;">
-<pre><code class="language-css">/* Horizontal centering */
+<pre><code class="language-css">/* Horizontal centering - for block elements */
 .center-auto {
-    width: 200px;
-    margin: 0 auto;
+    width: 200px;           /* ⚠️ Required: must set width, otherwise auto won't work */
+    margin: 0 auto;         /* vertical 0, horizontal auto (centers element) */
     background-color: #27ae60;
     color: white;
     padding: 15px;
 }
 
 /*
- * margin: 0 auto;
- * First value 0: vertical margin
- * Second value auto: horizontal margin auto (centering)
+ * How margin: 0 auto works:
+ * 1. First value 0: vertical margin is 0
+ * 2. Second value auto: horizontal margin is auto
+ *    - Browser calculates: (parent width - element width) / 2
+ *    - Left and right margins are equal, element centers
+ *
+ * ⚠️ Important Notes:
+ * - Must set width for block elements (cannot be auto or unset)
+ * - Element must be display: block (default for div, p, etc.)
+ * - Parent container must have a defined width
+ *
+ * ❌ Wrong:
+ * .center-auto { margin: 0 auto; }  /* no width, won't center */
+ *
+ * ✅ Correct:
+ * .center-auto { width: 200px; margin: 0 auto; }
  */</code></pre>
                     </div>
                 </div>
@@ -942,18 +990,29 @@
                         <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
                     </div>
                     <div class="code-block" style="display:none;">
-<pre><code class="language-css">/* Solution: trigger BFC */
+<pre><code class="language-css">/* Solution: trigger BFC
+ *
+ * What is BFC?
+ * BFC (Block Formatting Context) is an independent rendering region.
+ * Elements inside BFC are isolated from external elements, preventing margin collapsing.
+ *
+ * Core Features of BFC:
+ * 1. Prevent margin collapsing - Margins inside BFC won't merge with outside
+ * 2. Contain floats - BFC includes the height of internal floated elements
+ * 3. No overlap with floats - BFC area won't overlap with external floated elements
+ */
 .bfc-wrapper {
-    overflow: hidden;
+    overflow: hidden; /* triggers BFC */
     background-color: #f8f9fa;
     padding: 10px;
 }
 
-/* Other BFC triggers:
- * - display: flow-root
+/* Other BFC Triggers (choose one):
+ * - display: flow-root (recommended, no side effects)
  * - float: left/right
  * - position: absolute/fixed
  * - display: inline-block
+ * - display: table-cell
  */</code></pre>
                     </div>
                 </div>
@@ -1447,9 +1506,27 @@ When two block elements are stacked vertically, their vertical margins collapse 
 
 **Solutions**:
 ```css
-/* Method 1: Use BFC (Block Formatting Context) */
+/* Method 1: Use BFC (Block Formatting Context)
+ *
+ * What is BFC?
+ * BFC (Block Formatting Context) is an independent rendering region.
+ * Elements inside a BFC are isolated from external elements and won't affect each other.
+ *
+ * Three Core Features of BFC:
+ * 1. Prevent margin collapsing: Margins inside BFC won't merge with external margins
+ * 2. Contain floats: BFC includes the height of internal floated elements (clear floats)
+ * 3. No overlap with floats: BFC area won't overlap with external floated elements
+ *
+ * Ways to Trigger BFC (choose one):
+ * - overflow: hidden/auto (common, but may clip content)
+ * - display: flow-root (recommended, no side effects)
+ * - float: left/right
+ * - position: absolute/fixed
+ * - display: inline-block
+ * - display: table-cell
+ */
 .wrapper {
-  overflow: hidden; /* or use display: flow-root */
+  overflow: hidden; /* or use display: flow-root (recommended) */
 }
 
 .box1 {
@@ -1502,10 +1579,14 @@ When a child element's margin is adjacent to the parent element's margin, they c
   padding-top: 1px; /* or border-top: 1px solid transparent; */
 }
 
-/* Method 2: Trigger parent BFC */
+/* Method 2: Trigger parent BFC
+ *
+ * After triggering BFC, the parent creates an independent rendering area.
+ * Child margins only work within the BFC and won't collapse with parent margins.
+ */
 .parent {
   overflow: hidden;
-  /* or display: flow-root */
+  /* or display: flow-root (recommended, no side effects) */
 }
 
 /* Method 3: Use padding instead of child margin */
@@ -1523,7 +1604,7 @@ When a child element's margin is adjacent to the parent element's margin, they c
 - **Floating elements**: Floating element margins don't collapse with neighbors
 - **Absolutely positioned elements**: position: absolute/fixed elements
 - **Inline elements**: Only left/right margins work, and they don't collapse
-- **Inside BFC**: Margins inside a BFC element don't collapse with outside
+- **Inside BFC**: Elements with BFC (e.g., overflow:hidden) form an independent container where margins won't collapse with outside
 - **Flex layout**: Margins of elements inside Flex container don't collapse
 - **Grid layout**: Margins of elements inside Grid container don't collapse
 

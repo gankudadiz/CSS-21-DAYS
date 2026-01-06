@@ -1,0 +1,10 @@
+{
+  "name": "css-21-days",
+  "version": "1.0.0",
+  "description": "CSS 21 Days Learning Project",
+  "scripts": {
+    "build": "node scripts/build-md.js"
+  },
+  "keywords": ["css", "learning", "tutorial"],
+  "license": "MIT"
+}

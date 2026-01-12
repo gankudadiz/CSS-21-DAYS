@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox Layout - Demo</title>
+    <!-- Code Highlighting - PrismJS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+    <!-- Markdown - marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* ========== Basic Styles ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+
+        /* Navigation */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Demo Section (first tab only) */
+        .demo-section {
+            background: transparent;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 30px auto 24px;
+            max-width: 1100px;
+        }
+
+        .demo-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .demo-title::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: #3498db;
+            border-radius: 2px;
+        }
+
+        /* Content Styles */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+
+        /* Recommendation Tags */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; }
+        .tag-high { background: #27ae60; color: white; }
+        .tag-medium { background: #f39c12; color: white; }
+        .tag-low { background: #95a5a6; color: white; }
+
+        /* Code Section */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-lang { font-size: 12px; color: #999; background: #ecf0f1; padding: 2px 8px; border-radius: 4px; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* Toggle Button */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+        .toggle-btn.active { background: #27ae60; }
+
+        /* Demo and Code Row */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+
+        @media (max-width: 900px) {
+            .demo-code-row { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .tab-btn { padding: 10px 12px; font-size: 14px; }
+            section { padding: 15px; }
+        }
+
+        /* Demo Box */
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* Flex Item Styles */
+        .flex-item {
+            background: #3498db;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin: 4px;
+        }
+
+        .flex-item.red { background: #e74c3c; }
+        .flex-item.green { background: #27ae60; }
+        .flex-item.purple { background: #9b59b6; }
+        .flex-item.orange { background: #f39c12; }
+
+        /* Flex Container */
+        .flex-demo-container {
+            display: flex;
+            background: #ecf0f1;
+            border-radius: 6px;
+            padding: 15px;
+            min-height: 100px;
+            flex-wrap: wrap;
+        }
+
+        .flex-demo-container.no-wrap { flex-wrap: nowrap; overflow-x: auto; }
+
+        /* Center Demo */
+        .center-demo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 120px;
+            background: #ecf0f1;
+            border-radius: 6px;
+        }
+
+        .center-demo .flex-item { margin: 4px; }
+
+        /* Axis Indicator */
+        .axis-indicator {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px 15px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .axis-label { display: flex; align-items: center; gap: 8px; }
+        .axis-badge { padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+        .axis-badge.main { background: #fee2e2; color: #dc2626; }
+        .axis-badge.cross { background: #dbeafe; color: #2563eb; }
+
+        /* Interactive Demo - Left/Right Layout */
+        .interactive-demo {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 24px;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .interactive-demo {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Left Control Panel */
+        .control-panel {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .control-group { margin-bottom: 20px; }
+        .control-group:last-child { margin-bottom: 0; }
+        .control-group { margin-bottom: 10px; }
+
+        .control-label { font-size: 13px; font-weight: 600; color: #2c3e50; margin-bottom: 8px; display: block; }
+        .control-options { display: flex; flex-wrap: wrap; gap: 6px; }
+
+        .control-btn {
+            padding: 6px 12px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .control-btn:hover { border-color: #3498db; color: #3498db; }
+        .control-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        /* Right Preview Area */
+        .preview-area {
+            background: #f0f4f8;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 300px;
+        }
+
+        .flex-demo-container {
+            display: flex;
+            background: white;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 10px;
+            min-height: 250px;
+            transition: all 0.3s ease;
+        }
+
+        .flex-demo-container .flex-item {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 14px;
+            min-width: 60px;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Code Display with Syntax Highlighting */
+        .code-display {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 13px;
+            margin-top: 16px;
+            overflow-x: auto;
+        }
+
+        .code-display .property { color: #90cdf4; }
+        .code-display .value { color: #f6ad55; }
+
+        /* Practice Links */
+        .practice-links { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+        .practice-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 16px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .practice-link:hover { background: #2980b9; transform: translateY(-1px); }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.active { display: flex; }
+
+        .modal-container {
+            background: #f5f5f5;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
+            margin: auto;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            background: #3498db;
+            color: white;
+        }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+
+        .modal-body {
+            padding: 20px;
+            max-height: calc(90vh - 60px);
+            overflow-y: auto;
+            background: white;
+        }
+
+        /* Markdown Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content p { margin: 12px 0; color: #555; }
+        .markdown-content ul, .markdown-content ol { margin: 10px 0; padding-left: 25px; }
+        .markdown-content li { margin: 6px 0; color: #555; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th, .markdown-content td { padding: 10px; border: 1px solid #ddd; text-align: left; }
+        .markdown-content th { background: #3498db; color: white; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content hr { border: none; border-top: 2px solid #e0e0e0; margin: 20px 0; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content a { color: #3498db; text-decoration: none; }
+        .markdown-content a:hover { text-decoration: underline; }
+        .markdown-content strong { color: #2c3e50; }
+    </style>
+</head>
+<body>
+    <h1>Flexbox Layout - Demo</h1>
+
+    <!-- Header Navigation -->
+    <div class="header-nav">
+        <div>
+            <strong>Flexbox Layout</strong>
+            <span style="color: #999; margin-left: 10px;">Day 4-5 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="openDocModal()" class="doc-link">
+            View Full Documentation
+        </a>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-interactive')">Interactive Demo</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-container')">Flex Container</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-items')">Flex Items</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-layouts')">Common Layouts</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
+        </div>
+
+        <!-- Tab 1: Interactive Demo -->
+        <div id="tab-interactive" class="tab-pane active">
+            <div class="demo-section">
+                <div class="demo-title">Flexbox Interactive Demo</div>
+                <p style="color: #666; margin-bottom: 16px;">Adjust the controls below to see Flexbox layout effects in real-time</p>
+
+                <!-- Axis Indicator -->
+                <div class="axis-indicator">
+                    <div class="axis-label">
+                        <span class="axis-badge main">Main Axis</span>
+                        <span id="main-axis-text">Horizontal →</span>
+                    </div>
+                    <div class="axis-label">
+                        <span class="axis-badge cross">Cross Axis</span>
+                        <span id="cross-axis-text">Vertical ↓</span>
+                    </div>
+                </div>
+
+                <!-- Left/Right Layout -->
+                <div class="interactive-demo">
+                    <!-- Left: Control Panel -->
+                    <div class="control-panel">
+                        <div class="control-group">
+                            <label class="control-label">flex-direction (Main Axis)</label>
+                            <div class="control-options" id="direction-options">
+                                <button class="control-btn active" data-value="row">row</button>
+                                <button class="control-btn" data-value="row-reverse">row-reverse</button>
+                                <button class="control-btn" data-value="column">column</button>
+                                <button class="control-btn" data-value="column-reverse">column-reverse</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">justify-content (Main Axis)</label>
+                            <div class="control-options" id="justify-options">
+                                <button class="control-btn active" data-value="flex-start">flex-start</button>
+                                <button class="control-btn" data-value="center">center</button>
+                                <button class="control-btn" data-value="flex-end">flex-end</button>
+                                <button class="control-btn" data-value="space-between">space-between</button>
+                                <button class="control-btn" data-value="space-around">space-around</button>
+                                <button class="control-btn" data-value="space-evenly">space-evenly</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">align-items (Cross Axis)</label>
+                            <div class="control-options" id="align-options">
+                                <button class="control-btn active" data-value="stretch">stretch</button>
+                                <button class="control-btn" data-value="flex-start">flex-start</button>
+                                <button class="control-btn" data-value="center">center</button>
+                                <button class="control-btn" data-value="flex-end">flex-end</button>
+                                <button class="control-btn" data-value="baseline">baseline</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">flex-wrap (Wrap)</label>
+                            <div class="control-options" id="wrap-options">
+                                <button class="control-btn active" data-value="nowrap">nowrap</button>
+                                <button class="control-btn" data-value="wrap">wrap</button>
+                                <button class="control-btn" data-value="wrap-reverse">wrap-reverse</button>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Number of Items</label>
+                            <div class="control-options" id="items-options">
+                                <button class="control-btn active" data-value="3">3</button>
+                                <button class="control-btn" data-value="4">4</button>
+                                <button class="control-btn" data-value="5">5</button>
+                                <button class="control-btn" data-value="6">6</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right: Preview and Code -->
+                    <div class="preview-area">
+                        <div class="flex-demo-container" id="flex-container">
+                            <div class="flex-item">1</div>
+                            <div class="flex-item">2</div>
+                            <div class="flex-item">3</div>
+                        </div>
+
+                        <div class="code-display" id="code-display">
+                            <span class="property">.container</span> {<br>
+                            &nbsp;&nbsp;<span class="property">display</span>: <span class="value">flex</span>;<br>
+                            &nbsp;&nbsp;<span class="property">flex-direction</span>: <span class="value">row</span>;<br>
+                            &nbsp;&nbsp;<span class="property">justify-content</span>: <span class="value">flex-start</span>;<br>
+                            &nbsp;&nbsp;<span class="property">align-items</span>: <span class="value">stretch</span>;<br>
+                            &nbsp;&nbsp;<span class="property">flex-wrap</span>: <span class="value">nowrap</span>;<br>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Flex Container Properties -->
+        <div id="tab-container" class="tab-pane">
+            <!-- Core Concept -->
+            <section style="background: #f0f7ff; border: 2px solid #3498db; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #2c3e50; margin-top: 0; border-left: none; padding-left: 0; font-size: 16px;">Core Concept: Flex Container & Flex Item Relationship</h3>
+                <div style="display: flex; align-items: center; gap: 20px; margin-top: 15px; flex-wrap: wrap;">
+                    <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #3498db; flex: 1; min-width: 200px;">
+                        <strong>Flex Container</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">Is the <span style="color: #e74c3c; font-weight: bold;">parent element</span>, set <code style="background: #ecf0f1; padding: 2px 6px; border-radius: 3px;">display: flex</code> to enable</p>
+                    </div>
+                    <div style="font-size: 20px; color: #3498db;">→ contains ←</div>
+                    <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #3498db; flex: 1; min-width: 200px;">
+                        <strong>Flex Item</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">Is the <span style="color: #27ae60; font-weight: bold;">child element</span>, placed directly inside the container</p>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 6px; font-size: 13px; border-left: 4px solid #3498db;">
+                    <strong>Key Point:</strong> The container controls the <span style="color: #e74c3c; font-weight: bold;">overall layout</span> of all items; items are <span style="color: #27ae60; font-weight: bold;">controlled by</span> the container.
+                </div>
+            </section>
+
+            <h2>1. Flex Container Properties</h2>
+            <p style="color: #666; margin-bottom: 15px;">Properties on the flex container that control how <span style="color: #e74c3c; font-weight: bold;">child elements (Flex Items)</span> are arranged</p>
+
+            <!-- display -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.1 display <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">display: flex or inline-flex to enable Flexbox layout</p>
+                    <div class="demo-box">
+                        <div style="display: flex; gap: 8px; padding: 8px; background: #e3f2fd; margin-bottom: 8px; border-radius: 4px;">
+                            <span class="flex-item" style="margin: 0;">flex block</span>
+                            <span class="flex-item" style="margin: 0;">container</span>
+                        </div>
+                        <div style="display: inline-flex; gap: 8px; padding: 8px; background: #fff3e0; border-radius: 4px;">
+                            <span class="flex-item" style="margin: 0;">inline-flex</span>
+                            <span class="flex-item" style="margin: 0;">inline</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Block-level flex container */
+.container {
+    display: flex;
+}
+
+/* Inline flex container */
+.container {
+    display: inline-flex;
+}
+
+/*
+ * Difference:
+ * - flex: Container as block-level (独占一行)
+ * - inline-flex: Container as inline (与其他行内元素同行)
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flex-direction -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.2 flex-direction <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Set main axis direction (element arrangement direction)</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">row (default): left→right</p>
+                        <div class="flex-demo-container">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">column: top→bottom</p>
+                        <div class="flex-demo-container" style="flex-direction: column; align-items: stretch;">
+                            <span class="flex-item" style="width: auto;">1</span>
+                            <span class="flex-item" style="width: auto;">2</span>
+                            <span class="flex-item" style="width: auto;">3</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Main axis direction */
+.container {
+    flex-direction: row;             /* left→right (default) */
+    flex-direction: row-reverse;     /* right→left */
+    flex-direction: column;          /* top→bottom */
+    flex-direction: column-reverse;  /* bottom→top */
+}
+
+/* row-reverse effect:
+ * ┌───┐┌───┐┌───┐
+ * │ 3 ││ 2 ││ 1 │  ← Elements reversed
+ * └───┘└───┘└───┘
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- justify-content -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.3 justify-content <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Main axis alignment (horizontal/vertical depends on flex-direction)</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">flex-start: near start</p>
+                        <div class="flex-demo-container" style="justify-content: flex-start;">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">center: center</p>
+                        <div class="flex-demo-container" style="justify-content: center;">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">space-between: distribute</p>
+                        <div class="flex-demo-container" style="justify-content: space-between;">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">space-around: equal space on both sides</p>
+                        <div class="flex-demo-container" style="justify-content: space-around;">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">space-evenly: equal space everywhere</p>
+                        <div class="flex-demo-container" style="justify-content: space-evenly;">
+                            <span class="flex-item">1</span>
+                            <span class="flex-item">2</span>
+                            <span class="flex-item">3</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Main axis alignment */
+.container {
+    justify-content: flex-start;     /* Near start (default) */
+    justify-content: center;         /* Center */
+    justify-content: flex-end;       /* Near end */
+    justify-content: space-between;  /* Distribute, equal space between items */
+    justify-content: space-around;   /* Equal space on both sides of items */
+    justify-content: space-evenly;   /* Equal space everywhere */
+}
+
+/*
+ * space-around vs space-evenly:
+ * space-around:  Edge space is half of item space
+ * space-evenly:  All spaces equal
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- align-items -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.4 align-items <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Cross axis (vertical) alignment</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">flex-start: align to top</p>
+                        <div class="flex-demo-container" style="align-items: flex-start; min-height: 120px;">
+                            <span class="flex-item" style="height: 40px; line-height: 40px;">Top</span>
+                            <span class="flex-item" style="height: 60px; line-height: 60px;">Top</span>
+                            <span class="flex-item" style="height: 50px; line-height: 50px;">Top</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">center: vertical center</p>
+                        <div class="flex-demo-container" style="align-items: center; min-height: 120px;">
+                            <span class="flex-item" style="height: 40px; line-height: 40px;">Center</span>
+                            <span class="flex-item" style="height: 60px; line-height: 60px;">Center</span>
+                            <span class="flex-item" style="height: 50px; line-height: 50px;">Center</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">flex-end: align to bottom</p>
+                        <div class="flex-demo-container" style="align-items: flex-end; min-height: 120px;">
+                            <span class="flex-item" style="height: 40px; line-height: 40px;">Bottom</span>
+                            <span class="flex-item" style="height: 60px; line-height: 60px;">Bottom</span>
+                            <span class="flex-item" style="height: 50px; line-height: 50px;">Bottom</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">stretch (default): stretch to fill container height</p>
+                        <div class="flex-demo-container" style="align-items: stretch; min-height: 120px;">
+                            <span class="flex-item" style="height: auto; align-self: stretch;">Auto</span>
+                            <span class="flex-item" style="height: auto; align-self: stretch;">Stretch</span>
+                            <span class="flex-item" style="height: auto; align-self: stretch;">Fill</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Cross axis alignment */
+.container {
+    align-items: stretch;      /* Stretch to fill (default) */
+    align-items: flex-start;   /* Near cross axis start */
+    align-items: center;       /* Center */
+    align-items: flex-end;     /* Near cross axis end */
+    align-items: baseline;     /* Item baseline alignment */
+}
+
+/* Note: stretch works when items have no height set */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flex-wrap -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.5 flex-wrap <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Whether items wrap (items 80px wide, container 280px)</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">nowrap (default): no wrap, items shrink</p>
+                        <div style="display: flex; flex-wrap: nowrap; gap: 4px; padding: 8px; background: #ecf0f1; border-radius: 4px; width: 280px; max-width: 100%; box-sizing: border-box;">
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">1</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">2</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">3</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">4</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">5</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; flex-shrink: 1; min-width: 0; display: flex; justify-content: center; align-items: center;">6</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">wrap: auto wrap, keep original width</p>
+                        <div style="display: flex; flex-wrap: wrap; gap: 4px; padding: 8px; background: #ecf0f1; border-radius: 4px; width: 280px; max-width: 100%; box-sizing: border-box;">
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">1</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">2</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">3</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">4</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">5</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">6</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">7</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">8</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">wrap-reverse: wrap, first row at bottom</p>
+                        <div style="display: flex; flex-wrap: wrap-reverse; gap: 4px; padding: 8px; background: #ecf0f1; border-radius: 4px; width: 280px; max-width: 100%; box-sizing: border-box;">
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">1</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">2</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">3</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">4</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">5</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">6</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">7</span>
+                            <span class="flex-item" style="width: 80px; margin: 0; display: flex; justify-content: center; align-items: center;">8</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Wrap control */
+.container {
+    flex-wrap: nowrap;        /* No wrap, items shrink (default) */
+    flex-wrap: wrap;          /* Wrap */
+    flex-wrap: wrap-reverse;  /* Wrap, first row at bottom */
+}
+
+/* wrap-reverse effect:
+ * ┌───┐┌───┐
+ * │ 5 ││ 6 │  ← First row at bottom
+ * ├───┼───┤
+ * │ 1 ││ 2 │
+ * │ 3 ││ 4 │
+ * └───┴───┘
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- gap -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>1.6 gap <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Space between items (recommended, simpler than margin)</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">gap: 20px</p>
+                        <div class="flex-demo-container" style="gap: 20px;">
+                            <span class="flex-item">Equal</span>
+                            <span class="flex-item">Spacing</span>
+                            <span class="flex-item">Clean</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Item spacing */
+.container {
+    gap: 10px;              /* All directions */
+    gap: 10px 20px;         /* row-gap column-gap */
+    row-gap: 10px;          /* Row gap only */
+    column-gap: 20px;       /* Column gap only */
+}
+
+/* Recommended to use gap instead of margin:
+ * - No need to handle first/last item margin
+ * - Simpler code
+ * - Easier to maintain
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Flex Item Properties -->
+        <div id="tab-items" class="tab-pane">
+            <!-- Core Concept -->
+            <section style="background: #f0fff4; border: 2px solid #27ae60; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+                <h3 style="color: #2c3e50; margin-top: 0; border-left: none; padding-left: 0; font-size: 16px;">Core Concept: Flex Item & Flex Container Relationship</h3>
+                <div style="display: flex; align-items: center; gap: 20px; margin-top: 15px; flex-wrap: wrap;">
+                    <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #27ae60; flex: 1; min-width: 200px;">
+                        <strong>Flex Item</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">Is the <span style="color: #27ae60; font-weight: bold;">child element</span>, placed directly inside the container</p>
+                    </div>
+                    <div style="font-size: 20px; color: #27ae60;">← belongs to ←</div>
+                    <div style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #27ae60; flex: 1; min-width: 200px;">
+                        <strong>Flex Container</strong>
+                        <p style="margin: 8px 0 0 0; font-size: 13px; color: #666;">Is the <span style="color: #e74c3c; font-weight: bold;">parent element</span>, the "home" of all Flex Items</p>
+                    </div>
+                </div>
+                <div style="margin-top: 15px; padding: 12px; background: white; border-radius: 6px; font-size: 13px; border-left: 4px solid #27ae60;">
+                    <strong>Key Point:</strong> Flex Item properties (like <code style="background: #ecf0f1; padding: 2px 6px; border-radius: 3px;">flex-grow</code>, <code style="background: #ecf0f1; padding: 2px 6px; border-radius: 3px;">align-self</code>) <span style="color: #e74c3c; font-weight: bold;">only affect the current element</span>, used to fine-tune individual items
+                </div>
+            </section>
+
+            <h2>2. Flex Item Properties</h2>
+            <p style="color: #666; margin-bottom: 15px;">Properties on flex items to control <span style="color: #27ae60; font-weight: bold;">individual item</span> behavior (relative to the container's overall layout)</p>
+
+            <!-- flex-grow -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.1 flex-grow <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Item grow factor (occupy remaining space)</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">flex: 1 - equal distribution</p>
+                        <div class="flex-demo-container">
+                            <span class="flex-item" style="flex: 1;">1</span>
+                            <span class="flex-item" style="flex: 1;">2</span>
+                            <span class="flex-item" style="flex: 1;">3</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">ratio 1:2:1</p>
+                        <div class="flex-demo-container">
+                            <span class="flex-item" style="flex-grow: 1; background: #3498db;">1</span>
+                            <span class="flex-item" style="flex-grow: 2; background: #e74c3c;">2</span>
+                            <span class="flex-item" style="flex-grow: 1; background: #3498db;">3</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Grow factor */
+.item {
+    flex-grow: 0;     /* Default: no grow */
+    flex-grow: 1;     /* Occupy remaining space */
+    flex-grow: 2;     /* Twice the grow ratio of 1 */
+}
+
+/* Equal distribution */
+.container > * {
+    flex: 1;
+}
+
+/* 1:2:1 ratio */
+.item:nth-child(1) { flex-grow: 1; }
+.item:nth-child(2) { flex-grow: 2; }
+.item:nth-child(3) { flex-grow: 1; }
+
+/*
+ * flex-grow only distributes remaining space
+ * If items have fixed width, set flex-basis: 0
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flex-shrink -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.2 flex-shrink <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Item shrink factor</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">flex-shrink: 0 - no shrink (fixed width)</p>
+                        <div class="flex-demo-container no-wrap" style="gap: 4px; width: 320px;">
+                            <span class="flex-item" style="flex-shrink: 0; width: 120px; background: #e74c3c;">No Shrink</span>
+                            <span class="flex-item" style="flex-shrink: 0; width: 120px; background: #3498db;">No Shrink</span>
+                            <span class="flex-item" style="flex-shrink: 0; width: 120px; background: #27ae60;">No Shrink</span>
+                        </div>
+                        <p style="color: #e74c3c; font-size: 11px; margin-top: 8px;">⚠️ Container width 320px, three 120px items need 360px total, but they won't shrink</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Shrink factor */
+.item {
+    flex-shrink: 1;   /* Default: can shrink */
+    flex-shrink: 0;   /* Cannot shrink */
+    flex-shrink: 2;   /* Larger shrink ratio */
+}
+
+/* Fixed width, no shrink */
+.sidebar {
+    flex: 0 0 200px;  /* No grow, no shrink, fixed 200px */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- order -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.3 order <span class="recommend-tag tag-medium">Common ⭐⭐⭐☆☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Change item order (doesn't affect DOM structure)</p>
+                    <div class="demo-box">
+                        <div class="flex-demo-container">
+                            <span class="flex-item" style="order: 3;">A</span>
+                            <span class="flex-item" style="order: 1;">B</span>
+                            <span class="flex-item" style="order: 2;">C</span>
+                        </div>
+                        <p style="color: #e74c3c; font-size: 12px; margin-top: 8px;">Display order: B → C → A</p>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Order */
+.item {
+    order: 0;     /* Default value */
+    order: -1;    /* Comes before */
+    order: 1;     /* Comes after */
+}
+
+/* Example: adjust navigation order */
+.nav-item:nth-child(1) { order: 3; } /* Home last */
+.nav-item:nth-child(2) { order: 1; }
+.nav-item:nth-child(3) { order: 2; }
+
+/*
+ * order doesn't change HTML order in DOM
+ * Only changes visual order
+ * Search engines and screen readers still read HTML order
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- align-self -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.4 align-self <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Individual item cross axis alignment (overrides container's align-items)</p>
+                    <div class="demo-box">
+                        <div class="flex-demo-container" style="align-items: flex-start; min-height: 100px;">
+                            <span class="flex-item">Top</span>
+                            <span class="flex-item" style="align-self: center; background: #e74c3c;">Center</span>
+                            <span class="flex-item" style="align-self: flex-end; background: #27ae60;">Bottom</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Individual item alignment */
+.item {
+    align-self: auto;        /* Inherit container's align-items */
+    align-self: flex-start;  /* Near cross axis start */
+    align-self: center;      /* Center */
+    align-self: flex-end;    /* Near cross axis end */
+    align-self: stretch;     /* Stretch */
+    align-self: baseline;    /* Baseline alignment */
+}
+
+/* Use case: specific item needs special alignment */
+.nav-item:last-child {
+    align-self: flex-end;  /* Last item to right/bottom */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- flex shorthand -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>2.5 flex shorthand <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Set grow, shrink, and basis at once</p>
+                    <div class="demo-box">
+                        <p style="color: #666; font-size: 12px; margin: 5px 0;">flex: 1 - equal distribution</p>
+                        <div class="flex-demo-container">
+                            <span class="flex-item" style="flex: 1;">Equal Width</span>
+                            <span class="flex-item" style="flex: 1;">Equal Width</span>
+                            <span class="flex-item" style="flex: 1;">Equal Width</span>
+                        </div>
+                        <p style="color: #666; font-size: 12px; margin: 10px 0 5px 0;">flex: 0 0 fixed width</p>
+                        <div class="flex-demo-container">
+                            <span class="flex-item" style="flex: 0 0 100px; background: #e74c3c;">Fixed</span>
+                            <span class="flex-item" style="flex: 1; background: #3498db;">Adaptive</span>
+                            <span class="flex-item" style="flex: 0 0 80px; background: #27ae60;">Fixed</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* flex shorthand: grow shrink basis */
+.item {
+    flex: 0 1 auto;       /* Default: no grow, can shrink, based on size */
+    flex: 1;              /* flex: 1 1 0% - equal distribution */
+    flex: auto;           /* flex: 1 1 auto - auto size + equal */
+    flex: none;           /* flex: 0 0 auto - no flexing */
+}
+
+/* Recommended写法 */
+.sidebar {
+    flex: 0 0 200px;  /* No grow, no shrink, fixed 200px */
+}
+
+.content {
+    flex: 1;          /* Occupy remaining space */
+}
+
+/*
+ * flex-basis has priority over width
+ * flex: 1 equals flex: 1 1 0%
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Common Layouts -->
+        <div id="tab-layouts" class="tab-pane">
+            <h2>3. Common Layouts</h2>
+            <p style="color: #666; margin-bottom: 15px;">Flexbox common layout patterns in actual development</p>
+
+            <!-- Centered Layout -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.1 Center Horizontally & Vertically <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Most commonly used centering layout</p>
+                    <div class="demo-box">
+                        <div class="center-demo">
+                            <span class="flex-item">Centered Content</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Center horizontally and vertically - most common */
+.container {
+    display: flex;
+    justify-content: center;  /* Horizontal center */
+    align-items: center;      /* Vertical center */
+    min-height: 100vh;        /* Need height */
+}
+
+/*
+ * Principle:
+ * justify-content controls main axis (horizontal) alignment
+ * align-items controls cross axis (vertical) alignment
+ * Combined for perfect centering
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Bar -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.2 Navigation Bar Layout <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Logo + Menu items + Button</p>
+                    <div class="demo-box">
+                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: #3498db; border-radius: 6px;">
+                            <span class="flex-item" style="margin: 0; background: white; color: #333;">Logo</span>
+                            <div style="display: flex; gap: 8px;">
+                                <span class="flex-item" style="margin: 0; background: rgba(255,255,255,0.2);">Home</span>
+                                <span class="flex-item" style="margin: 0; background: rgba(255,255,255,0.2);">Products</span>
+                                <span class="flex-item" style="margin: 0; background: rgba(255,255,255,0.2);">About</span>
+                            </div>
+                            <span class="flex-item" style="margin: 0; background: #27ae60;">Login</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Navigation bar layout */
+.navbar {
+    display: flex;
+    justify-content: space-between;  /* Split to ends */
+    align-items: center;             /* Vertical center */
+    padding: 10px 20px;
+    background: #3498db;
+}
+
+.nav-links {
+    display: flex;
+    gap: 20px;                       /* Menu item spacing */
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Three Column Layout -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.3 Three Column Layout <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Sidebar + Main content area</p>
+                    <div class="demo-box">
+                        <div style="display: flex; height: 100px;">
+                            <span class="flex-item" style="flex: 0 0 120px; background: #e74c3c; margin: 0;">Left</span>
+                            <span class="flex-item" style="flex: 1; background: #3498db; margin: 0;">Main Content<br>(Adaptive)</span>
+                            <span class="flex-item" style="flex: 0 0 100px; background: #27ae60; margin: 0;">Right</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Three column layout */
+.layout {
+    display: flex;
+}
+
+.sidebar-left {
+    flex: 0 0 200px;  /* Fixed width, no flex */
+}
+
+.content {
+    flex: 1;          /* Occupy all remaining space */
+}
+
+.sidebar-right {
+    flex: 0 0 150px;  /* Fixed width, no flex */
+}
+
+/* Responsive: hide sidebars on mobile */
+@media (max-width: 768px) {
+    .sidebar-left, .sidebar-right {
+        display: none;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Grid -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.4 Responsive Card Grid <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Auto wrap + Adaptive width</p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                            <span class="flex-item" style="flex: 1 1 150px; margin: 0;">Card 1</span>
+                            <span class="flex-item" style="flex: 1 1 150px; margin: 0;">Card 2</span>
+                            <span class="flex-item" style="flex: 1 1 150px; margin: 0;">Card 3</span>
+                            <span class="flex-item" style="flex: 1 1 150px; margin: 0;">Card 4</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Responsive card grid */
+.card-grid {
+    display: flex;
+    flex-wrap: wrap;     /* Auto wrap */
+    gap: 20px;           /* Card spacing */
+}
+
+.card {
+    flex: 1 1 280px;     /* Min 280px, auto expand */
+    max-width: 400px;    /* Max width limit */
+}
+
+/*
+ * flex: 1 1 280px meaning:
+ * - grow: 1     → Occupy remaining space
+ * - shrink: 1   → Shrink when space insufficient
+ * - basis: 280px → Base width 280px
+ */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equal Height Cards -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>3.5 Equal Height Cards <span class="recommend-tag tag-high">Popular ⭐⭐⭐⭐☆</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Flex items are equal height by default</p>
+                    <div class="demo-box">
+                        <div style="display: flex; gap: 12px;">
+                            <div style="flex: 1; background: #3498db; color: white; padding: 15px; border-radius: 4px;">
+                                <strong>Card 1</strong>
+                                <p style="font-size: 12px; margin-top: 8px;">Less content</p>
+                            </div>
+                            <div style="flex: 1; background: #e74c3c; color: white; padding: 15px; border-radius: 4px;">
+                                <strong>Card 2</strong>
+                                <p style="font-size: 12px; margin-top: 8px;">This is longer content to demonstrate equal height effect. Flex items are equal height by default, very useful.</p>
+                            </div>
+                            <div style="flex: 1; background: #27ae60; color: white; padding: 15px; border-radius: 4px;">
+                                <strong>Card 3</strong>
+                                <p style="font-size: 12px; margin-top: 8px;">Medium content length</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Equal height cards - Flex default behavior */
+.cards {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    flex: 1;  /* Equal width and height */
+}
+
+/* If content needs bottom alignment */
+.card {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-content {
+    flex: 1;  /* Content area auto fills */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Summary -->
+        <div id="tab-summary" class="tab-pane">
+            <section style="background-color: #2c3e50; color: white;">
+                <h2 style="color: white; border-left-color: white;">Learning Summary</h2>
+
+                <h3 style="color: #fff;">Must Master (High Frequency)</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>display: flex - ⭐⭐⭐⭐⭐ Enable Flexbox</li>
+                    <li>justify-content - ⭐⭐⭐⭐⭐ Main axis alignment</li>
+                    <li>align-items - ⭐⭐⭐⭐⭐ Cross axis alignment</li>
+                    <li>flex - ⭐⭐⭐⭐⭐ Item grow/shrink shorthand</li>
+                    <li>gap - ⭐⭐⭐⭐⭐ Item spacing</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Frequent Use</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>flex-direction - ⭐⭐⭐⭐☆ Main axis direction</li>
+                    <li>flex-wrap - ⭐⭐⭐⭐☆ Wrap control</li>
+                    <li>flex-grow - ⭐⭐⭐⭐☆ Grow factor</li>
+                    <li>align-self - ⭐⭐⭐⭐☆ Individual alignment</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Understand</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>flex-shrink - ⭐⭐⭐☆☆ Shrink factor</li>
+                    <li>flex-basis - ⭐⭐⭐☆☆ Base size</li>
+                    <li>order - ⭐⭐⭐☆☆ Arrangement order</li>
+                    <li>align-content - ⭐⭐⭐☆☆ Multi-line alignment</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Golden Rules</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>justify-content always works on main axis</li>
+                    <li>align-items always works on cross axis</li>
+                    <li>Main axis direction is set by flex-direction</li>
+                    <li>Prefer gap over margin</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Units (Day 6)</p>
+                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
+            </section>
+
+            <section>
+                <h2>Practice Resources</h2>
+                <div class="practice-links">
+                    <a href="https://flexboxfroggy.com/" target="_blank" class="practice-link">
+                        Flexbox Froggy - Game-based Learning
+                    </a>
+                    <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" class="practice-link">
+                        CSS-Tricks Complete Guide
+                    </a>
+                    <a href="https://codepen.io/" target="_blank" class="practice-link">
+                        CodePen Practice
+                    </a>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Markdown Modal -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">Flexbox Layout - Full Documentation</span>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown Content -->
+    <script type="text/plain" id="mdContent">
+# Flexbox Layout
+
+> **Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐
+>
+> The core of modern CSS layout, **Must Master**, the best solution for one-dimensional layouts
+
+---
+
+## What is Flexbox?
+
+Flexbox (Flexible Box) is a one-dimensional layout model for arranging elements along a single axis. It easily achieves common layout needs such as horizontal/vertical arrangement, centering, and equal spacing distribution.
+
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Flex Container                        │
+│  ┌─────────┐  ┌─────────┐  ┌─────────┐  ┌─────────┐    │
+│  │  Item 1 │  │  Item 2 │  │  Item 3 │  │  Item 4 │    │
+│  └─────────┘  └─────────┘  └─────────┘  └─────────┘    │
+│                                                         │
+│  Main Axis: The primary direction for element arrangement│
+│  Cross Axis: The direction perpendicular to the main axis│
+└─────────────────────────────────────────────────────────┘
+```
+
+**Two parts of Flexbox**:
+- **Flex Container**: The parent element containing child elements, set `display: flex`
+- **Flex Item**: Direct children of the container
+
+---
+
+## 1. Flex Container Properties
+
+### 1.1 display
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Enable Flexbox layout
+
+```css
+/* Block-level flex container */
+.container {
+  display: flex;
+}
+
+/* Inline flex container */
+.container {
+  display: inline-flex;
+}
+```
+
+**Difference**:
+- `display: flex`: Container is a block-level element (独占一行)
+- `display: inline-flex`: Container is an inline element (与其他行内元素同行)
+
+---
+
+### 1.2 flex-direction
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Set main axis direction (horizontal/vertical)
+
+```css
+.container {
+  flex-direction: row;             /* Default: horizontal, left to right */
+  flex-direction: row-reverse;     /* Horizontal, right to left */
+  flex-direction: column;          /* Vertical, top to bottom */
+  flex-direction: column-reverse;  /* Vertical, bottom to top */
+}
+```
+
+**Visual**:
+
+```
+row:           row-reverse:        column:          column-reverse:
+┌───┐┌───┐┌───┐  ┌───┐┌───┐┌───┐    ┌───┐           ┌───┐
+│ 1 ││ 2 ││ 3 │  │ 3 ││ 2 ││ 1 │    │ 1 │           │ 3 │
+└───┘└───┘└───┘  └───┘└───┘└───┘    │ 2 │           │ 2 │
+                                    │ 3 │           │ 1 │
+                                    └───┘           └───┘
+```
+
+---
+
+### 1.3 justify-content
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Alignment along the main axis
+
+```css
+.container {
+  justify-content: flex-start;     /* Default: towards the start */
+  justify-content: flex-end;       /* Towards the end */
+  justify-content: center;         /* Center */
+  justify-content: space-between;  /* Distribute with equal space between items */
+  justify-content: space-around;   /* Equal space on both sides (half at edges) */
+  justify-content: space-evenly;   /* Equal space everywhere */
+}
+```
+
+**Visual**:
+
+```
+flex-start:    flex-end:      center:        space-between:  space-around:
+┌───┐┌───┐┌───┐  ┌───┐┌───┐┌───┐  ┌───┐┌───┐┌───┐  ┌───┐┌───┐┌───┐  ┌───┐┌───┐┌───┐
+│ 1 ││ 2 ││ 3 │  │ 1 ││ 2 ││ 3 │  │ 1 ││ 2 ││ 3 │  │ 1 ││ 2 ││ 3 │  │ 1 ││ 2 ││ 3 │
+└───┘└───┘└───┘  └───┘└───┘└───┘  └───┘└───┘└───┘  └───┘└───┘└───┘  └───┘└───┘└───┘
+```
+
+**space-around vs space-evenly**:
+
+```
+space-around:        space-evenly:
+┌───┐┌───┐┌───┐      ┌───┐┌───┐┌───┐
+│ 1 ││ 2 ││ 3 │      │ 1 ││ 2 ││ 3 │
+└───┘└───┘└───┘      └───┘└───┘└───┘
+  ▲─│─▲   │─▲          ▲──│──▲──│──▲
+     │                         │
+  Edge spacing is half item spacing    All spacing equal
+```
+
+---
+
+### 1.4 align-items
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Alignment along the cross axis
+
+```css
+.container {
+  align-items: stretch;      /* Default: stretch to fill container */
+  align-items: flex-start;   /* Towards the cross axis start */
+  align-items: flex-end;     /* Towards the cross axis end */
+  align-items: center;       /* Center */
+  align-items: baseline;     /* Align by item baselines */
+}
+```
+
+**Visual** (when container height is greater than item height):
+
+```
+flex-start:    flex-end:      center:        stretch:       baseline:
+┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐
+│ 1     │      │       │      │       │      │ 1     │      │ 1     │
+│ 2     │      │       │      │   2   │      │ 2     │      │ 2     │
+│ 3     │      │       │      │       │      │ 3     │      │ 3     │
+└───────┘      └───────┘      └───────┘      └───────┘      └───────┘
+```
+
+---
+
+### 1.5 flex-wrap
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐☆（4/5）
+**Usage Frequency**: **High**
+**Use Case**: Whether items wrap
+
+```css
+.container {
+  flex-wrap: nowrap;        /* Default: no wrapping, items shrink */
+  flex-wrap: wrap;          /* Wrap */
+  flex-wrap: wrap-reverse;  /* Wrap with first row at bottom */
+}
+```
+
+**Visual**:
+
+```
+nowrap:         wrap:          wrap-reverse:
+┌───────┐       ┌───────┐       ┌───────┐
+│ 1 │ 2 │       │ 1 │ 2 │       │ 4 │ 5 │
+├───────┤       │ 3 │ 4 │       │ 1 │ 2 │
+│ 3 │ 4 │       └───────┘       └───────┘
+├───────┤       ┌───────┐
+│ 5     │       │ 5     │
+└───────┘       └───────┘
+```
+
+---
+
+### 1.6 align-content
+
+**Recommendation | 推荐指数**: ⭐⭐⭐☆☆（3/5）
+**Usage Frequency**: **Medium**
+**Use Case**: Multi-line alignment on cross axis (only works with flex-wrap: wrap)
+
+```css
+.container {
+  align-content: flex-start;   /* Towards start */
+  align-content: flex-end;     /* Towards end */
+  align-content: center;       /* Center */
+  align-content: space-between; /* Distribute with equal space between lines */
+  align-content: space-around; /* Equal space around lines */
+  align-content: stretch;      /* Default: stretch to fill */
+}
+```
+
+---
+
+### 1.7 gap
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Space between items
+
+```css
+.container {
+  gap: 10px;              /* All directions same */
+  gap: 10px 20px;         /* Row gap column gap */
+  row-gap: 10px;          /* Row gap only */
+  column-gap: 20px;       /* Column gap only */
+}
+```
+
+---
+
+## 2. Flex Item Properties
+
+### 2.1 flex-grow
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐☆（4/5）
+**Usage Frequency**: **High**
+**Use Case**: Growth factor
+
+```css
+.item {
+  flex-grow: 0;     /* Default: don't grow */
+  flex-grow: 1;     /* Take remaining space */
+  flex-grow: 2;     /* Growth ratio is twice as much as 1 */
+}
+```
+
+**Example**:
+
+```css
+/* Three items with ratio 1:2:1 */
+.item:nth-child(1) { flex-grow: 1; }
+.item:nth-child(2) { flex-grow: 2; }
+.item:nth-child(3) { flex-grow: 1; }
+```
+
+---
+
+### 2.2 flex-shrink
+
+**Recommendation | 推荐指数**: ⭐⭐⭐☆☆（3/5）
+**Usage Frequency**: **Medium**
+**Use Case**: Shrink factor
+
+```css
+.item {
+  flex-shrink: 1;   /* Default: can shrink */
+  flex-shrink: 0;   /* Cannot shrink */
+  flex-shrink: 2;   /* Larger shrink ratio */
+}
+```
+
+---
+
+### 2.3 flex-basis
+
+**Recommendation | 推荐指数**: ⭐⭐⭐☆☆（3/5）
+**Usage Frequency**: **Medium**
+**Use Case**: Base size of item
+
+```css
+.item {
+  flex-basis: auto;     /* Default: based on width/height */
+  flex-basis: 200px;    /* Base size 200px */
+  flex-basis: 50%;      /* Base size 50% */
+}
+```
+
+---
+
+### 2.4 flex (Shorthand)
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**Usage Frequency**: **Very High**
+**Use Case**: Set grow, shrink, and basis together
+
+```css
+.item {
+  flex: 0 1 auto;       /* Default: don't grow, can shrink, based on size */
+  flex: 1;              /* flex-grow: 1; flex-shrink: 1; flex-basis: 0% */
+  flex: auto;           /* flex-grow: 1; flex-shrink: 1; flex-basis: auto */
+  flex: none;           /* flex-grow: 0; flex-shrink: 0; flex-basis: auto */
+}
+```
+
+**Recommended approach**:
+
+```css
+/* Equal distribution */
+.item {
+  flex: 1;
+}
+
+/* Fixed + adaptive */
+.sidebar {
+  flex: 0 0 200px;  /* Don't grow, don't shrink, fixed 200px */
+}
+
+.content {
+  flex: 1;          /* Take remaining space */
+}
+```
+
+---
+
+### 2.5 order
+
+**Recommendation | 推荐指数**: ⭐⭐⭐☆☆（3/5）
+**Usage Frequency**: **Medium**
+**Use Case**: Change item order
+
+```css
+.item {
+  order: 0;     /* Default value */
+  order: -1;    /* Comes before */
+  order: 1;     /* Comes after */
+}
+```
+
+**Example**:
+
+```html
+<div style="order: 3">A</div>
+<div style="order: 1">B</div>
+<div style="order: 2">C</div>
+
+<!-- Display order: B → C → A -->
+```
+
+---
+
+### 2.6 align-self
+
+**Recommendation | 推荐指数**: ⭐⭐⭐⭐☆（4/5)
+**Use Case**: Individual item alignment on cross axis (overrides container's align-items)
+
+```css
+.item {
+  align-self: auto;        /* Default: inherit from container */
+  align-self: flex-start;  /* Towards cross axis start */
+  align-self: flex-end;    /* Towards cross axis end */
+  align-self: center;      /* Center */
+  align-self: stretch;     /* Stretch */
+  align-self: baseline;    /* Baseline align */
+}
+```
+
+---
+
+## 3. Main Axis and Cross Axis Explained
+
+Understanding main axis and cross axis is key to mastering Flexbox:
+
+```
+When flex-direction: row (default):
+    Main Axis →→→→→→→→→→→→→→→→→→→→→→
+    Cross Axis ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+
+When flex-direction: column:
+    Main Axis ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+    Cross Axis →→→→→→→→→→→→→→→→→→→
+```
+
+**Core Rules**:
+- `justify-content` always works on the **Main Axis**
+- `align-items` always works on the **Cross Axis**
+
+---
+
+## 4. Common Layout Patterns
+
+### 4.1 Horizontal and Vertical Centering
+
+```css
+.container {
+  display: flex;
+  justify-content: center;  /* Horizontal centering */
+  align-items: center;      /* Vertical centering */
+  height: 100vh;            /* Need height */
+}
+```
+
+### 4.2 Navigation Bar
+
+```css
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  height: 60px;
+  background: #3498db;
+}
+
+.nav-links {
+  display: flex;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+```
+
+### 4.3 Three-Column Layout
+
+```css
+.layout {
+  display: flex;
+}
+
+.sidebar-left {
+  flex: 0 0 200px;
+}
+
+.content {
+  flex: 1;
+}
+
+.sidebar-right {
+  flex: 0 0 300px;
+}
+```
+
+### 4.4 Card Grid
+
+```css
+.card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  flex: 1 1 300px;  /* Minimum 300px, auto wrap */
+  max-width: 400px;
+}
+```
+
+### 4.5 Equal Height Cards
+
+```css
+.cards {
+  display: flex;
+  gap: 20px;
+}
+
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content {
+  flex: 1;  /* Auto-fill remaining space */
+}
+```
+
+---
+
+## 5. Flexbox Quick Reference
+
+> 📋 **For Reference**
+
+| Property | Recommendation | Usage Frequency | Description |
+|----------|----------------|-----------------|-------------|
+| `display: flex` | ⭐⭐⭐⭐⭐ | Very High | Enable Flexbox |
+| `flex-direction` | ⭐⭐⭐⭐⭐ | Very High | Main axis direction |
+| `justify-content` | ⭐⭐⭐⭐⭐ | Very High | Main axis alignment |
+| `align-items` | ⭐⭐⭐⭐⭐ | Very High | Cross axis alignment |
+| `flex-wrap` | ⭐⭐⭐⭐☆ | High | Wrap control |
+| `gap` | ⭐⭐⭐⭐⭐ | Very High | Item spacing |
+| `flex` | ⭐⭐⭐⭐⭐ | Very High | Growth/shrink shorthand |
+| `flex-grow` | ⭐⭐⭐⭐☆ | High | Growth factor |
+| `order` | ⭐⭐⭐☆☆ | Medium | Order |
+| `align-self` | ⭐⭐⭐⭐☆ | High | Individual item alignment |
+
+---
+
+## 6. Common Issues and Solutions
+
+### 6.1 Items Overflow Container Without Wrapping
+
+**Issue**: Container width exceeds expectation with `width: 100%`
+
+**Cause**: Default `flex-wrap: nowrap`, items get compressed
+
+**Solution**:
+
+```css
+/* ❌ Problem code */
+.container {
+  display: flex;
+  /* Default nowrap, items get compressed */
+}
+
+/* ✅ Solution */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+```
+
+### 6.2 justify-content and align-items Don't Work
+
+**Issue**: Items not centered
+
+**Cause**: Container has no fixed height, or misunderstanding main/cross axis
+
+**Solution**:
+
+```css
+/* ❌ Wrong: only main axis centered, no height */
+.container {
+  display: flex;
+  justify-content: center;
+  /* Missing height, no cross axis space */
+}
+
+/* ✅ Correct: need height */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;  /* Key: provide cross axis space */
+}
+```
+
+### 6.3 flex-basis and width Both Set
+
+**Issue**: Item size not as expected
+
+**Cause**: `flex-basis` has higher priority than `width`
+
+**Solution**:
+
+```css
+/* Understanding priority */
+.item {
+  flex-basis: 200px;  /* Base size */
+  width: 300px;       /* Overridden by flex-basis (unless flex-basis: auto) */
+}
+
+/* For precise control, use flex: 0 0 200px */
+.item {
+  flex: 0 0 200px;  /* Don't grow, don't shrink, fixed 200px */
+}
+```
+
+### 6.4 flex-grow Doesn't Work
+
+**Issue**: `flex: 1` but items don't distribute space equally
+
+**Cause**: `flex-grow` only distributes **remaining space**, won't work if items have fixed size
+
+**Solution**:
+
+```css
+/* ❌ Wrong: items have fixed size */
+.item {
+  width: 100px;     /* Fixed size */
+  flex: 1;          /* Only distributes remaining space */
+}
+
+/* ✅ Correct: use flex-basis: 0 */
+.item {
+  flex: 1;          /* flex-basis: 0%, distributes all space */
+}
+```
+
+---
+
+## 7. Best Practices
+
+### 7.1 Recommended
+
+```css
+/* ✅ Recommended: centering */
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* ✅ Recommended: equal distribution */
+.equal-distribution {
+  display: flex;
+  gap: 20px;
+}
+
+.equal-distribution > * {
+  flex: 1;
+}
+
+/* ✅ Recommended: responsive cards */
+.cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.card {
+  flex: 1 1 300px;
+  max-width: 400px;
+}
+```
+
+### 7.2 Not Recommended
+
+```css
+/* ❌ Avoid: using margin for equal spacing */
+.item {
+  margin: 0 10px;
+}
+
+.item:first-child { margin-left: 0; }
+.item:last-child { margin-right: 0; }
+
+/* ✅ Recommended: use gap */
+.container {
+  display: flex;
+  gap: 20px;
+}
+```
+
+---
+
+## 8. Learning Tips
+
+> 🎯 **Learning Tips**: Flexbox is the core of modern layout, practice with online exercises
+
+### Online Practice Resources
+
+| Resource | Link | Description |
+|----------|------|-------------|
+| Flexbox Froggy | https://flexboxfroggy.com/ | Game-based learning |
+| CSS-Tricks Flexbox | https://css-tricks.com/snippets/css/a-guide-to-flexbox/ | Complete guide |
+
+### Practice Priority
+
+| Priority | Topic | Recommendation | Usage Frequency |
+|----------|-------|----------------|-----------------|
+| 🔴 Highest | display: flex | ⭐⭐⭐⭐⭐ | Very High |
+| 🔴 Highest | justify-content | ⭐⭐⭐⭐⭐ | Very High |
+| 🔴 Highest | align-items | ⭐⭐⭐⭐⭐ | Very High |
+| 🔴 Highest | flex | ⭐⭐⭐⭐⭐ | Very High |
+| 🟠 High | flex-wrap | ⭐⭐⭐⭐☆ | High |
+| 🟠 High | gap | ⭐⭐⭐⭐⭐ | Very High |
+| 🟡 Medium | flex-grow | ⭐⭐⭐⭐☆ | High |
+| 🟡 Medium | align-self | ⭐⭐⭐⭐☆ | High |
+
+---
+
+## 9. Summary
+
+### Flexbox Core Concepts
+
+```
+Flex Container
+├── display: flex
+├── flex-direction (main axis)
+├── justify-content (main axis alignment)
+├── align-items (cross axis alignment)
+├── flex-wrap (wrap)
+└── gap (spacing)
+
+Flex Item
+├── flex (grow/shrink/basis)
+├── flex-grow (growth factor)
+├── flex-shrink (shrink factor)
+├── order (arrangement)
+└── align-self (individual alignment)
+```
+
+### Centering Layout (Most Common)
+
+```css
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+```
+
+### 💡 Work Recommendations
+
+1. **Always use `gap`** - Simpler than margin
+2. **Prefer `flex: 1`** - For equal distribution
+3. **Understand main/cross axis** - Avoid confusing justify and align
+4. **Use with flex-wrap** - For responsive wrapping
+5. **Use align-self wisely** - Individual item control
+
+### 🎯 Common Use Cases
+
+- Navigation bar layout
+- Card components
+- Horizontal and vertical centering
+- Equal height columns
+- Responsive grid
+- Form layout
+
+---
+
+## Next Steps
+
+After mastering Flexbox one-dimensional layout, next topic: **CSS Units**
+
+Learn about sizing units for different scenarios (px, rem, em, vw/vh, etc.) for responsive design.
+
+Or learn **Grid Layout** (Day 14-15) for two-dimensional layout solutions.
+
+</script>
+
+    <!-- Code Highlighting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+
+    <!-- Interactive Demo Script -->
+    <script>
+        // Tabs切换
+        function openTab(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // 代码显示切换
+        function toggleCode(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = 'Hide Code';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = 'Show Code';
+                btn.classList.remove('active');
+            }
+        }
+
+        // 交互演示配置
+        const flexContainer = document.getElementById('flex-container');
+        const codeDisplay = document.getElementById('code-display');
+        const mainAxisText = document.getElementById('main-axis-text');
+        const crossAxisText = document.getElementById('cross-axis-text');
+
+        let currentConfig = {
+            direction: 'row',
+            justify: 'flex-start',
+            align: 'stretch',
+            wrap: 'nowrap',
+            items: 3
+        };
+
+        function updateAxisText() {
+            if (currentConfig.direction.startsWith('row')) {
+                mainAxisText.textContent = 'Horizontal →';
+                crossAxisText.textContent = 'Vertical ↓';
+            } else {
+                mainAxisText.textContent = 'Vertical ↓';
+                crossAxisText.textContent = 'Horizontal →';
+            }
+        }
+
+        function updateFlexContainer() {
+            flexContainer.style.flexDirection = currentConfig.direction;
+            flexContainer.style.justifyContent = currentConfig.justify;
+            flexContainer.style.alignItems = currentConfig.align;
+            flexContainer.style.flexWrap = currentConfig.wrap;
+
+            // 更新项目数量
+            const itemsCount = parseInt(currentConfig.items);
+            const existingItems = flexContainer.children.length;
+
+            if (existingItems < itemsCount) {
+                for (let i = existingItems; i < itemsCount; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'flex-item';
+                    item.textContent = i + 1;
+                    flexContainer.appendChild(item);
+                }
+            } else if (existingItems > itemsCount) {
+                while (flexContainer.children.length > itemsCount) {
+                    flexContainer.removeChild(flexContainer.lastChild);
+                }
+            }
+
+            // 动态更新CSS代码显示（带颜色高亮）
+            codeDisplay.innerHTML = `
+                <span class="property">.container</span> {<br>
+                &nbsp;&nbsp;<span class="property">display</span>: <span class="value">flex</span>;<br>
+                &nbsp;&nbsp;<span class="property">flex-direction</span>: <span class="value">${currentConfig.direction}</span>;<br>
+                &nbsp;&nbsp;<span class="property">justify-content</span>: <span class="value">${currentConfig.justify}</span>;<br>
+                &nbsp;&nbsp;<span class="property">align-items</span>: <span class="value">${currentConfig.align}</span>;<br>
+                &nbsp;&nbsp;<span class="property">flex-wrap</span>: <span class="value">${currentConfig.wrap}</span>;<br>
+                }
+            `;
+
+            updateAxisText();
+        }
+
+        function bindControlEvents(containerId, configKey) {
+            const container = document.getElementById(containerId);
+            container.querySelectorAll('.control-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    container.querySelectorAll('.control-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentConfig[configKey] = this.dataset.value;
+                    updateFlexContainer();
+                });
+            });
+        }
+
+        bindControlEvents('direction-options', 'direction');
+        bindControlEvents('justify-options', 'justify');
+        bindControlEvents('align-options', 'align');
+        bindControlEvents('wrap-options', 'wrap');
+        bindControlEvents('items-options', 'items');
+
+        // 打开文档模态框
+        function openDocModal() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            var html = marked.parse(markdown);
+            contentDiv.innerHTML = html;
+
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        }
+
+        // 关闭文档模态框
+        function closeDocModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // 点击遮罩层关闭
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeDocModal();
+            }
+        });
+
+        // ESC键关闭模态框
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeDocModal();
+            }
+        });
+
+        // 初始化
+        updateFlexContainer();
+    </script>
+</body>
+</html>

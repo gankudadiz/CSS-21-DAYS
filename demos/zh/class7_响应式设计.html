@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式设计 - 演示</title>
+    <!-- 代码高亮 - PrismJS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- Markdown渲染 - marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ========== 基础样式 (Standardized CSS) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; font-size: 16px; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+
+        /* 导航栏 */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs样式 */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 内容样式 */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* 推荐标签 (High Contrast 5-Level System) */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; color: white; }
+        .tag-5 { background: #e74c3c; } /* Red: Essential */
+        .tag-4 { background: #e67e22; } /* Orange: Important */
+        .tag-3 { background: #f1c40f; color: #333; } /* Yellow: Common (Dark text) */
+        .tag-2 { background: #3498db; } /* Blue: Occasional */
+        .tag-1 { background: #95a5a6; } /* Gray: Rare */
+
+        /* 代码显示区域 */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* 切换按钮 */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+
+        /* 演示区域和代码区域并排 (Dual Column Layout) */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+        @media (max-width: 900px) { .demo-code-row { grid-template-columns: 1fr; } }
+
+        /* Markdown文档模态框样式 - Standardized */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
+        .modal-container { background: #f5f5f5; width: 90%; max-width: 1000px; max-height: 90vh; margin: auto; border-radius: 12px; overflow: hidden; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #3498db; color: white; }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+        .modal-body { padding: 20px; max-height: calc(90vh - 60px); overflow-y: auto; background: white; }
+
+        /* Markdown Content Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th { background: #3498db; color: white; padding: 10px; border: 1px solid #ddd; }
+        .markdown-content td { padding: 10px; border: 1px solid #ddd; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        /* Fix for list indentation */
+        .markdown-content ul, .markdown-content ol { padding-left: 20px; }
+
+        /* ========== 本页特定样式 ========== */
+        /* 交互控制器 */
+        .controls { background: #eee; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .control-group { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; }
+
+        /* 模拟器样式 */
+        .viewport-simulator {
+            border: 4px solid #3498db;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-height: 200px;
+        }
+        .viewport-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e67e22;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        /* 响应式卡片网格演示 */
+        .card-grid-demo {
+            display: grid;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .responsive-card {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* 移动端优先 vs 桌面端优先演示 */
+        .approach-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .approach-card {
+            padding: 15px;
+            border-radius: 6px;
+            color: white;
+        }
+        .approach-mobile-first { background: #27ae60; }
+        .approach-desktop-first { background: #e67e22; }
+
+        /* 导航栏响应式演示 */
+        .nav-demo {
+            background: #2c3e50;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .nav-demo .nav-items {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        .nav-demo .nav-item {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* 断点指示器 */
+        .breakpoint-indicator {
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .breakpoint-xs { background: #e74c3c; }
+        .breakpoint-sm { background: #e67e22; }
+        .breakpoint-md { background: #f1c40f; color: #333; }
+        .breakpoint-lg { background: #3498db; }
+        .breakpoint-xl { background: #9b59b6; }
+
+        /* 深色模式切换演示 */
+        .theme-demo {
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>响应式设计 - 演示</h1>
+
+    <!-- 顶部导航 -->
+    <div class="header-nav">
+        <div>
+            <strong>📱 Responsive Design (响应式设计)</strong>
+            <span style="color: #999; margin-left: 10px;">Day 7 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="openDocModal()" class="doc-link">
+            📖 查看完整文档
+        </a>
+    </div>
+
+    <!-- Tabs导航 -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-interactive')">🎮 交互演示</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-media')">📐 媒体查询</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-mobile')">📱 移动优先</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-practice')">💼 项目实战</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">📝 学习总结</button>
+        </div>
+
+        <!-- Tab 1: 交互演示 -->
+        <div id="tab-interactive" class="tab-pane active">
+            <div class="demo-code-row">
+                <div>
+                    <h3>媒体查询实时演示 <span class="recommend-tag tag-5">核心 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 10px; color: #666;">
+                        拖动滑块改变容器宽度，观察布局如何响应断点变化。
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>模拟屏幕宽度:</label>
+                            <input type="range" min="320" max="1400" value="800" id="viewport-slider">
+                            <span id="viewport-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <!-- 断点指示器 -->
+                        <div id="breakpoint-indicator" class="breakpoint-indicator breakpoint-md">
+                            当前断点: md (768px - 991px)
+                        </div>
+
+                        <!-- 模拟视口 -->
+                        <div class="viewport-simulator" id="responsive-simulator" style="width: 800px; margin: 0 auto;">
+                            <div class="viewport-info" id="viewport-info">
+                                800px x 200px
+                            </div>
+
+                            <!-- 卡片网格 -->
+                            <div class="card-grid-demo" id="card-grid" style="grid-template-columns: repeat(3, 1fr); padding: 10px;">
+                                <div class="responsive-card">卡片 1</div>
+                                <div class="responsive-card">卡片 2</div>
+                                <div class="responsive-card">卡片 3</div>
+                            </div>
+
+                            <!-- 导航演示 -->
+                            <div class="nav-demo" style="margin: 10px;">
+                                <div class="nav-items" id="nav-items">
+                                    <div class="nav-item">首页</div>
+                                    <div class="nav-item">产品</div>
+                                    <div class="nav-item">关于</div>
+                                    <div class="nav-item">联系</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 响应式卡片网格 */
+.card-grid {
+    display: grid;
+    gap: 15px;
+    /* 默认: 1列 (手机) */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    /* sm: 平板小屏 - 2列 */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    /* lg: 桌面 - 3列 */
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 响应式导航 */
+.nav-items {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* 移动端: 垂直布局 */
+    .nav-items {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+}
+
+@media (max-width: 992px) {
+    /* 平板: 换行 */
+    .nav-items {
+        flex-wrap: wrap;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: 媒体查询 -->
+        <div id="tab-media" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>max-width vs min-width <span class="recommend-tag tag-5">重点 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>max-width</strong>: 屏幕宽度小于等于某值时生效（向下适配）<br>
+                        <strong>min-width</strong>: 屏幕宽度大于等于某值时生效（向上增强）
+                    </p>
+                    <div class="demo-box">
+                        <div class="approach-demo">
+                            <div class="approach-card approach-desktop-first">
+                                <strong>max-width 方式</strong>（桌面优先）<br>
+                                <code>@media (max-width: 768px) { ... }</code><br>
+                                <span style="font-size: 12px; opacity: 0.9;">屏幕 ≤768px 时应用样式</span>
+                            </div>
+                            <div class="approach-card approach-mobile-first" style="margin-top: 10px;">
+                                <strong>min-width 方式</strong>（移动优先）<br>
+                                <code>@media (min-width: 768px) { ... }</code><br>
+                                <span style="font-size: 12px; opacity: 0.9;">屏幕 ≥768px 时应用样式</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 桌面优先: 从大屏幕开始，逐步隐藏/简化 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        display: none; /* 手机上隐藏导航 */
+    }
+}
+
+/* 移动优先: 从小屏幕开始，逐步增强 */
+.content {
+    width: 100%;
+    padding: 15px;
+}
+
+@media (min-width: 768px) {
+    .content {
+        width: 75%;
+        padding: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .content {
+        width: 60%;
+        max-width: 800px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>常用媒体特性 <span class="recommend-tag tag-4">实用 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">除了屏幕宽度，还有其他有用的媒体特性。</p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>orientation: portrait</code> - 竖屏模式
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>orientation: landscape</code> - 横屏模式
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>prefers-color-scheme: dark</code> - 深色模式
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>prefers-reduced-motion</code> - 减少动画偏好
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 横屏模式 */
+@media (orientation: landscape) {
+    .banner {
+        height: 200px;
+    }
+}
+
+/* 深色模式支持 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #f0f0f0;
+    }
+    .card {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+}
+
+/* 减少动画 */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: 移动端优先 -->
+        <div id="tab-mobile" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>移动优先 vs 桌面优先 <span class="recommend-tag tag-5">必学 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>移动优先</strong>是行业推荐的做法，先写移动端样式，再逐步增强。
+                    </p>
+                    <div class="demo-box">
+                        <h4 style="margin-bottom: 10px; color: #27ae60;">✅ 推荐：移动优先</h4>
+                        <div style="background: #27ae60; color: white; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong>特点：</strong><br>
+                            1. 默认样式针对移动端<br>
+                            2. 代码量更少，性能更好<br>
+                            3. 渐进增强，用户体验一致
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px; color: #e67e22;">❌ 不推荐：桌面优先</h4>
+                        <div style="background: #e67e22; color: white; padding: 15px; border-radius: 6px;">
+                            <strong>特点：</strong><br>
+                            1. 默认样式针对桌面<br>
+                            2. 移动端需要覆盖更多样式<br>
+                            3. 容易遗漏移动端适配
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ========== 移动优先 (推荐) ========== */
+
+/* 基础样式 - 移动端 */
+.card {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* 平板及以上 */
+@media (min-width: 768px) {
+    .card {
+        width: calc(50% - 20px);
+        margin: 10px;
+        padding: 20px;
+    }
+}
+
+/* 桌面及以上 */
+@media (min-width: 1200px) {
+    .card {
+        width: calc(33.333% - 20px);
+        padding: 25px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>响应式断点设置 <span class="recommend-tag tag-4">常用 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        常见的响应式断点设置（与 Bootstrap/Tailwind 一致）：
+                    </p>
+                    <div class="demo-box">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr style="background: #3498db; color: white;">
+                                <th style="padding: 8px; text-align: left;">断点</th>
+                                <th style="padding: 8px; text-align: left;">屏幕宽度</th>
+                                <th style="padding: 8px; text-align: left;">设备</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">xs</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">< 576px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">手机竖屏</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 8px; border: 1px solid #ddd;">sm</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 576px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">手机横屏</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">md</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 768px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">平板竖屏</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 8px; border: 1px solid #ddd;">lg</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 992px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">平板横屏</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">xl</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 1200px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">桌面显示器</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 使用 CSS 变量统一定义断点 */
+:root {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+}
+
+/* sm */
+@media (min-width: var(--breakpoint-sm)) { ... }
+
+/* md */
+@media (min-width: var(--breakpoint-md)) { ... }
+
+/* lg */
+@media (min-width: var(--breakpoint-lg)) { ... }
+
+/* xl */
+@media (min-width: var(--breakpoint-xl)) { ... }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: 项目实战 -->
+        <div id="tab-practice" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>响应式导航栏实战 <span class="recommend-tag tag-5">实战 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        拖动滑块观察导航栏在不同屏幕宽度下的布局变化。
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>屏幕宽度:</label>
+                            <input type="range" min="320" max="1200" value="800" id="nav-slider" oninput="updateNavDemoWidth(this.value)">
+                            <span id="nav-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <!-- 响应式导航演示 -->
+                        <div id="nav-demo-container" style="width: 800px; margin: 0 auto; transition: width 0.3s;">
+                            <nav class="nav-demo" style="position: relative;">
+                                <div style="color: white; font-weight: bold; margin-bottom: 10px;">Logo</div>
+                                <div class="nav-items" id="demo-nav-items-2">
+                                    <div class="nav-item">首页</div>
+                                    <div class="nav-item">产品</div>
+                                    <div class="nav-item">服务</div>
+                                    <div class="nav-item">博客</div>
+                                    <div class="nav-item">案例</div>
+                                    <div class="nav-item">新闻</div>
+                                    <div class="nav-item">动态</div>
+                                    <div class="nav-item">套餐</div>
+                                    <div class="nav-item">FAQ</div>
+                                    <div class="nav-item">关于我们</div>
+                                    <div class="nav-item">联系我们</div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 基础导航样式 */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #2c3e50;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+/* 平板: 导航换行 */
+@media (max-width: 992px) {
+    .nav-links {
+        flex-wrap: wrap;
+    }
+}
+
+/* 移动端: 导航变垂直 */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>响应式卡片网格 <span class="recommend-tag tag-4">常用 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        使用 Grid 布局实现自适应的卡片网格，拖动滑块观察列数变化。
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>屏幕宽度:</label>
+                            <input type="range" min="320" max="1400" value="800" id="grid-slider" oninput="updateGridDemoWidth(this.value)">
+                            <span id="grid-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div class="card-grid-demo" id="practice-card-grid" style="width: 800px; margin: 0 auto; transition: width 0.3s; grid-template-columns: repeat(3, 1fr);">
+                            <div class="responsive-card">卡片 1</div>
+                            <div class="responsive-card">卡片 2</div>
+                            <div class="responsive-card">卡片 3</div>
+                            <div class="responsive-card">卡片 4</div>
+                            <div class="responsive-card">卡片 5</div>
+                            <div class="responsive-card">卡片 6</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">.card-grid {
+    display: grid;
+    gap: 20px;
+    /* 默认: 1列 */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    /* 小屏: 2列 */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    /* 中屏: 3列 */
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    /* 大屏: 4列 */
+    .card-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>响应式图片处理 <span class="recommend-tag tag-3">了解 ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        切换不同屏幕宽度，观察浏览器如何加载不同尺寸的图片。
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>模拟屏幕宽度:</label>
+                            <input type="range" min="320" max="1200" value="800" id="img-slider" oninput="updateImageDemo(this.value)">
+                            <span id="img-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div id="image-demo-container" style="width: 800px; margin: 0 auto; transition: width 0.3s; background: #f0f0f0; border-radius: 8px; overflow: hidden;">
+                            <div id="image-demo-placeholder" style="height: 200px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 24px;">
+                                <span id="image-size-label">中等图片 (800px)</span>
+                            </div>
+                            <div style="padding: 15px; background: white;">
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <span id="img-badge" style="background: #27ae60; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">已加载: medium.jpg</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0;">
+                                    当前屏幕宽度: <strong id="img-current-width">800px</strong>，浏览器自动选择了合适尺寸的图片。
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">HTML 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-html">&lt;!-- 响应式图片 --&gt;
+&lt;img
+    src="large.jpg"
+    srcset="small.jpg 400w,
+            medium.jpg 800w,
+            large.jpg 1200w"
+    sizes="(max-width: 600px) 400px,
+           (max-width: 1200px) 800px,
+           1200px"
+    alt="响应式图片"
+    loading="lazy"
+&gt;
+
+&lt;!-- 使用 picture 元素提供不同格式 --&gt;
+&lt;picture&gt;
+    &lt;source srcset="image.webp" type="image/webp"&gt;
+    &lt;source srcset="image.avif" type="image/avif"&gt;
+    &lt;img src="image.jpg" alt="图片"&gt;
+&lt;/picture&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: 学习总结 -->
+        <div id="tab-summary" class="tab-pane">
+            <section style="background-color: #2c3e50; color: white;">
+                <h2 style="color: white; border-left-color: white;">🎉 学习总结</h2>
+
+                <h3 style="color: #fff;">🔴 核心掌握 (Essential)</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>✅ <strong>媒体查询</strong> - ⭐⭐⭐⭐⭐ <br>`@media (min-width/max-width)` 是响应式的核心。</li>
+                    <li>✅ <strong>移动端优先</strong> - ⭐⭐⭐⭐⭐ <br>推荐使用 min-width 从移动端开始设计。</li>
+                    <li>✅ <strong>断点设置</strong> - ⭐⭐⭐⭐☆ <br>576px / 768px / 992px / 1200px 是常用断点。</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">🟡 辅助技能 (Auxiliary)</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>🔸 <strong>Flexbox/Grid</strong> - ⭐⭐⭐⭐☆ <br>配合媒体查询实现灵活布局。</li>
+                    <li>🔸 <strong>响应式图片</strong> - ⭐⭐⭐☆☆ <br>`srcset` 和 `sizes` 优化加载性能。</li>
+                    <li>🔸 <strong>深色模式</strong> - ⭐⭐⭐☆☆ <br>`prefers-color-scheme` 适配系统主题。</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">🟢 最佳实践</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>使用相对单位（rem, %, vw/vh）</li>
+                    <li>设置正确的 viewport meta 标签</li>
+                    <li>使用 Chrome DevTools 测试不同设备</li>
+                    <li>渐进增强，核心功能优先</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>下一步：</strong>CSS变量、Position定位</p>
+                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">📖 查看完整学习文档</a>
+            </section>
+        </div>
+    </div>
+
+    <!-- Markdown文档模态框 -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">📚 响应式设计 - 完整文档</span>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown内容 -->
+    <script type="text/plain" id="mdContent">
+# 响应式设计 (Responsive Design)
+
+> **推荐指数**: ⭐⭐⭐⭐⭐ (5/5)
+> 掌握媒体查询和移动端优先设计，是现代Web开发的必备技能，**必须精通**。
+
+---
+
+## 1. 什么是响应式设计
+
+> 💡 **核心理念**，让网页自动适应不同屏幕尺寸
+
+响应式设计是一种网页设计方法，使网站能够自动适应不同的设备屏幕尺寸（从手机到桌面显示器），提供最佳的浏览体验。
+
+- **核心原则**: "Mobile First"（移动优先）
+- **技术手段**: 媒体查询 (Media Queries)、弹性布局 (Flexbox/Grid)、相对单位
+- **设计目标**: 一套代码，多端适配
+
+```css
+/* 最基础的响应式布局示例 */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 在小屏幕上调整布局 */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
+```
+
+---
+
+## 2. 媒体查询 (Media Queries)
+
+> 💡 **响应式的核心武器**，根据条件应用不同样式
+
+### 2.1 媒体查询语法
+
+**推荐指数**: ⭐⭐⭐⭐⭐ (5/5)
+**使用频率**: **极高** ⭐ 必学
+**适用场景**: 根据屏幕尺寸、设备特性调整样式
+
+```css
+/* 基础语法 */
+@media 媒体类型 and (媒体特性) {
+    /* 满足条件时应用的样式 */
+}
+```
+
+### 2.2 常用媒体特性
+
+| 媒体特性 | 说明 | 示例 |
+|----------|------|------|
+| `max-width` | 视口宽度小于等于某值 | `@media (max-width: 768px)` |
+| `min-width` | 视口宽度大于等于某值 | `@media (min-width: 768px)` |
+| `max-height` | 视口高度小于等于某值 | `@media (max-height: 600px)` |
+| `min-height` | 视口高度大于等于某值 | `@media (min-height: 600px)` |
+| `orientation` | 屏幕方向 | `@media (orientation: portrait)` |
+| `prefers-color-scheme` | 偏好颜色主题 | `@media (prefers-color-scheme: dark)` |
+
+```css
+/* 移动设备 */
+@media (max-width: 480px) {
+    .sidebar {
+        display: none; /* 手机上隐藏侧边栏 */
+    }
+}
+
+/* 平板设备 */
+@media (min-width: 481px) and (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+}
+
+/* 桌面设备 */
+@media (min-width: 769px) {
+    .sidebar {
+        width: 300px;
+    }
+}
+
+/* 横屏模式 */
+@media (orientation: landscape) {
+    .banner {
+        height: 200px;
+    }
+}
+
+/* 深色模式 */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #fff;
+    }
+}
+```
+
+### 2.3 媒体查询的放置位置
+
+**方式一：内联样式中**
+```html
+<style>
+    @media (max-width: 768px) {
+        .menu { display: none; }
+    }
+</style>
+```
+
+**方式二：外部CSS文件（条件加载）**
+```html
+<link rel="stylesheet" media="(max-width: 768px)" href="mobile.css">
+```
+
+**方式三：CSS文件内（推荐）**
+```css
+/* main.css */
+.desktop-only { ... }
+
+@media (max-width: 768px) {
+    .desktop-only { display: none; }
+    .mobile-menu { display: block; }
+}
+```
+
+---
+
+## 3. 移动端优先 (Mobile First)
+
+> 💡 **最佳实践**，先设计移动端，再扩展到桌面端
+
+### 3.1 为什么选择移动端优先
+
+- **用户体验**: 移动设备用户越来越多
+- **性能**: 移动端优先意味着更少的代码和更快的加载
+- **可维护性**: 从简单到复杂比从复杂到简单更容易
+
+### 3.2 移动端优先的写法
+
+```css
+/* 基础样式（移动端） */
+.card {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* 平板及以上 */
+@media (min-width: 768px) {
+    .card {
+        width: calc(50% - 20px);
+        padding: 20px;
+    }
+}
+
+/* 桌面及以上 */
+@media (min-width: 1024px) {
+    .card {
+        width: calc(33.333% - 20px);
+        padding: 25px;
+    }
+}
+```
+
+### 3.3 桌面端优先（不推荐）
+
+```css
+/* 基础样式（桌面端） */
+.card {
+    width: 33.333%;
+    padding: 25px;
+}
+
+/* 平板及以下 */
+@media (max-width: 1024px) {
+    .card {
+        width: 50%;
+        padding: 20px;
+    }
+}
+
+/* 移动端 */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        padding: 15px;
+    }
+}
+```
+
+---
+
+## 4. 常见断点 (Breakpoints)
+
+> 💡 **行业约定俗成**，选择适合项目的断点
+
+### 4.1 推荐的断点设置
+
+| 断点名称 | 屏幕宽度 | 设备类型 |
+|----------|----------|----------|
+| xs | < 576px | 超小屏幕（手机竖屏） |
+| sm | ≥ 576px | 手机横屏 / 小平板 |
+| md | ≥ 768px | 平板竖屏 |
+| lg | ≥ 992px | 平板横屏 / 小桌面 |
+| xl | ≥ 1200px | 桌面显示器 |
+| xxl | ≥ 1400px | 大屏桌面 |
+
+### 4.2 TailwindCSS 风格的断点
+
+```css
+/* sm: 576px */
+@media (min-width: 576px) { ... }
+
+/* md: 768px */
+@media (min-width: 768px) { ... }
+
+/* lg: 992px */
+@media (min-width: 992px) { ... }
+
+/* xl: 1200px */
+@media (min-width: 1200px) { ... }
+
+/* 2xl: 1400px */
+@media (min-width: 1400px) { ... }
+```
+
+### 4.3 实际应用示例
+
+```css
+/* 导航栏响应式 */
+.navbar {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+/* 卡片网格响应式 */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 576px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+```
+
+---
+
+## 5. 响应式图片
+
+> 💡 **性能优化**，根据屏幕加载合适尺寸的图片
+
+### 5.1 srcset 属性
+
+```html
+<img
+    src="image-800.jpg"
+    srcset="image-400.jpg 400w,
+            image-800.jpg 800w,
+            image-1200.jpg 1200w"
+    sizes="(max-width: 600px) 400px,
+           (max-width: 1200px) 800px,
+           1200px"
+    alt="响应式图片"
+>
+```
+
+### 5.2 picture 元素
+
+```html
+<picture>
+    <!-- 移动端图片 -->
+    <source media="(max-width: 576px)" srcset="mobile.jpg">
+    <!-- 平板图片 -->
+    <source media="(max-width: 992px)" srcset="tablet.jpg">
+    <!-- 默认桌面图片 -->
+    <img src="desktop.jpg" alt="响应式图片">
+</picture>
+```
+
+### 5.3 CSS 背景图片响应式
+
+```css
+.hero {
+    background-image: url('mobile.jpg');
+}
+
+@media (min-width: 768px) {
+    .hero {
+        background-image: url('tablet.jpg');
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero {
+        background-image: url('desktop.jpg');
+    }
+}
+```
+
+---
+
+## 6. 响应式文字排版
+
+> 💡 **用户体验**，让文字在不同屏幕上都能舒适阅读
+
+### 6.1 使用 clamp() 实现流体字体
+
+```css
+/* 流体字体：自动在最小值和最大值之间缩放 */
+h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+}
+
+p {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+```
+
+### 6.2 使用 calc() 计算字体大小
+
+```css
+/* 基于视口的流体排版 */
+html {
+    font-size: calc(16px + 0.5vw);
+}
+
+body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+```
+
+### 6.3 响应式行高和间距
+
+```css
+/* 移动端紧凑布局 */
+body {
+    line-height: 1.5;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    body {
+        line-height: 1.6;
+        padding: 2rem;
+    }
+}
+```
+
+---
+
+## 7. 最佳实践指南
+
+> 🎯 **避坑指南**，写出高质量的响应式代码
+
+### ❌ 避免
+
+1. **不要固定像素值用于布局宽度** - 使用百分比、`vw` 或 `max-width`
+2. **不要隐藏重要内容** - 移动端用户也需要核心功能
+3. **不要忽视横屏模式** - 平板和折叠屏设备会旋转
+4. **不要忘记测试真实设备** - 模拟器不能完全代表真实体验
+
+### ✅ 推荐
+
+1. **使用相对单位** - `rem`、`em`、`%`、`vw/vh`
+2. **使用 Flexbox/Grid** - 天生适合响应式布局
+3. **使用 CSS 自定义属性** - 统一管理断点和值
+4. **使用 Chrome DevTools** - 测试不同屏幕尺寸
+5. **渐进增强** - 先保证基本功能，逐步增强体验
+
+```css
+:root {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+}
+
+.container {
+    padding: var(--spacing-sm);
+}
+
+@media (min-width: var(--breakpoint-md)) {
+    .container {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+    .container {
+        padding: var(--spacing-lg);
+    }
+}
+```
+
+---
+
+## 8. 速查表
+
+> 📋 **收藏备用**
+
+| 技术 | 推荐指数 | 使用场景 |
+|------|----------|----------|
+| `@media (max-width)` | ⭐⭐⭐⭐⭐ | 移动端优先，从大到小适配 |
+| `@media (min-width)` | ⭐⭐⭐⭐⭐ | 桌面端优先，从小到大适配 |
+| `flex-wrap` | ⭐⭐⭐⭐☆ | 自动换行响应式布局 |
+| `grid-template-columns` | ⭐⭐⭐⭐☆ | 响应式网格系统 |
+| `clamp()` | ⭐⭐⭐⭐☆ | 流体字体和尺寸 |
+| `srcset` | ⭐⭐⭐☆☆ | 响应式图片 |
+| `@media (orientation)` | ⭐⭐⭐☆☆ | 横竖屏适配 |
+
+---
+
+## 9. 常见问题
+
+> ❓ **疑难解答**，解决日常开发中的困惑
+
+### Q: 如何选择 `max-width` 还是 `min-width`？
+
+A: **移动端优先**用 `min-width`（从小屏幕开始，逐步增强）；**桌面端优先**用 `max-width`（从大屏幕开始，逐步简化）。推荐使用移动端优先。
+
+### Q: 为什么媒体查询不生效？
+
+A: 检查以下几点：
+1. 媒体查询的 CSS 选择器是否正确
+2. 视口 meta 标签是否设置：`<meta name="viewport" content="width=device-width, initial-scale=1">`
+3. 是否有其他 CSS 规则覆盖了你的样式（检查优先级）
+
+### Q: 如何处理刘海屏和圆角？
+
+A: 使用 CSS 环境变量：
+```css
+.safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+### Q: 响应式图片如何提升性能？
+
+A: 使用 `srcset` 和 `sizes` 让浏览器选择合适的图片，配合图片格式优化（WebP）和延迟加载（`loading="lazy"`）。
+
+---
+
+## 10. 实战项目：响应式布局模板
+
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>响应式布局模板</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .header {
+            background: #3498db;
+            color: white;
+            padding: 1rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .main {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* 平板：侧边栏到底部 */
+        @media (max-width: 992px) {
+            .main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+
+        /* 移动端：隐藏导航 */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>响应式网站</h1>
+        <nav class="nav">
+            <a href="#">首页</a>
+            <a href="#">关于</a>
+            <a href="#">服务</a>
+            <a href="#">联系</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="content">
+            <h2>主要内容</h2>
+            <p>这里是页面的主要内容区域。</p>
+        </div>
+        <aside class="sidebar">
+            <h3>侧边栏</h3>
+            <p>侧边栏内容，在移动端会到底部。</p>
+        </aside>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2024 响应式网站</p>
+    </footer>
+</body>
+</html>
+```
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script>
+        // Tabs切换
+        function openTab(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // 代码显示切换
+        function toggleCode(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = '隐藏代码';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = '显示代码';
+                btn.classList.remove('active');
+            }
+        }
+
+        // 交互逻辑: 视口模拟器
+        const viewportSlider = document.getElementById('viewport-slider');
+        const viewportWidthVal = document.getElementById('viewport-width-val');
+        const responsiveSimulator = document.getElementById('responsive-simulator');
+        const viewportInfo = document.getElementById('viewport-info');
+        const breakpointIndicator = document.getElementById('breakpoint-indicator');
+        const cardGrid = document.getElementById('card-grid');
+        const navItems = document.getElementById('demo-nav-items');
+
+        if (viewportSlider) {
+            viewportSlider.addEventListener('input', function() {
+                const width = this.value;
+                responsiveSimulator.style.width = width + 'px';
+                viewportWidthVal.textContent = width + 'px';
+                viewportInfo.textContent = width + 'px x 200px';
+
+                // 更新断点指示器
+                updateBreakpoint(width);
+
+                // 更新卡片网格列数
+                updateCardGrid(width, cardGrid);
+
+                // 更新导航演示
+                updateNavDemo(width, navItems);
+            });
+        }
+
+        function updateBreakpoint(width) {
+            let className, text;
+            if (width < 576) {
+                className = 'breakpoint-xs';
+                text = 'xs (< 576px)';
+            } else if (width < 768) {
+                className = 'breakpoint-sm';
+                text = 'sm (576px - 767px)';
+            } else if (width < 992) {
+                className = 'breakpoint-md';
+                text = 'md (768px - 991px)';
+            } else if (width < 1200) {
+                className = 'breakpoint-lg';
+                text = 'lg (992px - 1199px)';
+            } else {
+                className = 'breakpoint-xl';
+                text = 'xl (≥ 1200px)';
+            }
+
+            breakpointIndicator.className = 'breakpoint-indicator ' + className;
+            breakpointIndicator.textContent = '当前断点: ' + text;
+        }
+
+        function updateCardGrid(width, grid) {
+            let cols = 1;
+            if (width >= 576) cols = 2;
+            if (width >= 992) cols = 3;
+            grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        }
+
+        function updateNavDemo(width, nav) {
+            if (width <= 480) {
+                nav.style.flexDirection = 'column';
+            } else if (width <= 768) {
+                nav.style.flexDirection = 'row';
+                nav.style.flexWrap = 'wrap';
+            } else {
+                nav.style.flexDirection = 'row';
+                nav.style.flexWrap = 'nowrap';
+            }
+        }
+
+        // 实战项目的卡片网格更新
+        const practiceCardGrid = document.getElementById('practice-card-grid');
+
+        // Tab 4 响应式导航栏演示
+        function updateNavDemoWidth(width) {
+            let displayWidth = width + 'px';
+            // 标注关键断点的演示值
+            if (width <= 768) {
+                displayWidth = width + 'px（演示用 768px）';
+            } else if (width <= 992) {
+                displayWidth = width + 'px（演示用 992px）';
+            }
+            document.getElementById('nav-width-val').textContent = displayWidth;
+            document.getElementById('nav-demo-container').style.width = width + 'px';
+
+            var navItems2 = document.getElementById('demo-nav-items-2');
+            if (navItems2) {
+                if (width <= 768) {
+                    // 移动端: 垂直排列
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: column; flex-wrap: nowrap;');
+                } else if (width <= 992) {
+                    // 平板: 换行
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: row; flex-wrap: wrap;');
+                } else {
+                    // 桌面: 水平不换行
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: row; flex-wrap: nowrap;');
+                }
+            }
+        }
+
+        // Tab 4 响应式卡片网格演示
+        function updateGridDemoWidth(width) {
+            let displayWidth = width + 'px';
+            if (width < 576) {
+                displayWidth = width + 'px（演示用 576px）';
+            } else if (width < 992) {
+                displayWidth = width + 'px（演示用 992px）';
+            } else if (width < 1200) {
+                displayWidth = width + 'px（演示用 1200px）';
+            } else {
+                displayWidth = width + 'px（演示用 1400px）';
+            }
+            document.getElementById('grid-width-val').textContent = displayWidth;
+            const grid = document.getElementById('practice-card-grid');
+            if (grid) {
+                grid.style.width = width + 'px';
+                let cols = 1;
+                if (width >= 576) cols = 2;
+                if (width >= 992) cols = 3;
+                if (width >= 1200) cols = 4;
+                grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+            }
+        }
+
+        // Tab 4 响应式图片演示
+        function updateImageDemo(width) {
+            document.getElementById('img-width-val').textContent = width + 'px';
+            document.getElementById('img-current-width').textContent = width + 'px';
+            document.getElementById('image-demo-container').style.width = width + 'px';
+
+            const imageLabel = document.getElementById('image-size-label');
+            const imgBadge = document.getElementById('img-badge');
+            let imgSize, imgFile, bgColor;
+
+            if (width <= 576) {
+                imgSize = '小图片 (400px)';
+                imgFile = 'small.jpg';
+                bgColor = '#27ae60';
+            } else if (width <= 992) {
+                imgSize = '中等图片 (800px)';
+                imgFile = 'medium.jpg';
+                bgColor = '#3498db';
+            } else {
+                imgSize = '大图片 (1200px)';
+                imgFile = 'large.jpg';
+                bgColor = '#9b59b6';
+            }
+
+            imageLabel.textContent = imgSize;
+            imgBadge.textContent = '已加载: ' + imgFile;
+            imgBadge.style.background = bgColor;
+            document.getElementById('image-demo-placeholder').style.background = bgColor;
+        }
+
+        // 初始化 Tab 4 的演示
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化导航栏演示
+            updateNavDemoWidth(800);
+
+            // 初始化卡片网格演示
+            updateGridDemoWidth(800);
+
+            // 初始化图片演示
+            updateImageDemo(800);
+        });
+
+        // 文档模态框逻辑
+        function openDocModal() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            contentDiv.innerHTML = marked.parse(markdown);
+
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        }
+
+        function closeDocModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // 绑定关闭事件
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDocModal();
+        });
+    </script>
+</body>
+</html>

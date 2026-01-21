@@ -1,0 +1,1658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Design - Demo</title>
+    <!-- Code highlighting - PrismJS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- Markdown rendering - marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ========== Base Styles (Standardized CSS) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; font-size: 16px; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+
+        /* Navigation bar */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs styles */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Content styles */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* Recommendation tags (High Contrast 5-Level System) */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; color: white; }
+        .tag-5 { background: #e74c3c; } /* Red: Essential */
+        .tag-4 { background: #e67e22; } /* Orange: Important */
+        .tag-3 { background: #f1c40f; color: #333; } /* Yellow: Common (Dark text) */
+        .tag-2 { background: #3498db; } /* Blue: Occasional */
+        .tag-1 { background: #95a5a6; } /* Gray: Rare */
+
+        /* Code display area */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* Toggle button */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+
+        /* Demo and code side by side (Dual Column Layout) */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+        @media (max-width: 900px) { .demo-code-row { grid-template-columns: 1fr; } }
+
+        /* Markdown document modal styles - Standardized */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
+        .modal-container { background: #f5f5f5; width: 90%; max-width: 1000px; max-height: 90vh; margin: auto; border-radius: 12px; overflow: hidden; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #3498db; color: white; }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+        .modal-body { padding: 20px; max-height: calc(90vh - 60px); overflow-y: auto; background: white; }
+
+        /* Markdown Content Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th { background: #3498db; color: white; padding: 10px; border: 1px solid #ddd; }
+        .markdown-content td { padding: 10px; border: 1px solid #ddd; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        /* Fix for list indentation */
+        .markdown-content ul, .markdown-content ol { padding-left: 20px; }
+
+        /* ========== Page-specific styles ========== */
+        /* Interactive controls */
+        .controls { background: #eee; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .control-group { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; }
+
+        /* Simulator styles */
+        .viewport-simulator {
+            border: 4px solid #3498db;
+            background: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            min-height: 200px;
+        }
+        .viewport-info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: #e67e22;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        /* Responsive card grid demo */
+        .card-grid-demo {
+            display: grid;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        .responsive-card {
+            background: #3498db;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Mobile-first vs Desktop-first demo */
+        .approach-demo {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .approach-card {
+            padding: 15px;
+            border-radius: 6px;
+            color: white;
+        }
+        .approach-mobile-first { background: #27ae60; }
+        .approach-desktop-first { background: #e67e22; }
+
+        /* Navigation responsive demo */
+        .nav-demo {
+            background: #2c3e50;
+            padding: 10px;
+            border-radius: 6px;
+        }
+        .nav-demo .nav-items {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+        }
+        .nav-demo .nav-item {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        /* Breakpoint indicator */
+        .breakpoint-indicator {
+            padding: 10px 20px;
+            border-radius: 4px;
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+        }
+        .breakpoint-xs { background: #e74c3c; }
+        .breakpoint-sm { background: #e67e22; }
+        .breakpoint-md { background: #f1c40f; color: #333; }
+        .breakpoint-lg { background: #3498db; }
+        .breakpoint-xl { background: #9b59b6; }
+
+        /* Dark mode toggle demo */
+        .theme-demo {
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <h1>Responsive Design - Demo</h1>
+
+    <!-- Top navigation -->
+    <div class="header-nav">
+        <div>
+            <strong>Responsive Design (响应式设计)</strong>
+            <span style="color: #999; margin-left: 10px;">Day 7 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="openDocModal()" class="doc-link">
+            View Full Documentation
+        </a>
+    </div>
+
+    <!-- Tabs navigation -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-interactive')">Interactive Demo</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-media')">Media Queries</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-mobile')">Mobile First</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-practice')">Practice Projects</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
+        </div>
+
+        <!-- Tab 1: Interactive Demo -->
+        <div id="tab-interactive" class="tab-pane active">
+            <div class="demo-code-row">
+                <div>
+                    <h3>Media Query Live Demo <span class="recommend-tag tag-5">Core ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 10px; color: #666;">
+                        Drag the slider to change container width and observe how layout responds to breakpoint changes.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Simulate screen width:</label>
+                            <input type="range" min="320" max="1400" value="800" id="viewport-slider">
+                            <span id="viewport-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <!-- Breakpoint indicator -->
+                        <div id="breakpoint-indicator" class="breakpoint-indicator breakpoint-md">
+                            Current Breakpoint: md (768px - 991px)
+                        </div>
+
+                        <!-- Simulator viewport -->
+                        <div class="viewport-simulator" id="responsive-simulator" style="width: 800px; margin: 0 auto;">
+                            <div class="viewport-info" id="viewport-info">
+                                800px x 200px
+                            </div>
+
+                            <!-- Card grid -->
+                            <div class="card-grid-demo" id="card-grid" style="grid-template-columns: repeat(3, 1fr); padding: 10px;">
+                                <div class="responsive-card">Card 1</div>
+                                <div class="responsive-card">Card 2</div>
+                                <div class="responsive-card">Card 3</div>
+                            </div>
+
+                            <!-- Navigation demo -->
+                            <div class="nav-demo" style="margin: 10px;">
+                                <div class="nav-items" id="nav-items">
+                                    <div class="nav-item">Home</div>
+                                    <div class="nav-item">Products</div>
+                                    <div class="nav-item">About</div>
+                                    <div class="nav-item">Contact</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Responsive card grid */
+.card-grid {
+    display: grid;
+    gap: 15px;
+    /* Default: 1 column (mobile) */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    /* sm: Small tablet - 2 columns */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    /* lg: Desktop - 3 columns */
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Responsive navigation */
+.nav-items {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+}
+
+@media (max-width: 768px) {
+    /* Mobile: vertical layout */
+    .nav-items {
+        flex-direction: column;
+        flex-wrap: nowrap;
+    }
+}
+
+@media (max-width: 992px) {
+    /* Tablet: wrap */
+    .nav-items {
+        flex-wrap: wrap;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Media Queries -->
+        <div id="tab-media" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>max-width vs min-width <span class="recommend-tag tag-5">Key Point ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>max-width</strong>: Applies when screen width is less than or equal to a value (downward adaptation)<br>
+                        <strong>min-width</strong>: Applies when screen width is greater than or equal to a value (upward enhancement)
+                    </p>
+                    <div class="demo-box">
+                        <div class="approach-demo">
+                            <div class="approach-card approach-desktop-first">
+                                <strong>max-width Approach</strong> (Desktop First)<br>
+                                <code>@media (max-width: 768px) { ... }</code><br>
+                                <span style="font-size: 12px; opacity: 0.9;">Apply styles when screen ≤768px</span>
+                            </div>
+                            <div class="approach-card approach-mobile-first" style="margin-top: 10px;">
+                                <strong>min-width Approach</strong> (Mobile First)<br>
+                                <code>@media (min-width: 768px) { ... }</code><br>
+                                <span style="font-size: 12px; opacity: 0.9;">Apply styles when screen ≥768px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Desktop first: Start from large screens, progressively hide/simplify */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar {
+        display: none; /* Hide navigation on mobile */
+    }
+}
+
+/* Mobile first: Start from small screens, progressively enhance */
+.content {
+    width: 100%;
+    padding: 15px;
+}
+
+@media (min-width: 768px) {
+    .content {
+        width: 75%;
+        padding: 20px;
+    }
+}
+
+@media (min-width: 1200px) {
+    .content {
+        width: 60%;
+        max-width: 800px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Common Media Features <span class="recommend-tag tag-4">Useful ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">In addition to screen width, there are other useful media features.</p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>orientation: portrait</code> - Portrait mode
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>orientation: landscape</code> - Landscape mode
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>prefers-color-scheme: dark</code> - Dark mode
+                            </div>
+                            <div style="padding: 10px; background: #e8f4fd; border-radius: 4px;">
+                                <code>prefers-reduced-motion</code> - Reduced motion preference
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Landscape mode */
+@media (orientation: landscape) {
+    .banner {
+        height: 200px;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #f0f0f0;
+    }
+    .card {
+        background: #2d2d2d;
+        border-color: #444;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Mobile First -->
+        <div id="tab-mobile" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>Mobile First vs Desktop First <span class="recommend-tag tag-5">Must Learn ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>Mobile First</strong> is the industry-recommended approach, start with mobile styles and progressively enhance.
+                    </p>
+                    <div class="demo-box">
+                        <h4 style="margin-bottom: 10px; color: #27ae60;">Recommended: Mobile First</h4>
+                        <div style="background: #27ae60; color: white; padding: 15px; border-radius: 6px; margin-bottom: 10px;">
+                            <strong>Characteristics:</strong><br>
+                            1. Default styles for mobile<br>
+                            2. Less code, better performance<br>
+                            3. Progressive enhancement, consistent UX
+                        </div>
+
+                        <h4 style="margin: 15px 0 10px; color: #e67e22;">Not Recommended: Desktop First</h4>
+                        <div style="background: #e67e22; color: white; padding: 15px; border-radius: 6px;">
+                            <strong>Characteristics:</strong><br>
+                            1. Default styles for desktop<br>
+                            2. Mobile needs to override more styles<br>
+                            3. Easy to miss mobile adaptations
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ========== Mobile First (Recommended) ========== */
+
+/* Base styles - Mobile */
+.card {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* Tablet and above */
+@media (min-width: 768px) {
+    .card {
+        width: calc(50% - 20px);
+        margin: 10px;
+        padding: 20px;
+    }
+}
+
+/* Desktop and above */
+@media (min-width: 1200px) {
+    .card {
+        width: calc(33.333% - 20px);
+        padding: 25px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Responsive Breakpoint Settings <span class="recommend-tag tag-4">Common ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Common responsive breakpoint settings (consistent with Bootstrap/Tailwind):
+                    </p>
+                    <div class="demo-box">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                            <tr style="background: #3498db; color: white;">
+                                <th style="padding: 8px; text-align: left;">Breakpoint</th>
+                                <th style="padding: 8px; text-align: left;">Screen Width</th>
+                                <th style="padding: 8px; text-align: left;">Device</th>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">xs</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">< 576px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">Phone Portrait</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 8px; border: 1px solid #ddd;">sm</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 576px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">Phone Landscape</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">md</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 768px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">Tablet Portrait</td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 8px; border: 1px solid #ddd;">lg</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 992px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">Tablet Landscape</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #ddd;">xl</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">≥ 1200px</td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">Desktop</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Use CSS variables to define breakpoints consistently */
+:root {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+}
+
+/* sm */
+@media (min-width: var(--breakpoint-sm)) { ... }
+
+/* md */
+@media (min-width: var(--breakpoint-md)) { ... }
+
+/* lg */
+@media (min-width: var(--breakpoint-lg)) { ... }
+
+/* xl */
+@media (min-width: var(--breakpoint-xl)) { ... }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Practice Projects -->
+        <div id="tab-practice" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>Responsive Navbar Practice <span class="recommend-tag tag-5">Practice ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Drag the slider to observe navbar layout changes at different screen widths.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Screen width:</label>
+                            <input type="range" min="320" max="1200" value="800" id="nav-slider" oninput="updateNavDemoWidth(this.value)">
+                            <span id="nav-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <!-- Responsive navbar demo -->
+                        <div id="nav-demo-container" style="width: 800px; margin: 0 auto; transition: width 0.3s;">
+                            <nav class="nav-demo" style="position: relative;">
+                                <div style="color: white; font-weight: bold; margin-bottom: 10px;">Logo</div>
+                                <div class="nav-items" id="demo-nav-items-2">
+                                    <div class="nav-item">Home</div>
+                                    <div class="nav-item">Products</div>
+                                    <div class="nav-item">Services</div>
+                                    <div class="nav-item">Blog</div>
+                                    <div class="nav-item">Cases</div>
+                                    <div class="nav-item">News</div>
+                                    <div class="nav-item">Updates</div>
+                                    <div class="nav-item">Packages</div>
+                                    <div class="nav-item">FAQ</div>
+                                    <div class="nav-item">About</div>
+                                    <div class="nav-item">Contact</div>
+                                </div>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Base navbar styles */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #2c3e50;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+/* Tablet: Nav wraps */
+@media (max-width: 992px) {
+    .nav-links {
+        flex-wrap: wrap;
+    }
+}
+
+/* Mobile: Nav becomes vertical */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-direction: column;
+        width: 100%;
+        margin-top: 1rem;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Responsive Card Grid <span class="recommend-tag tag-4">Common ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Use Grid layout to create adaptive card grids. Drag the slider to observe column count changes.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Screen width:</label>
+                            <input type="range" min="320" max="1400" value="800" id="grid-slider" oninput="updateGridDemoWidth(this.value)">
+                            <span id="grid-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div class="card-grid-demo" id="practice-card-grid" style="width: 800px; margin: 0 auto; transition: width 0.3s; grid-template-columns: repeat(3, 1fr);">
+                            <div class="responsive-card">Card 1</div>
+                            <div class="responsive-card">Card 2</div>
+                            <div class="responsive-card">Card 3</div>
+                            <div class="responsive-card">Card 4</div>
+                            <div class="responsive-card">Card 5</div>
+                            <div class="responsive-card">Card 6</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">.card-grid {
+    display: grid;
+    gap: 20px;
+    /* Default: 1 column */
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 576px) {
+    /* Small screen: 2 columns */
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    /* Medium screen: 3 columns */
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    /* Large screen: 4 columns */
+    .card-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Responsive Images <span class="recommend-tag tag-3">Learn ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Switch different screen widths to observe how the browser loads different sized images.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Simulate screen width:</label>
+                            <input type="range" min="320" max="1200" value="800" id="img-slider" oninput="updateImageDemo(this.value)">
+                            <span id="img-width-val" style="font-weight: 600; min-width: 80px;">800px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div id="image-demo-container" style="width: 800px; margin: 0 auto; transition: width 0.3s; background: #f0f0f0; border-radius: 8px; overflow: hidden;">
+                            <div id="image-demo-placeholder" style="height: 200px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea, #764ba2); color: white; font-size: 24px;">
+                                <span id="image-size-label">Medium Image (800px)</span>
+                            </div>
+                            <div style="padding: 15px; background: white;">
+                                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                                    <span id="img-badge" style="background: #27ae60; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px;">Loaded: medium.jpg</span>
+                                </div>
+                                <p style="font-size: 13px; color: #666; margin: 0;">
+                                    Current screen width: <strong id="img-current-width">800px</strong>, browser automatically selected the appropriate image size.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">HTML Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-html">&lt;!-- Responsive image --&gt;
+&lt;img
+    src="large.jpg"
+    srcset="small.jpg 400w,
+            medium.jpg 800w,
+            large.jpg 1200w"
+    sizes="(max-width: 600px) 400px,
+           (max-width: 1200px) 800px,
+           1200px"
+    alt="Responsive image"
+    loading="lazy"
+&gt;
+
+&lt;!-- Use picture element for different formats --&gt;
+&lt;picture&gt;
+    &lt;source srcset="image.webp" type="image/webp"&gt;
+    &lt;source srcset="image.avif" type="image/avif"&gt;
+    &lt;img src="image.jpg" alt="Image"&gt;
+&lt;/picture&gt;</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Summary -->
+        <div id="tab-summary" class="tab-pane">
+            <section style="background-color: #2c3e50; color: white;">
+                <h2 style="color: white; border-left-color: white;">Learning Summary</h2>
+
+                <h3 style="color: #fff;">Core Mastery (Essential)</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>Media Queries - ⭐⭐⭐⭐⭐ <br>`@media (min-width/max-width)` is the core of responsiveness.</li>
+                    <li>Mobile First - ⭐⭐⭐⭐⭐ <br>Recommended to use min-width starting from mobile design.</li>
+                    <li>Breakpoint Settings - ⭐⭐⭐⭐☆ <br>576px / 768px / 992px / 1200px are common breakpoints.</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Auxiliary Skills</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>Flexbox/Grid - ⭐⭐⭐⭐☆ <br>Combine with media queries for flexible layouts.</li>
+                    <li>Responsive Images - ⭐⭐⭐☆☆ <br>`srcset` and `sizes` optimize loading performance.</li>
+                    <li>Dark Mode - ⭐⭐⭐☆☆ <br>`prefers-color-scheme` adapts to system theme.</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Best Practices</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>Use relative units (rem, %, vw/vh)</li>
+                    <li>Set correct viewport meta tag</li>
+                    <li>Use Chrome DevTools to test different devices</li>
+                    <li>Progressive enhancement, core features first</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Variables, Position</p>
+                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
+            </section>
+        </div>
+    </div>
+
+    <!-- Markdown document modal -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">Responsive Design - Full Documentation</span>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown content -->
+    <script type="text/plain" id="mdContent">
+# Responsive Design (响应式设计)
+
+> **Recommendation Rating**: ⭐⭐⭐⭐⭐ (5/5)
+> Mastering media queries and mobile-first design is essential for modern web development, **must be proficient**.
+
+---
+
+## 1. What is Responsive Design
+
+> Core Concept: Let websites automatically adapt to different screen sizes
+
+Responsive design is a web design approach that allows websites to automatically adapt to different device screen sizes (from phones to desktop monitors) for the best browsing experience.
+
+- **Core Principle**: "Mobile First"
+- **Technical Methods**: Media Queries, Flexible Layouts (Flexbox/Grid), Relative Units
+- **Design Goal**: One codebase, multi-device adaptation
+
+```css
+/* Most basic responsive layout example */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Adjust layout on small screens */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
+```
+
+---
+
+## 2. Media Queries
+
+> Core Weapon for Responsiveness: Apply different styles based on conditions
+
+### 2.1 Media Query Syntax
+
+**Recommendation Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Usage Frequency**: **Very High** - Must Learn
+**Applicable Scenarios**: Adjust styles based on screen size and device features
+
+```css
+/* Basic syntax */
+@media media_type and (media_feature) {
+    /* Styles applied when conditions are met */
+}
+```
+
+### 2.2 Common Media Features
+
+| Media Feature | Description | Example |
+|---------------|-------------|---------|
+| `max-width` | Viewport width less than or equal to | `@media (max-width: 768px)` |
+| `min-width` | Viewport width greater than or equal to | `@media (min-width: 768px)` |
+| `max-height` | Viewport height less than or equal to | `@media (max-height: 600px)` |
+| `min-height` | Viewport height greater than or equal to | `@media (min-height: 600px)` |
+| `orientation` | Screen orientation | `@media (orientation: portrait)` |
+| `prefers-color-scheme` | Preferred color theme | `@media (prefers-color-scheme: dark)` |
+
+```css
+/* Mobile devices */
+@media (max-width: 480px) {
+    .sidebar {
+        display: none; /* Hide sidebar on phones */
+    }
+}
+
+/* Tablet devices */
+@media (min-width: 481px) and (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+}
+
+/* Desktop devices */
+@media (min-width: 769px) {
+    .sidebar {
+        width: 300px;
+    }
+}
+
+/* Landscape mode */
+@media (orientation: landscape) {
+    .banner {
+        height: 200px;
+    }
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #1a1a1a;
+        color: #fff;
+    }
+}
+```
+
+### 2.3 Where to Place Media Queries
+
+**Method 1: In inline styles**
+```html
+<style>
+    @media (max-width: 768px) {
+        .menu { display: none; }
+    }
+</style>
+```
+
+**Method 2: External CSS file (conditional loading)**
+```html
+<link rel="stylesheet" media="(max-width: 768px)" href="mobile.css">
+```
+
+**Method 3: Inside CSS file (recommended)**
+```css
+/* main.css */
+.desktop-only { ... }
+
+@media (max-width: 768px) {
+    .desktop-only { display: none; }
+    .mobile-menu { display: block; }
+}
+```
+
+---
+
+## 3. Mobile First
+
+> Best Practice: Design for mobile first, then expand to desktop
+
+### 3.1 Why Choose Mobile First
+
+- **User Experience**: More and more users on mobile devices
+- **Performance**: Mobile-first means less code and faster loading
+- **Maintainability**: Building from simple to complex is easier than the reverse
+
+### 3.2 Mobile First Writing
+
+```css
+/* Base styles (Mobile) */
+.card {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+}
+
+/* Tablet and above */
+@media (min-width: 768px) {
+    .card {
+        width: calc(50% - 20px);
+        padding: 20px;
+    }
+}
+
+/* Desktop and above */
+@media (min-width: 1024px) {
+    .card {
+        width: calc(33.333% - 20px);
+        padding: 25px;
+    }
+}
+```
+
+### 3.3 Desktop First (Not Recommended)
+
+```css
+/* Base styles (Desktop) */
+.card {
+    width: 33.333%;
+    padding: 25px;
+}
+
+/* Tablet and below */
+@media (max-width: 1024px) {
+    .card {
+        width: 50%;
+        padding: 20px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+        padding: 15px;
+    }
+}
+```
+
+---
+
+## 4. Common Breakpoints
+
+> Industry Convention: Choose breakpoints suitable for your project
+
+### 4.1 Recommended Breakpoint Settings
+
+| Breakpoint Name | Screen Width | Device Type |
+|-----------------|--------------|-------------|
+| xs | < 576px | Extra small (phone portrait) |
+| sm | ≥ 576px | Phone landscape / Small tablet |
+| md | ≥ 768px | Tablet portrait |
+| lg | ≥ 992px | Tablet landscape / Small desktop |
+| xl | ≥ 1200px | Desktop monitor |
+| xxl | ≥ 1400px | Large desktop |
+
+### 4.2 TailwindCSS-style Breakpoints
+
+```css
+/* sm: 576px */
+@media (min-width: 576px) { ... }
+
+/* md: 768px */
+@media (min-width: 768px) { ... }
+
+/* lg: 992px */
+@media (min-width: 992px) { ... }
+
+/* xl: 1200px */
+@media (min-width: 1200px) { ... }
+
+/* 2xl: 1400px */
+@media (min-width: 1400px) { ... }
+```
+
+### 4.3 Practical Application Examples
+
+```css
+/* Responsive navbar */
+.navbar {
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 768px) {
+    .navbar {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+/* Responsive card grid */
+.card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+@media (min-width: 576px) {
+    .card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 992px) {
+    .card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (min-width: 1200px) {
+    .card-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+```
+
+---
+
+## 5. Responsive Images
+
+> Performance Optimization: Load appropriate image sizes based on screen
+
+### 5.1 srcset Attribute
+
+```html
+<img
+    src="image-800.jpg"
+    srcset="image-400.jpg 400w,
+            image-800.jpg 800w,
+            image-1200.jpg 1200w"
+    sizes="(max-width: 600px) 400px,
+           (max-width: 1200px) 800px,
+           1200px"
+    alt="Responsive image"
+>
+```
+
+### 5.2 Picture Element
+
+```html
+<picture>
+    <!-- Mobile image -->
+    <source media="(max-width: 576px)" srcset="mobile.jpg">
+    <!-- Tablet image -->
+    <source media="(max-width: 992px)" srcset="tablet.jpg">
+    <!-- Default desktop image -->
+    <img src="desktop.jpg" alt="Responsive image">
+</picture>
+```
+
+### 5.3 CSS Background Image Responsive
+
+```css
+.hero {
+    background-image: url('mobile.jpg');
+}
+
+@media (min-width: 768px) {
+    .hero {
+        background-image: url('tablet.jpg');
+    }
+}
+
+@media (min-width: 1200px) {
+    .hero {
+        background-image: url('desktop.jpg');
+    }
+}
+```
+
+---
+
+## 6. Responsive Typography
+
+> User Experience: Make text comfortable to read on all screens
+
+### 6.1 Using clamp() for Fluid Typography
+
+```css
+/* Fluid typography: Automatically scales between min and max */
+h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+}
+
+p {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+}
+```
+
+### 6.2 Using calc() for Font Size
+
+```css
+/* Viewport-based fluid typography */
+html {
+    font-size: calc(16px + 0.5vw);
+}
+
+body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+```
+
+### 6.3 Responsive Line Height and Spacing
+
+```css
+/* Mobile compact layout */
+body {
+    line-height: 1.5;
+    padding: 1rem;
+}
+
+@media (min-width: 768px) {
+    body {
+        line-height: 1.6;
+        padding: 2rem;
+    }
+}
+```
+
+---
+
+## 7. Best Practices Guide
+
+> Pitfall Avoidance: Write high-quality responsive code
+
+### ❌ Avoid
+
+1. **Don't use fixed pixel values for layout widths** - Use percentages, `vw`, or `max-width`
+2. **Don't hide important content** - Mobile users also need core functionality
+3. **Don't ignore landscape mode** - Tablets and foldable devices rotate
+4. **Don't forget to test on real devices** - Simulators don't fully represent real experience
+
+### ✅ Recommended
+
+1. **Use relative units** - `rem`, `em`, `%`, `vw/vh`
+2. **Use Flexbox/Grid** - Naturally suited for responsive layouts
+3. **Use CSS custom properties** - Manage breakpoints and values consistently
+4. **Use Chrome DevTools** - Test different screen sizes
+5. **Progressive enhancement** - Ensure basic functionality first, then enhance experience
+
+```css
+:root {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 2rem;
+}
+
+.container {
+    padding: var(--spacing-sm);
+}
+
+@media (min-width: var(--breakpoint-md)) {
+    .container {
+        padding: var(--spacing-md);
+    }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+    .container {
+        padding: var(--spacing-lg);
+    }
+}
+```
+
+---
+
+## 8. Quick Reference
+
+> For your collection
+
+| Technique | Rating | Use Case |
+|-----------|--------|----------|
+| `@media (max-width)` | ⭐⭐⭐⭐⭐ | Mobile first, adapt from large to small |
+| `@media (min-width)` | ⭐⭐⭐⭐⭐ | Desktop first, adapt from small to large |
+| `flex-wrap` | ⭐⭐⭐⭐☆ | Automatic wrap responsive layout |
+| `grid-template-columns` | ⭐⭐⭐⭐☆ | Responsive grid system |
+| `clamp()` | ⭐⭐⭐⭐☆ | Fluid typography and sizing |
+| `srcset` | ⭐⭐⭐☆☆ | Responsive images |
+| `@media (orientation)` | ⭐⭐⭐☆☆ | Portrait/landscape adaptation |
+
+---
+
+## 9. FAQ
+
+> Troubleshooting: Solve daily development confusion
+
+### Q: How to choose between `max-width` and `min-width`?
+
+A: **Mobile First** uses `min-width` (start from small screens, progressively enhance); **Desktop First** uses `max-width` (start from large screens, progressively simplify). Mobile first is recommended.
+
+### Q: Why aren't media queries working?
+
+A: Check the following:
+1. Is the CSS selector in the media query correct?
+2. Is the viewport meta tag set: `<meta name="viewport" content="width=device-width, initial-scale=1">`
+3. Are other CSS rules overriding your styles? (check specificity)
+
+### Q: How to handle notch screens and rounded corners?
+
+A: Use CSS environment variables:
+```css
+.safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+### Q: How do responsive images improve performance?
+
+A: Use `srcset` and `sizes` to let the browser select the appropriate image, combined with image format optimization (WebP) and lazy loading (`loading="lazy"`).
+
+---
+
+## 10. Practice Project: Responsive Layout Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout Template</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        .header {
+            background: #3498db;
+            color: white;
+            padding: 1rem;
+        }
+
+        .nav {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .main {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 300px;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        /* Tablet: Sidebar to bottom */
+        @media (max-width: 992px) {
+            .main {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+        }
+
+        /* Mobile: Hide navigation */
+        @media (max-width: 768px) {
+            .nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>Responsive Website</h1>
+        <nav class="nav">
+            <a href="#">Home</a>
+            <a href="#">About</a>
+            <a href="#">Services</a>
+            <a href="#">Contact</a>
+        </nav>
+    </header>
+    <main class="main">
+        <div class="content">
+            <h2>Main Content</h2>
+            <p>This is the main content area of the page.</p>
+        </div>
+        <aside class="sidebar">
+            <h3>Sidebar</h3>
+            <p>Sidebar content, moves to bottom on mobile.</p>
+        </aside>
+    </main>
+    <footer class="footer">
+        <p>&copy; 2024 Responsive Website</p>
+    </footer>
+</body>
+</html>
+```
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script>
+        // Tabs switching
+        function openTab(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Code display toggle
+        function toggleCode(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = 'Hide Code';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = 'Show Code';
+                btn.classList.remove('active');
+            }
+        }
+
+        // Interactive logic: Viewport simulator
+        const viewportSlider = document.getElementById('viewport-slider');
+        const viewportWidthVal = document.getElementById('viewport-width-val');
+        const responsiveSimulator = document.getElementById('responsive-simulator');
+        const viewportInfo = document.getElementById('viewport-info');
+        const breakpointIndicator = document.getElementById('breakpoint-indicator');
+        const cardGrid = document.getElementById('card-grid');
+        const navItems = document.getElementById('demo-nav-items');
+
+        if (viewportSlider) {
+            viewportSlider.addEventListener('input', function() {
+                const width = this.value;
+                responsiveSimulator.style.width = width + 'px';
+                viewportWidthVal.textContent = width + 'px';
+                viewportInfo.textContent = width + 'px x 200px';
+
+                // Update breakpoint indicator
+                updateBreakpoint(width);
+
+                // Update card grid columns
+                updateCardGrid(width, cardGrid);
+
+                // Update navigation demo
+                updateNavDemo(width, navItems);
+            });
+        }
+
+        function updateBreakpoint(width) {
+            let className, text;
+            if (width < 576) {
+                className = 'breakpoint-xs';
+                text = 'xs (< 576px)';
+            } else if (width < 768) {
+                className = 'breakpoint-sm';
+                text = 'sm (576px - 767px)';
+            } else if (width < 992) {
+                className = 'breakpoint-md';
+                text = 'md (768px - 991px)';
+            } else if (width < 1200) {
+                className = 'breakpoint-lg';
+                text = 'lg (992px - 1199px)';
+            } else {
+                className = 'breakpoint-xl';
+                text = 'xl (≥ 1200px)';
+            }
+
+            breakpointIndicator.className = 'breakpoint-indicator ' + className;
+            breakpointIndicator.textContent = 'Current Breakpoint: ' + text;
+        }
+
+        function updateCardGrid(width, grid) {
+            let cols = 1;
+            if (width >= 576) cols = 2;
+            if (width >= 992) cols = 3;
+            grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+        }
+
+        function updateNavDemo(width, nav) {
+            if (width <= 480) {
+                nav.style.flexDirection = 'column';
+            } else if (width <= 768) {
+                nav.style.flexDirection = 'row';
+                nav.style.flexWrap = 'wrap';
+            } else {
+                nav.style.flexDirection = 'row';
+                nav.style.flexWrap = 'nowrap';
+            }
+        }
+
+        // Practice project card grid update
+        const practiceCardGrid = document.getElementById('practice-card-grid');
+
+        // Tab 4 Responsive navbar demo
+        function updateNavDemoWidth(width) {
+            let displayWidth = width + 'px';
+            // Mark key breakpoint demo values
+            if (width <= 768) {
+                displayWidth = width + 'px (demo 768px)';
+            } else if (width <= 992) {
+                displayWidth = width + 'px (demo 992px)';
+            }
+            document.getElementById('nav-width-val').textContent = displayWidth;
+            document.getElementById('nav-demo-container').style.width = width + 'px';
+
+            var navItems2 = document.getElementById('demo-nav-items-2');
+            if (navItems2) {
+                if (width <= 768) {
+                    // Mobile: vertical arrangement
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: column; flex-wrap: nowrap;');
+                } else if (width <= 992) {
+                    // Tablet: wrap
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: row; flex-wrap: wrap;');
+                } else {
+                    // Desktop: horizontal no wrap
+                    navItems2.setAttribute('style', 'display: flex; gap: 10px; flex-direction: row; flex-wrap: nowrap;');
+                }
+            }
+        }
+
+        // Tab 4 Responsive card grid demo
+        function updateGridDemoWidth(width) {
+            let displayWidth = width + 'px';
+            if (width < 576) {
+                displayWidth = width + 'px (demo 576px)';
+            } else if (width < 992) {
+                displayWidth = width + 'px (demo 992px)';
+            } else if (width < 1200) {
+                displayWidth = width + 'px (demo 1200px)';
+            } else {
+                displayWidth = width + 'px (demo 1400px)';
+            }
+            document.getElementById('grid-width-val').textContent = displayWidth;
+            const grid = document.getElementById('practice-card-grid');
+            if (grid) {
+                grid.style.width = width + 'px';
+                let cols = 1;
+                if (width >= 576) cols = 2;
+                if (width >= 992) cols = 3;
+                if (width >= 1200) cols = 4;
+                grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+            }
+        }
+
+        // Tab 4 Responsive image demo
+        function updateImageDemo(width) {
+            document.getElementById('img-width-val').textContent = width + 'px';
+            document.getElementById('img-current-width').textContent = width + 'px';
+            document.getElementById('image-demo-container').style.width = width + 'px';
+
+            const imageLabel = document.getElementById('image-size-label');
+            const imgBadge = document.getElementById('img-badge');
+            let imgSize, imgFile, bgColor;
+
+            if (width <= 576) {
+                imgSize = 'Small Image (400px)';
+                imgFile = 'small.jpg';
+                bgColor = '#27ae60';
+            } else if (width <= 992) {
+                imgSize = 'Medium Image (800px)';
+                imgFile = 'medium.jpg';
+                bgColor = '#3498db';
+            } else {
+                imgSize = 'Large Image (1200px)';
+                imgFile = 'large.jpg';
+                bgColor = '#9b59b6';
+            }
+
+            imageLabel.textContent = imgSize;
+            imgBadge.textContent = 'Loaded: ' + imgFile;
+            imgBadge.style.background = bgColor;
+            document.getElementById('image-demo-placeholder').style.background = bgColor;
+        }
+
+        // Initialize Tab 4 demos
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize navbar demo
+            updateNavDemoWidth(800);
+
+            // Initialize card grid demo
+            updateGridDemoWidth(800);
+
+            // Initialize image demo
+            updateImageDemo(800);
+        });
+
+        // Document modal logic
+        function openDocModal() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            contentDiv.innerHTML = marked.parse(markdown);
+
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        }
+
+        function closeDocModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // Bind close events
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDocModal();
+        });
+    </script>
+</body>
+</html>

@@ -357,7 +357,6 @@
             <button class="tab-btn" onclick="openTab(event, 'tab-aspect')">🖼️ 宽高比</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-fluid')">📐 流体函数</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-safe')">📱 安全区域</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">📝 学习总结</button>
         </div>
 
         <!-- Tab 1: 交互演示 -->
@@ -1510,37 +1509,6 @@ body {
             </div>
         </div>
 
-        <!-- Tab 6: 学习总结 -->
-        <div id="tab-summary" class="tab-pane">
-            <section style="background-color: #2c3e50; color: white;">
-                <h2 style="color: white; border-left-color: white;">🎉 Class 8 学习总结</h2>
-
-                <h3 style="color: #fff;">🔴 核心掌握 (Essential)</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>✅ <strong>容器查询</strong> - ⭐⭐⭐⭐⭐ <br>`@container` 让组件可以基于父容器响应。</li>
-                    <li>✅ <strong>aspect-ratio</strong> - ⭐⭐⭐⭐⭐ <br>轻松维持元素比例，告别固定高度。</li>
-                    <li>✅ <strong>clamp()</strong> - ⭐⭐⭐⭐⭐ <br>流体设计的核心，实现真正的响应式缩放。</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">🟡 辅助技能 (Auxiliary)</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>🔸 <strong>min() / max()</strong> - ⭐⭐⭐⭐☆ <br>限制最大/最小值，简化响应式计算。</li>
-                    <li>🔸 <strong>安全区域</strong> - ⭐⭐⭐☆☆ <br>`env(safe-area-*)` 适配刘海屏。</li>
-                    <li>🔸 <strong>动态视口单位</strong> - ⭐⭐⭐☆☆ <br>`svh`/`lvh`/`dvh` 解决移动端视口问题。</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">🟢 进阶路线</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>组合使用容器查询和媒体查询</li>
-                    <li>建立完整的流体设计系统</li>
-                    <li>为旧浏览器提供优雅降级</li>
-                    <li>结合 CSS Grid 和容器查询构建复杂布局</li>
-                </ul>
-
-                <p style="margin-top: 15px;"><strong>下一步：</strong>CSS变量、Position定位</p>
-                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">📖 查看完整学习文档</a>
-            </section>
-        </div>
     </div>
 
     <!-- Markdown文档模态框 -->
@@ -2638,6 +2606,50 @@ A: Chrome DevTools 中启用设备模拟，选择 iPhone 或刘海屏设备，�
 </body>
 </html>
 ```
+
+---
+
+## 12. 学习总结
+
+### 🔴 必须掌握（高频使用）
+
+| 特性 | 推荐指数 | 说明 |
+|------|----------|------|
+| `@container` | ⭐⭐⭐⭐⭐ | 容器查询，组件级响应式 |
+| `aspect-ratio` | ⭐⭐⭐⭐⭐ | 维持元素宽高比 |
+| `clamp()` | ⭐⭐⭐⭐⭐ | 流体设计，限制范围 |
+
+### 🟠 熟练掌握（经常使用）
+
+| 特性 | 推荐指数 | 说明 |
+|------|----------|------|
+| `min()` | ⭐⭐⭐⭐☆ | 限制最大值 |
+| `max()` | ⭐⭐⭐⭐☆ | 确保最小值 |
+| `container-type` | ⭐⭐⭐⭐☆ | 定义容器类型 |
+| `container-name` | ⭐⭐⭐⭐☆ | 命名容器 |
+
+### 💡 黄金法则
+
+- **容器查询适合组件** - 媒体查询适合页面布局
+- **先写基础样式** - 再用 clamp() 添加流体效果
+- **aspect-ratio 优先** - 替代固定 padding 技巧
+- **组合使用** - 容器查询 + 媒体查询实现复杂响应式
+- **提供回退方案** - 使用 @supports 处理旧浏览器
+
+### 在线练习资源
+
+| 资源 | 链接 | 说明 |
+|------|------|------|
+| Container Query Polyfill | https://github.com/GoogleChromeLabs/container-query-polyfill | 容器查询 polyfill |
+| CSS Container Queries | https://css-tricks.com/containerqueries/ | CSS-Tricks 指南 |
+
+---
+
+## 13. 下一步学习
+
+掌握响应式设计进阶后，下一知识点：**CSS变量 (Day 9)**
+
+学习 CSS 自定义属性 (`--var`)，实现主题切换和代码复用。
 
 </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

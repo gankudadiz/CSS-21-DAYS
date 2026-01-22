@@ -415,7 +415,6 @@
             <button class="tab-btn" onclick="openTab(event, 'tab-container')">Flex Container</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-items')">Flex Items</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-layouts')">Common Layouts</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
         </div>
 
         <!-- Tab 1: Interactive Demo -->
@@ -1305,63 +1304,6 @@
             </div>
         </div>
 
-        <!-- Tab 5: Summary -->
-        <div id="tab-summary" class="tab-pane">
-            <section style="background-color: #2c3e50; color: white;">
-                <h2 style="color: white; border-left-color: white;">Learning Summary</h2>
-
-                <h3 style="color: #fff;">Must Master (High Frequency)</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>display: flex - ⭐⭐⭐⭐⭐ Enable Flexbox</li>
-                    <li>justify-content - ⭐⭐⭐⭐⭐ Main axis alignment</li>
-                    <li>align-items - ⭐⭐⭐⭐⭐ Cross axis alignment</li>
-                    <li>flex - ⭐⭐⭐⭐⭐ Item grow/shrink shorthand</li>
-                    <li>gap - ⭐⭐⭐⭐⭐ Item spacing</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Frequent Use</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>flex-direction - ⭐⭐⭐⭐☆ Main axis direction</li>
-                    <li>flex-wrap - ⭐⭐⭐⭐☆ Wrap control</li>
-                    <li>flex-grow - ⭐⭐⭐⭐☆ Grow factor</li>
-                    <li>align-self - ⭐⭐⭐⭐☆ Individual alignment</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Understand</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>flex-shrink - ⭐⭐⭐☆☆ Shrink factor</li>
-                    <li>flex-basis - ⭐⭐⭐☆☆ Base size</li>
-                    <li>order - ⭐⭐⭐☆☆ Arrangement order</li>
-                    <li>align-content - ⭐⭐⭐☆☆ Multi-line alignment</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Golden Rules</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>justify-content always works on main axis</li>
-                    <li>align-items always works on cross axis</li>
-                    <li>Main axis direction is set by flex-direction</li>
-                    <li>Prefer gap over margin</li>
-                </ul>
-
-                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Units (Day 6)</p>
-                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
-            </section>
-
-            <section>
-                <h2>Practice Resources</h2>
-                <div class="practice-links">
-                    <a href="https://flexboxfroggy.com/" target="_blank" class="practice-link">
-                        Flexbox Froggy - Game-based Learning
-                    </a>
-                    <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" class="practice-link">
-                        CSS-Tricks Complete Guide
-                    </a>
-                    <a href="https://codepen.io/" target="_blank" class="practice-link">
-                        CodePen Practice
-                    </a>
-                </div>
-            </section>
-        </div>
     </div>
 
     <!-- Markdown Modal -->
@@ -2086,6 +2028,54 @@ Flex Item
 - Equal height columns
 - Responsive grid
 - Form layout
+
+---
+
+## 10. Learning Summary
+
+### Must Master (High Frequency)
+
+| Property | Recommendation | Description |
+|----------|----------------|-------------|
+| `display: flex` | ⭐⭐⭐⭐⭐ | Enable Flexbox layout |
+| `justify-content` | ⭐⭐⭐⭐⭐ | Main axis alignment |
+| `align-items` | ⭐⭐⭐⭐⭐ | Cross axis alignment |
+| `flex` | ⭐⭐⭐⭐⭐ | Item grow/shrink shorthand |
+| `gap` | ⭐⭐⭐⭐⭐ | Item spacing |
+
+### Frequent Use
+
+| Property | Recommendation | Description |
+|----------|----------------|-------------|
+| `flex-direction` | ⭐⭐⭐⭐☆ | Main axis direction |
+| `flex-wrap` | ⭐⭐⭐⭐☆ | Wrap control |
+| `flex-grow` | ⭐⭐⭐⭐☆ | Grow factor |
+| `align-self` | ⭐⭐⭐⭐☆ | Individual item alignment |
+
+### Understand
+
+| Property | Recommendation | Description |
+|----------|----------------|-------------|
+| `flex-shrink` | ⭐⭐⭐☆☆ | Shrink factor |
+| `flex-basis` | ⭐⭐⭐☆☆ | Base size |
+| `order` | ⭐⭐⭐☆☆ | Arrangement order |
+| `align-content` | ⭐⭐⭐☆☆ | Multi-line alignment |
+
+### Golden Rules
+
+- `justify-content` always works on the **main axis**
+- `align-items` always works on the **cross axis**
+- The main axis direction is set by `flex-direction`
+- Prefer `gap` over `margin` for spacing
+- Use `flex: 1` for equal distribution
+- Use `flex: 0 0 fixed` for fixed widths
+
+### Practice Resources
+
+| Resource | Link | Description |
+|----------|------|-------------|
+| Flexbox Froggy | https://flexboxfroggy.com/ | Game-based learning |
+| CSS-Tricks Flexbox | https://css-tricks.com/snippets/css/a-guide-to-flexbox/ | Complete guide |
 
 ---
 

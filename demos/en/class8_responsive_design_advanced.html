@@ -357,7 +357,6 @@
             <button class="tab-btn" onclick="openTab(event, 'tab-aspect')">Aspect Ratio</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-fluid')">Fluid Functions</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-safe')">Safe Areas</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
         </div>
 
         <!-- Tab 1: Interactive Demo -->
@@ -726,8 +725,8 @@ clamp(min, preferred, max)
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px; border: 1px solid #ddd;">400-600px</td>
-                                    <td style="padding: 8px; border: 1px solid #ddd</td>
-                                    <td style="padding: 8;">Two Column Gridpx; border: 1px solid #ddd;">Small Desktop, Split Layout</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Small Desktop</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Two Column Grid</td>
                                 </tr>
                                 <tr style="background: #f8f9fa;">
                                     <td style="padding: 8px; border: 1px solid #ddd;">&gt; 600px</td>
@@ -1508,38 +1507,6 @@ body {
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Tab 6: Learning Summary -->
-        <div id="tab-summary" class="tab-pane">
-            <section style="background-color: #2c3e50; color: white;">
-                <h2 style="color: white; border-left-color: white;">Class 8 Learning Summary</h2>
-
-                <h3 style="color: #fff;">Core Mastery (Essential)</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>✅ <strong>Container Queries</strong> - ⭐⭐⭐⭐⭐ <br>`@container` lets components respond based on parent container.</li>
-                    <li>✅ <strong>aspect-ratio</strong> - ⭐⭐⭐⭐⭐ <br>Easily maintain element ratios, no more fixed heights.</li>
-                    <li>✅ <strong>clamp()</strong> - ⭐⭐⭐⭐⭐ <br>Core of fluid design, enables true responsive scaling.</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Auxiliary Skills</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>🔸 <strong>min() / max()</strong> - ⭐⭐⭐⭐☆ <br>Limit max/min values, simplify responsive calculations.</li>
-                    <li>🔸 <strong>Safe Areas</strong> - ⭐⭐⭐☆☆ <br>`env(safe-area-*)` for notch screen adaptation.</li>
-                    <li>🔸 <strong>Dynamic Viewport Units</strong> - ⭐⭐⭐☆☆ <br>`svh`/`lvh`/`dvh` solve mobile viewport issues.</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Advanced Path</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>Combine container queries with media queries</li>
-                    <li>Build complete fluid design system</li>
-                    <li>Provide graceful degradation for older browsers</li>
-                    <li>Combine CSS Grid with container queries for complex layouts</li>
-                </ul>
-
-                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Variables, Position</p>
-                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
-            </section>
         </div>
     </div>
 
@@ -2638,6 +2605,45 @@ A: Enable device simulation in Chrome DevTools, select iPhone or notch screen de
 </body>
 </html>
 ```
+
+---
+
+## 10. Learning Summary
+
+### Core Concepts (High Frequency)
+
+| Property/Technique | Rating | Description |
+|--------------------|--------|-------------|
+| `container-type` | ⭐⭐⭐⭐⭐ | Enable container queries |
+| `@container` | ⭐⭐⭐⭐⭐ | Container query syntax |
+| `aspect-ratio` | ⭐⭐⭐⭐⭐ | Maintain element proportions |
+| `clamp()` | ⭐⭐⭐⭐⭐ | Fluid sizing function |
+
+### Important (Regular Use)
+
+| Property/Technique | Rating | Description |
+|--------------------|--------|-------------|
+| `min()` | ⭐⭐⭐⭐☆ | Minimum value function |
+| `max()` | ⭐⭐⭐⭐☆ | Maximum value function |
+| `container-name` | ⭐⭐⭐⭐☆ | Named container queries |
+| `svh`/`lvh`/`dvh` | ⭐⭐⭐☆☆ | Dynamic viewport units |
+| `env(safe-area-*)` | ⭐⭐⭐☆☆ | Safe area for notch screens |
+
+### Golden Rules
+
+- Container queries respond to parent container, not viewport
+- Always set `container-type` on parent for container queries to work
+- Use `aspect-ratio` instead of padding hacks for responsive media
+- `clamp(min, preferred, max)` creates true fluid designs
+- Combine container queries with media queries for optimal layouts
+
+### Practice Resources
+
+| Resource | Link | Description |
+|----------|------|-------------|
+| MDN Container Queries | https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Container_Queries | Official documentation |
+| CSS-Tricks Container | https://css-tricks.com/css-container-queries/ | Complete guide |
+| Can I Use Container | https://caniuse.com/css-container-queries | Browser support |
 
 </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>

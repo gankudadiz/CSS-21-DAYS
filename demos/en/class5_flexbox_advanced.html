@@ -507,7 +507,6 @@
             <button class="tab-btn" onclick="openTab(event, 'tab-order')">Order Property</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-align-self')">Align Self</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-practice')">Real Projects</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
         </div>
 
         <!-- Tab 1: Interactive Demo -->
@@ -1236,56 +1235,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Tab 5: Summary -->
-        <div id="tab-summary" class="tab-pane">
-            <section style="background-color: #2c3e50; color: white;">
-                <h2 style="color: white; border-left-color: white;">Flex Items Advanced Learning Summary</h2>
-
-                <h3 style="color: #fff;">Key Points: order Property</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>order: 0 is default, smaller values come first</li>
-                    <li>Supports negative values, negative values come before positive</li>
-                    <li>Does not affect DOM structure and accessibility</li>
-                    <li>Suitable for order adjustment in responsive layouts</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Key Points: align-self Property</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>Overrides container's align-items setting</li>
-                    <li>Values: auto | flex-start | center | flex-end | stretch | baseline</li>
-                    <li>stretch requires item without fixed height</li>
-                    <li>Often used for special alignment of single items</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">Common Application Scenarios</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>Mobile priority for important buttons (order)</li>
-                    <li>Navbar ordering adjustment (order)</li>
-                    <li>Notification icon alignment (align-self: flex-start)</li>
-                    <li>Form button centering (align-self: center)</li>
-                    <li>Responsive card grid (flex: 1 1)</li>
-                </ul>
-
-                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Units (Day 6)</p>
-                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
-            </section>
-
-            <section>
-                <h2>Online Practice Resources</h2>
-                <div class="practice-links">
-                    <a href="https://flexboxfroggy.com/" target="_blank" class="practice-link">
-                        Flexbox Froggy - Game-based Learning
-                    </a>
-                    <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" class="practice-link">
-                        CSS-Tricks Complete Guide
-                    </a>
-                    <a href="https://codepen.io/" target="_blank" class="practice-link">
-                        CodePen Practice
-                    </a>
-                </div>
-            </section>
-        </div>
     </div>
 
     <!-- Markdown Modal -->
@@ -1654,6 +1603,42 @@ Put important content first in HTML, use order for fine-tuning
 .sidebar { flex: 0 0 200px; }
 .content { flex: 1; }
 ```
+
+---
+
+## 10. Learning Summary
+
+### Core Concepts (High Frequency)
+
+| Property | Rating | Description |
+|----------|--------|-------------|
+| `display: flex` | ⭐⭐⭐⭐⭐ | Enable Flexbox layout |
+| `order` | ⭐⭐⭐⭐☆ | Visual order of items |
+| `align-self` | ⭐⭐⭐⭐☆ | Single item cross-axis alignment |
+
+### Important (Regular Use)
+
+| Property | Rating | Description |
+|----------|--------|-------------|
+| `flex` | ⭐⭐⭐⭐⭐ | Flex shorthand property |
+| `flex-grow` | ⭐⭐⭐⭐☆ | Growth factor |
+| `flex-shrink` | ⭐⭐⭐☆☆ | Shrink factor |
+| `flex-basis` | ⭐⭐⭐☆☆ | Base size |
+
+### Golden Rules
+
+- Use `order` only for visual adjustments, never for accessibility
+- `align-self` overrides `align-items` for individual items
+- `flex: 1` creates equal distribution; `flex: 0 0 fixed` creates fixed width
+- Combine with `flex-wrap` for responsive wrapping layouts
+
+### Practice Resources
+
+| Resource | Link | Description |
+|----------|------|-------------|
+| Flexbox Froggy | https://flexboxfroggy.com/ | Game-based learning |
+| CSS-Tricks Guide | https://css-tricks.com/snippets/css/a-guide-to-flexbox/ | Complete reference |
+| CodePen | https://codepen.io/ | Interactive practice |
 
 ---
 

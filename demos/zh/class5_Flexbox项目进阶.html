@@ -13,7 +13,7 @@
     <style>
         /* ========== 基础样式 ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; font-size: 16px; }
         /* 页面顶部容器 */
         .page-header {
             position: relative;
@@ -584,7 +584,6 @@
             <button class="tab-btn" onclick="openTab(event, 'tab-order')">📦 order属性</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-align-self')">🎯 align-self</button>
             <button class="tab-btn" onclick="openTab(event, 'tab-practice')">💼 项目实战</button>
-            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">📝 学习总结</button>
         </div>
 
         <!-- Tab 1: 交互演示 -->
@@ -1316,55 +1315,6 @@
             </div>
         </div>
 
-        <!-- Tab 5: 学习总结 -->
-        <div id="tab-summary" class="tab-pane">
-            <section style="background-color: #2c3e50; color: white;">
-                <h2 style="color: white; border-left-color: white;">🎉 Flex Items 进阶学习总结</h2>
-
-                <h3 style="color: #fff;">📌 order 属性要点</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>order: 0 为默认值，数值越小越靠前</li>
-                    <li>支持负值，负值会排在所有正值前面</li>
-                    <li>不影响 DOM 结构和无障碍访问</li>
-                    <li>适合响应式布局中的顺序调整</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">📌 align-self 属性要点</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>覆盖容器的 align-items 设置</li>
-                    <li>可取值：auto | flex-start | center | flex-end | stretch | baseline</li>
-                    <li>stretch 需要项目未设置高度才能生效</li>
-                    <li>常用于单个项目的特殊对齐需求</li>
-                </ul>
-
-                <h3 style="color: #fff; margin-top: 15px;">💡 常见应用场景</h3>
-                <ul style="padding-left: 20px; line-height: 2;">
-                    <li>移动端优先显示重要按钮 (order)</li>
-                    <li>导航栏排序调整 (order)</li>
-                    <li>通知条图标对齐 (align-self: flex-start)</li>
-                    <li>表单按钮居中对齐 (align-self: center)</li>
-                    <li>响应式卡片网格 (flex: 1 1)</li>
-                </ul>
-
-                <p style="margin-top: 15px;"><strong>下一步：</strong>学习CSS单位 (Day 6)</p>
-                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">📖 查看完整学习文档</a>
-            </section>
-
-            <section>
-                <h2>📚 在线练习资源</h2>
-                <div class="practice-links">
-                    <a href="https://flexboxfroggy.com/" target="_blank" class="practice-link">
-                        🎮 Flexbox Froggy - 游戏化学习
-                    </a>
-                    <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" class="practice-link">
-                        📖 CSS-Tricks 完整指南
-                    </a>
-                    <a href="https://codepen.io/" target="_blank" class="practice-link">
-                        💻 CodePen 在线练习
-                    </a>
-                </div>
-            </section>
-        </div>
     </div>
 
     <!-- Markdown文档模态框 -->
@@ -1733,6 +1683,41 @@ HTML 中重要内容放前面，用 order 做微调
 .sidebar { flex: 0 0 200px; }
 .content { flex: 1; }
 ```
+
+### 在线练习资源
+
+| 资源 | 链接 | 说明 |
+|------|------|------|
+| Flexbox Froggy | https://flexboxfroggy.com/ | 游戏化学习 |
+| CSS-Tricks Flexbox | https://css-tricks.com/snippets/css/a-guide-to-flexbox/ | 完整指南 |
+
+---
+
+## 8. 学习总结
+
+### 🔴 必须掌握（高频使用）
+
+| 属性 | 推荐指数 | 说明 |
+|------|----------|------|
+| `order` | ⭐⭐⭐⭐⭐ | 项目排列顺序 |
+| `align-self` | ⭐⭐⭐⭐⭐ | 单个项目交叉轴对齐 |
+| `flex` | ⭐⭐⭐⭐⭐ | 简写形式 (grow/shrink/basis) |
+
+### 🟠 熟练掌握（经常使用）
+
+| 属性 | 推荐指数 | 说明 |
+|------|----------|------|
+| `flex-grow` | ⭐⭐⭐⭐☆ | 放大比例 |
+| `flex-shrink` | ⭐⭐⭐⭐☆ | 收缩比例 |
+| `align-content` | ⭐⭐⭐☆☆ | 多行对齐方式 |
+
+### 💡 黄金法则
+
+- `order` 数值越小越靠前，支持负值
+- `align-self` 覆盖容器的 `align-items` 设置
+- `flex: 1` 实现等分布局
+- `flex: 0 0 固定值` 实现固定宽度
+- `order` 只影响视觉顺序，不影响 DOM 和无障碍访问
 
 ---
 

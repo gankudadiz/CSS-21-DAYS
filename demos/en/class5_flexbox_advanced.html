@@ -12,7 +12,33 @@
         /* ========== Basic Styles ========== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; }
-        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+        /* Page Header */
+        .page-header {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        .page-header h1 {
+            text-align: center;
+            color: #333;
+            margin: 0;
+        }
+        .home-link {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            padding: 8px 16px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .home-link:hover { background: #219a52; transform: translateY(-50%) translateY(-2px); }
 
         /* Navigation */
         .header-nav {
@@ -458,7 +484,10 @@
     </style>
 </head>
 <body>
-    <h1>Flexbox Items Advanced - Demo</h1>
+    <div class="page-header">
+        <h1>Flexbox Items Advanced - Demo</h1>
+        <a href="../index.html" class="home-link">← Back to Home</a>
+    </div>
 
     <!-- Header Navigation -->
     <div class="header-nav">

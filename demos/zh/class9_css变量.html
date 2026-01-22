@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS变量 - 演示</title>
+    <!-- 代码高亮 - PrismJS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- Markdown渲染 - marked.js -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ========== 基础样式 (Standardized CSS) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; font-size: 16px; }
+        /* 页面顶部容器 */
+        .page-header {
+            position: relative;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #3498db;
+        }
+        .page-header h1 {
+            text-align: center;
+            color: #333;
+            margin: 0;
+        }
+        .home-link {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            padding: 8px 16px;
+            background: #27ae60;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .home-link:hover { background: #219a52; transform: translateY(-50%) translateY(-2px); }
+
+        /* 导航栏 */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs样式 */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 内容样式 */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* 推荐标签 (High Contrast 5-Level System) */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; color: white; }
+        .tag-5 { background: #e74c3c; } /* Red: Essential */
+        .tag-4 { background: #e67e22; } /* Orange: Important */
+        .tag-3 { background: #f1c40f; color: #333; } /* Yellow: Common (Dark text) */
+        .tag-2 { background: #3498db; } /* Blue: Occasional */
+        .tag-1 { background: #95a5a6; } /* Gray: Rare */
+
+        /* 代码显示区域 */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* 切换按钮 */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+
+        /* 演示区域和代码区域并排 (Dual Column Layout) */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+        @media (max-width: 900px) { .demo-code-row { grid-template-columns: 1fr; } }
+
+        /* Markdown文档模态框样式 - Standardized */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
+        .modal-container { background: #f5f5f5; width: 90%; max-width: 1000px; max-height: 90vh; margin: auto; border-radius: 12px; overflow: hidden; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #3498db; color: white; }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+        .modal-body { padding: 20px; max-height: calc(90vh - 60px); overflow-y: auto; background: white; }
+
+        /* Markdown Content Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th { background: #3498db; color: white; padding: 10px; border: 1px solid #ddd; }
+        .markdown-content td { padding: 10px; border: 1px solid #ddd; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-content ul, .markdown-content ol { padding-left: 20px; }
+
+        /* ========== 本页特定样式 ========== */
+        /* CSS变量基础演示 */
+        .var-demo-box {
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .var-card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* 作用域演示 */
+        .scope-demo {
+            --demo-color: #3498db;
+            --demo-bg: #ecf0f1;
+            padding: 20px;
+            background: var(--demo-bg);
+            border-radius: 8px;
+        }
+        .scope-child {
+            color: var(--demo-color);
+            padding: 10px;
+            border: 2px solid var(--demo-color);
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        /* 主题切换演示 */
+        .theme-preview {
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .theme-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .theme-btn.light { background: #f5f5f5; color: #333; border: 1px solid #ddd; }
+        .theme-btn.dark { background: #2c3e50; color: white; }
+        .theme-btn.custom { background: linear-gradient(135deg, #667eea, #764ba2); color: white; }
+
+        /* 颜色变量演示 */
+        .color-swatch {
+            display: inline-block;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            margin: 5px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* 响应式变量演示 */
+        .responsive-demo {
+            --responsive-padding: 16px;
+            --responsive-font: 16px;
+            padding: var(--responsive-padding);
+            background: white;
+            border-radius: 8px;
+            font-size: var(--responsive-font);
+        }
+        @media (max-width: 600px) {
+            .responsive-demo {
+                --responsive-padding: 10px;
+                --responsive-font: 14px;
+            }
+        }
+
+        /* JS控制演示 */
+        .js-control-box {
+            padding: 20px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .slider-group {
+            margin: 15px 0;
+        }
+        .slider-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        .slider-group input[type="range"] {
+            width: 100%;
+            max-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="page-header">
+        <h1>CSS变量 - 演示</h1>
+        <a href="../index.html" class="home-link">← 回到首页</a>
+    </div>
+
+    <!-- 顶部导航 -->
+    <div class="header-nav">
+        <div>
+            <strong>🎨 CSS Variables (CSS变量)</strong>
+            <span style="color: #999; margin-left: 10px;">Day 9 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="openDocModal()" class="doc-link">
+            📖 查看完整文档
+        </a>
+    </div>
+
+    <!-- Tabs导航 -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-basic')">📚 基础用法</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-scope')">🔗 作用域</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-theme')">🎨 主题切换</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-js')">⚡ JS控制</button>
+        </div>
+
+        <!-- Tab 1: 基础用法 -->
+        <div id="tab-basic" class="tab-pane active">
+            <div class="demo-code-row">
+                <div>
+                    <h3>定义和使用变量 <span class="recommend-tag tag-5">核心 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        CSS变量使用 `--` 前缀定义，通过 <code>var()</code> 函数调用。
+                    </p>
+                    <div class="demo-box">
+                        <div class="var-demo-box" style="background: var(--demo-bg, #3498db); color: white;">
+                            <h4 style="margin-bottom: 15px;">CSS变量演示</h4>
+                            <p>这是一个使用CSS变量的卡片演示。</p>
+                            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                                <button style="background: var(--btn-primary, #e74c3c); color: white; border: none; padding: 8px 16px; border-radius: 4px;">主要按钮</button>
+                                <button style="background: var(--btn-secondary, #27ae60); color: white; border: none; padding: 8px 16px; border-radius: 4px;">次要按钮</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 定义变量 */
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #27ae60;
+    --danger-color: #e74c3c;
+    --spacing-md: 16px;
+    --border-radius: 8px;
+}
+
+/* 使用变量 */
+.card {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+}
+
+.button-primary {
+    background-color: var(--btn-primary, #3498db);
+}
+
+/* 备用值：当变量未定义时使用 */
+.button-secondary {
+    background-color: var(--btn-secondary, #95a5a6);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>颜色变量系统 <span class="recommend-tag tag-4">实用 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        使用变量统一管理项目中的颜色，便于维护和切换主题。
+                    </p>
+                    <div class="demo-box">
+                        <div class="var-card">
+                            <h4 style="margin-bottom: 15px;">颜色变量示例</h4>
+                            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                <span class="color-swatch" style="background: #3498db;"></span>
+                                <span class="color-swatch" style="background: #e74c3c;"></span>
+                                <span class="color-swatch" style="background: #27ae60;"></span>
+                                <span class="color-swatch" style="background: #f39c12;"></span>
+                                <span class="color-swatch" style="background: #9b59b6;"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 颜色变量系统 */
+:root {
+    --color-primary: #3498db;
+    --color-danger: #e74c3c;
+    --color-success: #27ae60;
+    --color-warning: #f39c12;
+    --color-info: #9b59b6;
+
+    --color-gray-100: #f8f9fa;
+    --color-gray-200: #e9ecef;
+    --color-gray-500: #adb5bd;
+    --color-gray-800: #343a40;
+}
+
+/* 使用 */
+.primary-text { color: var(--color-primary); }
+.danger-bg { background-color: var(--color-danger); }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: 作用域 -->
+        <div id="tab-scope" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>变量作用域 <span class="recommend-tag tag-4">重要 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        CSS变量具有继承性，可以在不同选择器层级定义，覆盖父级值。
+                    </p>
+                    <div class="demo-box">
+                        <div class="scope-demo" style="--demo-color: #3498db; --demo-bg: #ecf0f1;">
+                            <strong>父级作用域</strong>
+                            <div class="scope-child" style="--demo-color: #e74c3c;">
+                                <strong>子级覆盖</strong> - 使用红色(--demo-color: #e74c3c;)
+                            </div>
+                            <div class="scope-child">
+                                <strong>继承父级</strong> - 使用蓝色(继承--demo-color: #3498db;)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 全局作用域 */
+:root {
+    --primary-color: #3498db;
+}
+
+/* 局部作用域 */
+.card {
+    --card-bg: #ffffff;
+    --card-padding: 20px;
+    background-color: var(--card-bg);
+}
+
+/* 子元素继承 */
+.card-title {
+    /* 继承 card 的变量 */
+    margin-bottom: var(--card-padding);
+}
+
+/* 覆盖父级变量 */
+.special-card {
+    --card-bg: #f8f9fa;
+    background-color: var(--card-bg);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>组件化变量 <span class="recommend-tag tag-4">推荐 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        为每个组件定义独立的变量，实现组件的独立复用。
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div style="--btn-bg: #3498db; --btn-color: white; background: var(--btn-bg); color: var(--btn-color); padding: 10px 20px; border-radius: 6px;">按钮1</div>
+                            <div style="--btn-bg: #e74c3c; --btn-color: white; background: var(--btn-bg); color: var(--btn-color); padding: 10px 20px; border-radius: 6px;">按钮2</div>
+                            <div style="--btn-bg: #27ae60; --btn-color: white; background: var(--btn-bg); color: var(--btn-color); padding: 10px 20px; border-radius: 6px;">按钮3</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 组件变量封装 */
+.button {
+    --btn-bg: #3498db;
+    --btn-color: #ffffff;
+    --btn-radius: 6px;
+    --btn-padding: 10px 20px;
+
+    background-color: var(--btn-bg);
+    color: var(--btn-color);
+    border-radius: var(--btn-radius);
+    padding: var(--btn-padding);
+}
+
+/* 变体覆盖 */
+.button.primary { --btn-bg: #27ae60; }
+.button.danger { --btn-bg: #e74c3c; }</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: 主题切换 -->
+        <div id="tab-theme" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>主题切换演示 <span class="recommend-tag tag-5">必学 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        点击下方按钮切换不同主题，CSS变量实时响应变化。
+                    </p>
+                    <div class="demo-box">
+                        <div id="theme-demo-box" class="theme-preview" style="--theme-bg: #ffffff; --theme-text: #333333; --theme-border: #dddddd; background: var(--theme-bg); color: var(--theme-text); border: 1px solid var(--theme-border);">
+                            <h4 style="margin-bottom: 15px;">当前主题演示</h4>
+                            <p>这是一个主题切换卡片演示，点击按钮切换主题。</p>
+                            <div style="margin-top: 15px;">
+                                <button class="theme-btn light" onclick="switchTheme('light')">浅色主题</button>
+                                <button class="theme-btn dark" onclick="switchTheme('dark')">深色主题</button>
+                                <button class="theme-btn custom" onclick="switchTheme('custom')">渐变主题</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">JS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-javascript">// 主题切换函数
+function switchTheme(themeName) {
+    const demoBox = document.getElementById('theme-demo-box');
+
+    switch(themeName) {
+        case 'light':
+            demoBox.style.setProperty('--theme-bg', '#ffffff');
+            demoBox.style.setProperty('--theme-text', '#333333');
+            demoBox.style.setProperty('--theme-border', '#dddddd');
+            break;
+        case 'dark':
+            demoBox.style.setProperty('--theme-bg', '#1a1a1a');
+            demoBox.style.setProperty('--theme-text', '#f0f0f0');
+            demoBox.style.setProperty('--theme-border', '#444444');
+            break;
+        case 'custom':
+            demoBox.style.setProperty('--theme-bg', 'linear-gradient(135deg, #667eea, #764ba2)');
+            demoBox.style.setProperty('--theme-text', '#ffffff');
+            demoBox.style.setProperty('--theme-border', 'transparent');
+            break;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>响应式变量 <span class="recommend-tag tag-3">了解 ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        在媒体查询中修改变量值，实现响应式设计。
+                    </p>
+                    <div class="demo-box">
+                        <div class="responsive-demo">
+                            <strong>响应式变量演示</strong>
+                            <p style="margin-top: 10px;">调整浏览器窗口大小，观察间距和字体变化。</p>
+                            <p style="font-size: 12px; color: #999; margin-top: 10px;">当前: <span id="responsive-info">桌面端</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 基础变量 */
+.responsive-demo {
+    --responsive-padding: 16px;
+    --responsive-font: 16px;
+    padding: var(--responsive-padding);
+    font-size: var(--responsive-font);
+}
+
+/* 移动端修改变量 */
+@media (max-width: 600px) {
+    .responsive-demo {
+        --responsive-padding: 10px;
+        --responsive-font: 14px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: JS控制 -->
+        <div id="tab-js" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>JavaScript控制变量 <span class="recommend-tag tag-4">实用 ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        使用JavaScript实时读取和修改CSS变量值。
+                    </p>
+                    <div class="demo-box">
+                        <div id="js-demo-box" class="js-control-box" style="--js-bg: #3498db; --js-radius: 8px;">
+                            <h4 style="margin-bottom: 15px;">JS控制演示</h4>
+                            <p>拖动滑块调整卡片样式：</p>
+                            <div class="slider-group">
+                                <label>圆角大小: <span id="radius-val">8px</span></label>
+                                <input type="range" min="0" max="30" value="8" oninput="updateVar('js-radius', this.value + 'px', 'radius-val')">
+                            </div>
+                            <div class="slider-group">
+                                <label>背景色相: <span id="hue-val">204</span></label>
+                                <input type="range" min="0" max="360" value="204" oninput="updateVar('js-bg', 'hsl(' + this.value + ', 70%, 55%)', 'hue-val')">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">JS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-javascript">// 更新CSS变量
+function updateVar(varName, value, displayId) {
+    const demoBox = document.getElementById('js-demo-box');
+    demoBox.style.setProperty('--' + varName, value);
+
+    // 更新显示值
+    if (displayId) {
+        document.getElementById(displayId).textContent = value;
+    }
+}
+
+// 获取变量值
+function getVarValue(varName) {
+    const styles = getComputedStyle(document.documentElement);
+    return styles.getPropertyValue('--' + varName).trim();
+}
+
+// 获取根元素变量
+const primaryColor = getComputedStyle(document.documentElement)
+    .getPropertyValue('--primary-color').trim();</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>计算变量值 <span class="recommend-tag tag-3">进阶 ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        结合 calc() 和变量进行复杂计算。
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                            <div id="calc-box-1" style="--base-size: 50px; width: var(--base-size); height: var(--base-size); background: #3498db; border-radius: 4px; transition: all 0.3s;"></div>
+                            <div id="calc-box-2" style="--base-size: 80px; width: var(--base-size); height: var(--base-size); background: #27ae60; border-radius: 4px; transition: all 0.3s;"></div>
+                            <div id="calc-box-3" style="--base-size: 120px; width: var(--base-size); height: var(--base-size); background: #e74c3c; border-radius: 4px; transition: all 0.3s;"></div>
+                        </div>
+                        <div class="slider-group" style="margin-top: 15px;">
+                            <label>调整基数: <span id="base-val">50px</span></label>
+                            <input type="range" min="30" max="100" value="50" oninput="updateCalcDemo(this.value)">
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 结合 calc() 使用变量 */
+.box {
+    --base-size: 50px;
+    width: var(--base-size);
+    height: var(--base-size);
+}
+
+.box-large {
+    /* 使用 calc() 基于基础变量计算 */
+    width: calc(var(--base-size) * 2);
+    height: calc(var(--base-size) * 2);
+}
+
+/* 动态调整 */
+.dynamic-box {
+    --spacing: 8px;
+    padding: calc(var(--spacing) * 2);
+    margin: calc(var(--spacing) + 4px);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 学习总结 -->
+    <section style="background-color: #2c3e50; color: white;">
+        <h2 style="color: white; border-left-color: white;">🎉 学习总结</h2>
+
+        <h3 style="color: #fff;">🔴 核心掌握 (Essential)</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>✅ <strong>定义变量</strong> - ⭐⭐⭐⭐⭐ <br>`--variable-name: value;`</li>
+            <li>✅ <strong>使用变量</strong> - ⭐⭐⭐⭐⭐ <br>`var(--variable-name)`</li>
+            <li>✅ <strong>作用域</strong> - ⭐⭐⭐⭐☆ <br>`:root` 全局，子元素继承</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-top: 15px;">🟡 辅助技能 (Auxiliary)</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>🔸 <strong>主题切换</strong> - ⭐⭐⭐⭐☆ <br>JS动态修改变量实现主题切换</li>
+            <li>🔸 <strong>响应式变量</strong> - ⭐⭐⭐☆☆ <br>媒体查询中修改变量值</li>
+            <li>🔸 <strong>备用值</strong> - ⭐⭐⭐⭐☆ <br>`var(--name, fallback)`</li>
+        </ul>
+
+        <h3 style="color: #fff; margin-top: 15px;">🟢 最佳实践</h3>
+        <ul style="padding-left: 20px; line-height: 2;">
+            <li>使用 :root 定义全局变量</li>
+            <li>为组件定义独立的变量前缀</li>
+            <li>使用 calc() 结合变量进行计算</li>
+            <li>保持变量命名一致性（kebab-case）</li>
+        </ul>
+
+        <p style="margin-top: 15px;"><strong>下一步：</strong>Position定位、CSS选择器进阶</p>
+        <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">📖 查看完整学习文档</a>
+    </section>
+
+    <!-- Markdown文档模态框 -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">📚 CSS变量 - 完整文档</span>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown内容 -->
+    <script type="text/plain" id="mdContent">
+# CSS变量 (CSS Variables)
+
+> **推荐指数**: ⭐⭐⭐⭐☆ (4/5)
+> CSS变量（自定义属性）是现代CSS的重要特性，**推荐掌握**，可显著提升代码可维护性和主题切换能力。
+
+---
+
+## 1. CSS变量概述
+
+> 💡 **CSS预处理器变量的替代方案**，原生支持，无需编译
+
+CSS变量是一种值容器，可以在整个文档中重复使用。与Sass/Less变量不同，CSS变量是**实时响应**的，可以在运行时通过JavaScript修改。
+
+### 1.1 基本语法
+
+```css
+/* 定义变量 */
+:root {
+    --primary-color: #3498db;
+    --spacing-md: 16px;
+    --border-radius: 8px;
+}
+
+/* 使用变量 */
+.button {
+    background-color: var(--primary-color);
+    padding: var(--spacing-md);
+    border-radius: var(--border-radius);
+}
+```
+
+### 1.2 变量命名规范
+
+```css
+/* 推荐：使用kebab-case */
+:root {
+    --main-bg-color: #ffffff;
+    --text-primary-color: #333333;
+    --container-max-width: 1200px;
+}
+```
+
+---
+
+## 2. 变量的作用域
+
+> 💡 **CSS变量具有继承性**，可以定义在不同层级的选择器中
+
+### 2.1 全局变量
+
+在 `:root` 选择器中定义的变量具有全局作用域。
+
+```css
+:root {
+    --font-family-base: 'Segoe UI', Arial, sans-serif;
+    --color-primary: #3498db;
+}
+
+body {
+    font-family: var(--font-family-base);
+}
+```
+
+### 2.2 局部变量
+
+在特定选择器中定义的变量只在该选择器及其子元素中生效。
+
+```css
+.card {
+    --card-bg: #ffffff;
+    --card-padding: 20px;
+
+    background-color: var(--card-bg);
+    padding: var(--card-padding);
+}
+```
+
+---
+
+## 3. JavaScript操作CSS变量
+
+> 💡 **实时修改样式，无需重新编译**
+
+### 3.1 获取变量值
+
+```javascript
+const rootStyles = getComputedStyle(document.documentElement);
+const primaryColor = rootStyles.getPropertyValue('--primary-color').trim();
+```
+
+### 3.2 设置变量值
+
+```javascript
+document.documentElement.style.setProperty('--primary-color', '#e74c3c');
+```
+
+### 3.3 主题切换实战
+
+```javascript
+function switchTheme(themeName) {
+    const root = document.documentElement;
+
+    switch (themeName) {
+        case 'dark':
+            root.style.setProperty('--bg-primary', '#1a1a1a');
+            root.style.setProperty('--text-primary', '#f0f0f0');
+            break;
+        case 'light':
+            root.style.setProperty('--bg-primary', '#ffffff');
+            root.style.setProperty('--text-primary', '#333333');
+            break;
+    }
+}
+```
+
+---
+
+## 4. 响应式设计中的变量
+
+> 💡 **结合媒体查询实现响应式变量**
+
+```css
+:root {
+    --spacing-md: 16px;
+}
+
+@media (max-width: 768px) {
+    :root {
+        --spacing-md: 12px;
+    }
+}
+```
+
+---
+
+## 5. 速查表
+
+| 功能 | 示例 | 推荐指数 |
+|------|------|----------|
+| 定义变量 | `:root { --name: value; }` | ⭐⭐⭐⭐⭐ |
+| 使用变量 | `property: var(--name);` | ⭐⭐⭐⭐⭐ |
+| 备用值 | `var(--name, default)` | ⭐⭐⭐⭐☆ |
+| JS设置 | `style.setProperty('--name', value)` | ⭐⭐⭐⭐☆ |
+
+---
+
+## 6. 常见问题
+
+### Q: CSS变量和Sass变量有什么区别？
+
+A: CSS变量运行时可用、可继承、可通过JS修改；Sass变量编译时替换。
+
+### Q: 如何在calc()中使用变量？
+
+A: 直接使用：`width: calc(var(--size) * 2);`
+
+---
+
+## 7. 下一步学习
+
+- **CSS函数**：学习 `calc()`、`clamp()` 等函数
+- **CSS架构**：了解BEM、模块化CSS
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script>
+        // Tabs切换
+        function openTab(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // 代码显示切换
+        function toggleCode(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = '隐藏代码';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = '显示代码';
+                btn.classList.remove('active');
+            }
+        }
+
+        // 主题切换
+        function switchTheme(themeName) {
+            var demoBox = document.getElementById('theme-demo-box');
+
+            switch(themeName) {
+                case 'light':
+                    demoBox.style.setProperty('--theme-bg', '#ffffff');
+                    demoBox.style.setProperty('--theme-text', '#333333');
+                    demoBox.style.setProperty('--theme-border', '#dddddd');
+                    break;
+                case 'dark':
+                    demoBox.style.setProperty('--theme-bg', '#1a1a1a');
+                    demoBox.style.setProperty('--theme-text', '#f0f0f0');
+                    demoBox.style.setProperty('--theme-border', '#444444');
+                    break;
+                case 'custom':
+                    demoBox.style.setProperty('--theme-bg', 'linear-gradient(135deg, #667eea, #764ba2)');
+                    demoBox.style.setProperty('--theme-text', '#ffffff');
+                    demoBox.style.setProperty('--theme-border', 'transparent');
+                    break;
+            }
+        }
+
+        // JS控制变量
+        function updateVar(varName, value, displayId) {
+            var demoBox = document.getElementById('js-demo-box');
+            demoBox.style.setProperty('--' + varName, value);
+
+            if (displayId) {
+                document.getElementById(displayId).textContent = value;
+            }
+        }
+
+        // 计算演示
+        function updateCalcDemo(baseValue) {
+            document.getElementById('base-val').textContent = baseValue + 'px';
+            document.getElementById('calc-box-1').style.setProperty('--base-size', baseValue + 'px');
+            document.getElementById('calc-box-2').style.setProperty('--base-size', (baseValue * 1.6) + 'px');
+            document.getElementById('calc-box-3').style.setProperty('--base-size', (baseValue * 2.4) + 'px');
+        }
+
+        // 响应式检测
+        function checkResponsive() {
+            var info = document.getElementById('responsive-info');
+            if (window.innerWidth <= 600) {
+                info.textContent = '移动端';
+            } else {
+                info.textContent = '桌面端';
+            }
+        }
+        window.addEventListener('resize', checkResponsive);
+        checkResponsive();
+
+        // 文档模态框逻辑
+        function openDocModal() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            contentDiv.innerHTML = marked.parse(markdown);
+
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        }
+
+        function closeDocModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // 绑定关闭事件
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDocModal();
+        });
+    </script>
+</body>
+</html>

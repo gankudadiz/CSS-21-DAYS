@@ -1,0 +1,2730 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS 21 Days - Class 8 Advanced Responsive Design</title>
+    <!-- PrismJS Code Highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet" />
+
+    <!-- marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* ========== Base Styles (Standardized CSS) ========== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; padding: 20px; background-color: #f5f5f5; font-size: 16px; }
+        h1 { text-align: center; color: #333; margin-bottom: 30px; padding-bottom: 10px; border-bottom: 3px solid #3498db; }
+
+        /* Navigation Bar */
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .doc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .doc-link:hover { background: #2980b9; transform: translateY(-2px); }
+
+        /* Tabs Styles */
+        .tabs-container { margin-bottom: 20px; }
+        .tab-nav { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 2px solid #e0e0e0; padding-bottom: 0; }
+        .tab-btn { padding: 12px 20px; cursor: pointer; background: #e8e8e8; border: 2px solid transparent; border-bottom: none; border-radius: 8px 8px 0 0; margin-bottom: -2px; transition: all 0.3s ease; font-weight: 500; color: #666; }
+        .tab-btn:hover { background: #d0d0d0; color: #333; }
+        .tab-btn.active { background: #3498db; color: white; border-color: #3498db; }
+
+        .tab-pane { display: none; background: white; padding: 20px; border-radius: 0 8px 8px 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); animation: fadeIn 0.3s ease; }
+        .tab-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Content Styles */
+        h2 { color: #2c3e50; margin: 30px 0 15px; padding-left: 10px; border-left: 4px solid #3498db; }
+        h3 { color: #34495e; margin: 20px 0 10px; }
+        section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .demo-box { padding: 15px; margin: 10px 0; border: 1px dashed #ccc; background: #fafafa; border-radius: 4px; }
+
+        /* Recommendation Tags (High Contrast 5-Level System) */
+        .recommend-tag { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 12px; font-weight: bold; margin-left: 10px; color: white; }
+        .tag-5 { background: #e74c3c; } /* Red: Essential */
+        .tag-4 { background: #e67e22; } /* Orange: Important */
+        .tag-3 { background: #f1c40f; color: #333; } /* Yellow: Common (Dark text) */
+        .tag-2 { background: #3498db; } /* Blue: Occasional */
+        .tag-1 { background: #95a5a6; } /* Gray: Rare */
+
+        /* Code Section */
+        .code-section { margin: 20px 0; }
+        .code-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .code-title { font-weight: 600; color: #2c3e50; }
+        .code-block { background: #2d2d2d; border-radius: 6px; overflow: hidden; }
+        .code-block pre { margin: 0 !important; padding: 15px !important; border-radius: 6px; overflow-x: auto; }
+        .code-block code { font-family: 'Fira Code', 'Consolas', monospace !important; font-size: 13px !important; line-height: 1.5 !important; }
+
+        /* Toggle Button */
+        .toggle-btn {
+            padding: 6px 12px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+        .toggle-btn:hover { background: #2980b9; }
+
+        /* Demo & Code Side by Side (Dual Column Layout) */
+        .demo-code-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 15px 0; }
+        @media (max-width: 900px) { .demo-code-row { grid-template-columns: 1fr; } }
+
+        /* Markdown Modal Styles - Standardized */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; animation: fadeIn 0.3s ease; }
+        .modal-overlay.active { display: flex; }
+        .modal-container { background: #f5f5f5; width: 90%; max-width: 1000px; max-height: 90vh; margin: auto; border-radius: 12px; overflow: hidden; animation: slideIn 0.3s ease; }
+        @keyframes slideIn { from { transform: translateY(-30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: #3498db; color: white; }
+        .modal-title { font-size: 18px; font-weight: 600; }
+        .modal-close { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 24px; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; transition: all 0.3s; }
+        .modal-close:hover { background: rgba(255,255,255,0.3); transform: rotate(90deg); }
+        .modal-body { padding: 20px; max-height: calc(90vh - 60px); overflow-y: auto; background: white; }
+
+        /* Markdown Content Styles */
+        .markdown-content { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.8; color: #333; }
+        .markdown-content h1 { font-size: 28px; color: #2c3e50; border-bottom: 3px solid #3498db; padding-bottom: 10px; margin-bottom: 20px; }
+        .markdown-content h2 { font-size: 22px; color: #34495e; margin: 25px 0 15px; border-left: 4px solid #3498db; padding-left: 12px; }
+        .markdown-content h3 { font-size: 18px; color: #2c3e50; margin: 20px 0 10px; }
+        .markdown-content blockquote { border-left: 4px solid #3498db; padding: 10px 15px; margin: 15px 0; background: #ecf0f1; color: #555; }
+        .markdown-content code { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; font-family: 'Fira Code', 'Consolas', monospace; font-size: 13px; }
+        .markdown-content pre { background: #2d2d2d; border-radius: 8px; overflow: auto; margin: 15px 0; }
+        .markdown-content pre code { background: none; padding: 15px; color: #f8f8f2; display: block; }
+        .markdown-content table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        .markdown-content th { background: #3498db; color: white; padding: 10px; border: 1px solid #ddd; }
+        .markdown-content td { padding: 10px; border: 1px solid #ddd; }
+        .markdown-content tr:nth-child(even) { background: #f8f9fa; }
+        .markdown-content ul, .markdown-content ol { padding-left: 20px; }
+
+        /* ========== Page-Specific Styles ========== */
+        /* Interactive Controls */
+        .controls { background: #eee; padding: 15px; border-radius: 6px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+        .control-group { display: flex; align-items: center; gap: 10px; }
+        input[type="range"] { cursor: pointer; }
+
+        /* Container Query Demo */
+        .container-query-demo {
+            container-type: inline-size;
+            border: 3px dashed #3498db;
+            padding: 10px;
+            background: #f8f4fc;
+            transition: all 0.3s ease;
+        }
+        .cq-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .cq-card-normal { display: block; }
+        .cq-card-responsive { display: block; }
+
+        /* Aspect Ratio Demo */
+        .aspect-demo {
+            background: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
+        /* clamp() Demo */
+        .clamp-demo {
+            background: #3498db;
+            color: white;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        /* Safe Area Demo */
+        .safe-area-demo {
+            background: #2c3e50;
+            color: white;
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .safe-area-indicator {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 2px dashed #e74c3c;
+            border-radius: 12px;
+            pointer-events: none;
+        }
+        .safe-area-label {
+            background: #e74c3c;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* Table Styles */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .comparison-table th {
+            background: #3498db;
+            color: white;
+        }
+        .comparison-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        /* Function Demo Cards */
+        .function-card {
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            text-align: center;
+        }
+        .function-min { background: #3498db; }
+        .function-max { background: #27ae60; }
+        .function-clamp { background: #9b59b6; }
+
+        /* ========== object-fit Demo Styles ========== */
+        .object-fit-demo-wrapper {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 700px) {
+            .object-fit-demo-wrapper {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 450px) {
+            .object-fit-demo-wrapper {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .object-fit-card {
+            text-align: center;
+        }
+
+        .object-fit-card .demo-box {
+            padding: 8px;
+            margin: 0;
+        }
+
+        /* 16:9 Demo Container */
+        .object-fit-container {
+            aspect-ratio: 16 / 9;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 8px;
+        }
+
+        /* object-fit Demo Images - Base Styles */
+        .object-fit-img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* cover: Fill container, may crop */
+        .object-fit-img.object-fit-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        /* contain: Full display, with whitespace */
+        .object-fit-img.object-fit-contain {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: center;
+            background: #fff;
+        }
+
+        /* fill: Stretch to fill */
+        .object-fit-img.object-fit-fill {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+        }
+
+        /* none: Keep original size */
+        .object-fit-img.object-fit-none {
+            width: 100%;
+            height: 100%;
+            object-fit: none;
+            object-position: center;
+        }
+
+        /* scale-down: Smart scaling */
+        .object-fit-img.object-fit-scale-down {
+            width: 100%;
+            height: 100%;
+            object-fit: scale-down;
+            object-position: center;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Advanced Responsive Design - Demo</h1>
+
+    <!-- Top Navigation -->
+    <div class="header-nav">
+        <div>
+            <strong>Advanced Responsive Design (高级响应式设计)</strong>
+            <span style="color: #999; margin-left: 10px;">Day 8 Learning</span>
+        </div>
+        <a href="javascript:void(0);" onclick="openDocModal()" class="doc-link">
+            View Full Documentation
+        </a>
+    </div>
+
+    <!-- Tabs Navigation -->
+    <div class="tabs-container">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="openTab(event, 'tab-interactive')">Interactive Demo</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-container')">Container Queries</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-aspect')">Aspect Ratio</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-fluid')">Fluid Functions</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-safe')">Safe Areas</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab-summary')">Summary</button>
+        </div>
+
+        <!-- Tab 1: Interactive Demo -->
+        <div id="tab-interactive" class="tab-pane active">
+            <div class="demo-code-row">
+                <div>
+                    <h3>clamp() Fluid Typography Demo <span class="recommend-tag tag-5">Core ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 10px; color: #666;">
+                        Drag the slider to change container width and observe how font size automatically scales.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Container Width:</label>
+                            <input type="range" min="300" max="800" value="500" id="clamp-slider" oninput="updateClampDemo(this.value)">
+                            <span id="clamp-width-val" style="font-weight: 600; min-width: 80px;">500px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div id="clamp-demo-container" style="width: 500px; margin: 0 auto; transition: width 0.3s;">
+                            <div class="clamp-demo" id="clamp-demo-box">
+                                <h4 style="margin: 0;">Fluid Heading</h4>
+                                <p style="margin: 5px 0 0; font-size: 0.9em;">font-size: clamp(1rem, 3vw, 2rem)</p>
+                            </div>
+                            <div style="margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 4px;">
+                                <strong>Current Font Size:</strong> <span id="font-size-val">16px</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* clamp() Basic Syntax */
+clamp(min, preferred, max)
+
+/* Fluid Heading - Scales between 1.5rem and 3rem */
+.fluid-title {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+}
+
+/* Fluid Body Text */
+.fluid-text {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    line-height: clamp(1.5, 2vw + 0.5, 1.8);
+}
+
+/* Fluid Padding */
+.fluid-padding {
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+/* Fluid Width */
+.fluid-width {
+    width: clamp(280px, 90vw, 800px);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Real-time Container Query Demo <span class="recommend-tag tag-5">Advanced ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 10px; color: #666;">
+                        Adjust the container width and observe how the card layout responds to container changes.
+                    </p>
+                    <div class="controls">
+                        <div class="control-group">
+                            <label>Container Width:</label>
+                            <input type="range" min="200" max="700" value="400" id="container-slider" oninput="updateContainerDemo(this.value)">
+                            <span id="container-width-val" style="font-weight: 600; min-width: 80px;">400px</span>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <div id="container-query-wrapper" style="width: 400px; margin: 0 auto; transition: width 0.3s;">
+                            <div class="container-query-demo" id="container-query-demo" style="width: 100%;">
+                                <div class="cq-card cq-card-responsive">
+                                    <h4 style="color: #3498db;">Responsive Card</h4>
+                                    <p style="color: #666; font-size: 14px;">Current Layout: <strong id="layout-mode">Default Layout</strong></p>
+                                    <p style="font-size: 13px; color: #999;">Drag slider to observe layout changes</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Define Container */
+.card-wrapper {
+    container-type: inline-size;
+    container-name: card;
+}
+
+/* Default Layout */
+.card {
+    display: block;
+}
+
+/* Small Container: Below 300px */
+@container card (max-width: 300px) {
+    .card {
+        font-size: 12px;
+        padding: 10px;
+    }
+}
+
+/* Medium Container: 300px - 500px */
+@container card (min-width: 300px) and (max-width: 500px) {
+    .card {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+/* Large Container: Above 500px */
+@container card (min-width: 500px) {
+    .card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Container Queries -->
+        <div id="tab-container" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>What are Container Queries?<span class="recommend-tag tag-5">Core Concept ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>In Simple Terms:</strong> Allow components to change styles based on "their own container size" instead of "screen width".
+                    </p>
+                    <div class="demo-box">
+                        <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: #3498db; margin-bottom: 10px;">Real-World Analogy</h4>
+                            <p style="font-size: 14px; line-height: 1.8;">
+                                Imagine you have a <strong>stretchable storage box</strong>:
+                            </p>
+                            <ul style="font-size: 14px; line-height: 1.8; padding-left: 20px; margin-top: 10px;">
+                                <li><strong>Media Queries</strong> = Decide how to arrange the box based on "room size"</li>
+                                <li><strong>Container Queries</strong> = Decide how to organize inside based on "box's own size"</li>
+                            </ul>
+                        </div>
+                        <div style="background: #e8f8f0; padding: 15px; border-radius: 8px;">
+                            <h4 style="color: #27ae60; margin-bottom: 10px;">Key Advantage</h4>
+                            <p style="font-size: 14px; line-height: 1.8;">
+                                The same card component automatically becomes "slim" in sidebar, "wide" in main content area, or "stacked" at bottom - all <strong>automatically</strong>!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">One-Line Understanding</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* TV Query: TV size determines program content */
+/* Larger TV (screen) = clearer display */
+@media (min-width: 768px) {
+    .show { display: "HD Version"; }
+}
+
+/* Container Query: Box size determines internal layout */
+/* Larger storage box = more compartments */
+.card-wrapper {
+    container-type: inline-size;
+}
+
+@container (min-width: 400px) {
+    .card { display: flex; }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Container Queries vs Media Queries <span class="recommend-tag tag-5">Core Comparison ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Use a <strong>real scenario</strong> to understand the difference.
+                    </p>
+                    <div class="demo-box">
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: #e67e22; margin-bottom: 10px;">Scenario: Blog Card Component</h4>
+                            <p style="font-size: 14px; line-height: 1.8;">
+                                Suppose you created a card component and want to use it on blog homepage, sidebar, and article detail page.
+                            </p>
+                        </div>
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Using Media Queries</th>
+                                <th>Using Container Queries</th>
+                            </tr>
+                            <tr>
+                                <td style="font-size: 14px;">
+                                    Same component behaves the same everywhere<br>
+                                    <span style="color: #999;">Sidebar is narrow but card still shows horizontal, causing overflow</span>
+                                </td>
+                                <td style="font-size: 14px;">
+                                    Same component adapts to different locations<br>
+                                    <span style="color: #27ae60;">Automatically stacks in narrow areas, horizontal in wide areas</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Code Comparison</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Problem with Media Queries: Only recognizes screen width */
+@media (min-width: 768px) {
+    .card { display: flex; }
+}
+/* When screen is wider than 768px, all cards become horizontal */
+/* But what if the card is placed in a 300px sidebar? Still horizontal, causing overflow */
+
+/* Container Query Solution: Recognizes container width */
+.card-wrapper {
+    container-type: inline-size;  /* Declare this as a container */
+    container-name: card;
+}
+
+@container card (min-width: 400px) {
+    .card { display: flex; }
+}
+/* Card becomes horizontal when container is wider than 400px */
+/* When placed in narrow sidebar, container isn't wide enough, automatically stays vertical */</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Practical Application Scenarios <span class="recommend-tag tag-5">Must-See Examples ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Here are the most common <strong>real project</strong> scenarios for container queries.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #3498db;">
+                                <h4 style="color: #3498db;">Scenario 1: E-commerce Product Cards</h4>
+                                <p style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    Homepage grid (4 cols) → Category page (3 cols) → Sidebar (1 col) → Featured (2 cols)<br>
+                                    <strong>Container queries let the same component automatically adapt to all scenarios</strong>
+                                </p>
+                            </div>
+                            <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #27ae60;">
+                                <h4 style="color: #27ae60;">Scenario 2: Comment Section Components</h4>
+                                <p style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    Main comment area (wide) → Nested replies (narrow) → Mobile (ultra-narrow)<br>
+                                    <strong>Avatars and content automatically switch layouts</strong>
+                                </p>
+                            </div>
+                            <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #e67e22;">
+                                <h4 style="color: #e67e22;">Scenario 3: Data Display Cards</h4>
+                                <p style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    Dashboard large screen (wide) → List page medium cards (narrow)<br>
+                                    <strong>Charts, metrics, and buttons automatically adjust size and position</strong>
+                                </p>
+                            </div>
+                            <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; border-left: 4px solid #9b59b6;">
+                                <h4 style="color: #9b59b6;">Scenario 4: Hamburger Menu</h4>
+                                <p style="font-size: 13px; color: #666; margin-top: 5px;">
+                                    Top navigation (narrow space) → Side drawer (wide space)<br>
+                                    <strong>Menu items automatically switch from vertical to horizontal</strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">E-commerce Card Complete Example</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ===== 1. Define Container ===== */
+.product-card-wrapper {
+    container-type: inline-size;
+    container-name: product;
+}
+
+/* ===== 2. Default Styles (Small Container) ===== */
+.product-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-image { width: 100%; }
+
+.product-info { padding: 10px; }
+
+.product-title { font-size: 14px; }
+
+.product-price { font-size: 16px; font-weight: bold; }
+
+/* ===== 3. Container Query Breakpoints ===== */
+
+/* When container is wider than 300px: Image and content side by side */
+@container product (min-width: 300px) {
+    .product-card {
+        flex-direction: row;
+    }
+    .product-image { width: 120px; }
+    .product-info { flex: 1; }
+}
+
+/* When container is wider than 450px: Becomes grid card */
+@container product (min-width: 450px) {
+    .product-card {
+        flex-direction: column;
+    }
+    .product-image { width: 100%; }
+    .product-info { padding: 15px; }
+    .product-title { font-size: 16px; }
+}
+
+/* When container is wider than 600px: Show more content */
+@container product (min-width: 600px) {
+    .product-info { padding: 20px; }
+    .product-title { font-size: 18px; }
+    .product-actions { display: flex; gap: 10px; }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Multi-Breakpoint Container Queries <span class="recommend-tag tag-4">Advanced Usage ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Like building a house foundation, container queries need to be written in "small to large" order.
+                    </p>
+                    <div class="demo-box">
+                        <div style="background: #f0f7ff; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: #3498db; margin-bottom: 10px;">Breakpoint Setting Logic</h4>
+                            <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                                <tr style="background: #3498db; color: white;">
+                                    <th style="padding: 8px;">Container Width</th>
+                                    <th style="padding: 8px;">Layout Mode</th>
+                                    <th style="padding: 8px;">Use Case</th>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">&lt; 250px</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Simple Single Column</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Phone Portrait, Sidebar</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td style="padding: 8px; border: 1px solid #ddd;">250-400px</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Horizontal Layout</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Tablet, Phone Landscape</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">400-600px</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd</td>
+                                    <td style="padding: 8;">Two Column Gridpx; border: 1px solid #ddd;">Small Desktop, Split Layout</td>
+                                </tr>
+                                <tr style="background: #f8f9fa;">
+                                    <td style="padding: 8px; border: 1px solid #ddd;">&gt; 600px</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Three Column/Full Display</td>
+                                    <td style="padding: 8px; border: 1px solid #ddd;">Large Desktop, Full Screen</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Complete Example Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Recommended: Write in small-to-large order */
+
+/* ===== Default Styles (Smallest) ===== */
+.card {
+    padding: 12px;
+    font-size: 14px;
+}
+
+/* ===== Breakpoint 1: Greater than 250px ===== */
+@container (min-width: 250px) {
+    .card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 16px;
+    }
+}
+
+/* ===== Breakpoint 2: Greater than 400px ===== */
+@container (min-width: 400px) {
+    .card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        padding: 20px;
+    }
+}
+
+/* ===== Breakpoint 3: Greater than 600px ===== */
+@container (min-width: 600px) {
+    .card {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+        padding: 24px;
+    }
+    .card-title { font-size: 18px; }
+}
+
+/* ===== Using max-width to set upper limit ===== */
+@container (max-width: 800px) {
+    .card {
+        /* Styles when container is smaller than 800px */
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Container Query Usage Steps <span class="recommend-tag tag-4">Quick Start ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Only <strong>3 steps</strong> to start using container queries.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #e8f4fd; border-radius: 6px;">
+                                <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">1</div>
+                                <div>
+                                    <strong style="color: #3498db;">Declare Container</strong>
+                                    <p style="font-size: 13px; color: #666; margin-top: 4px;">Add <code>container-type: inline-size</code> to parent element</p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #e8f4fd; border-radius: 6px;">
+                                <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">2</div>
+                                <div>
+                                    <strong style="color: #3498db;">Name Container (Optional)</strong>
+                                    <p style="font-size: 13px; color: #666; margin-top: 4px;">Give container a name for organization: <code>container-name: card</code></p>
+                                </div>
+                            </div>
+                            <div style="display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #e8f4fd; border-radius: 6px;">
+                                <div style="background: #3498db; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0;">3</div>
+                                <div>
+                                    <strong style="color: #3498db;">Write Query Rules</strong>
+                                    <p style="font-size: 13px; color: #666; margin-top: 4px;">Define breakpoints with <code>@container (min-width: 400px) { ... }</code></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Minimal Example</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ===== Complete Minimal Example ===== */
+
+/* Parent Container: Declare as container */
+.card-container {
+    container-type: inline-size;
+}
+
+/* Child Element: Respond to container width */
+.card {
+    background: white;
+    padding: 1rem;
+}
+
+/* When container is wider than 400px */
+@container (min-width: 400px) {
+    .card {
+        display: flex;
+        flex-direction: row;
+    }
+}
+
+/* When container is wider than 600px */
+@container (min-width: 600px) {
+    .card {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Aspect Ratio -->
+        <div id="tab-aspect" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>aspect-ratio Property <span class="recommend-tag tag-5">Must Learn ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Easily maintain element aspect ratios, suitable for images and video containers.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 16/9; margin-bottom: 5px;">16:9</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Video/Landscape</p>
+                            </div>
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 4/3; margin-bottom: 5px;">4:3</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Traditional Photo</p>
+                            </div>
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 1/1; margin-bottom: 5px;">1:1</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Square</p>
+                            </div>
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 9/16; margin-bottom: 5px;">9:16</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Vertical Video</p>
+                            </div>
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 21/9; margin-bottom: 5px;">21:9</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Ultra-Wide</p>
+                            </div>
+                            <div>
+                                <div class="aspect-demo" style="aspect-ratio: 3/2; margin-bottom: 5px;">3:2</div>
+                                <p style="text-align: center; font-size: 12px; color: #666;">Photo Standard</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Video Container - 16:9 */
+.video-container {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+/* Square Avatar */
+.avatar {
+    aspect-ratio: 1 / 1;
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+}
+
+/* Portrait Card */
+.portrait-card {
+    aspect-ratio: 3 / 4;
+}
+
+/* Responsive Ratio */
+.responsive-card {
+    aspect-ratio: 16 / 9;
+}
+
+@media (min-width: 768px) {
+    .responsive-card {
+        aspect-ratio: 4 / 3;
+    }
+}
+
+/* Gallery Grid */
+.gallery-item {
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Using with object-fit <span class="recommend-tag tag-5">Core Skill ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        <strong>aspect-ratio</strong> maintains container ratio, <strong>object-fit</strong> controls how image/video fills the container.
+                    </p>
+                    <div class="demo-box" style="margin-bottom: 15px;">
+                        <div style="background: #e8f4fd; padding: 12px; border-radius: 6px; margin-bottom: 12px;">
+                            <p style="font-size: 14px; line-height: 1.6; margin: 0;">
+                                <strong>Simple Understanding:</strong> Imagine you have a fixed-size photo frame (aspect-ratio), object-fit determines how the photo fits - crop excess, add whitespace, or stretch.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="demo-box">
+                        <h4 style="font-size: 14px; margin-bottom: 12px; color: #3498db;">object-fit 5 Fill Modes Comparison</h4>
+                        <p style="font-size: 12px; color: #666; margin-bottom: 12px;">
+                            <strong>Note:</strong> Using 1:1 SVG (200x200 red square) in 16:9 container, observe different fill effects
+                        </p>
+                        <div class="object-fit-demo-wrapper">
+                            <div class="object-fit-card">
+                                <div class="object-fit-container">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e74c3c' width='200' height='200'/%3E%3Crect x='10' y='10' width='180' height='180' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='14' x='50%25' y='45%25' text-anchor='middle'%3E1:1%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='10' x='50%25' y='60%25' text-anchor='middle'%3E200x200%3C/text%3E%3C/svg%3E"
+                                         alt="1:1 square" class="object-fit-img object-fit-cover">
+                                </div>
+                                <p class="object-fit-label">cover</p>
+                                <p class="object-fit-desc">Fill + Crop</p>
+                            </div>
+                            <div class="object-fit-card">
+                                <div class="object-fit-container">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e74c3c' width='200' height='200'/%3E%3Crect x='10' y='10' width='180' height='180' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='14' x='50%25' y='45%25' text-anchor='middle'%3E1:1%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='10' x='50%25' y='60%25' text-anchor='middle'%3E200x200%3C/text%3E%3C/svg%3E"
+                                         alt="1:1 square" class="object-fit-img object-fit-contain">
+                                </div>
+                                <p class="object-fit-label">contain</p>
+                                <p class="object-fit-desc">Full + Whitespace</p>
+                            </div>
+                            <div class="object-fit-card">
+                                <div class="object-fit-container">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200' preserveAspectRatio='none'%3E%3Crect fill='%23e74c3c' width='200' height='200'/%3E%3Crect x='10' y='10' width='180' height='180' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='14' x='50%25' y='45%25' text-anchor='middle'%3E1:1%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='10' x='50%25' y='60%25' text-anchor='middle'%3E200x200%3C/text%3E%3C/svg%3E"
+                                         alt="1:1 square" class="object-fit-img object-fit-fill">
+                                </div>
+                                <p class="object-fit-label">fill</p>
+                                <p class="object-fit-desc">Stretch (Distort)</p>
+                            </div>
+                            <div class="object-fit-card">
+                                <div class="object-fit-container">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e74c3c' width='200' height='200'/%3E%3Crect x='10' y='10' width='180' height='180' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='14' x='50%25' y='45%25' text-anchor='middle'%3E1:1%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='10' x='50%25' y='60%25' text-anchor='middle'%3E200x200%3C/text%3E%3C/svg%3E"
+                                         alt="1:1 square" class="object-fit-img object-fit-none">
+                                </div>
+                                <p class="object-fit-label">none</p>
+                                <p class="object-fit-desc">Original Size</p>
+                            </div>
+                            <div class="object-fit-card">
+                                <div class="object-fit-container">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Crect fill='%23e74c3c' width='200' height='200'/%3E%3Crect x='10' y='10' width='180' height='180' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='14' x='50%25' y='45%25' text-anchor='middle'%3E1:1%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='10' x='50%25' y='60%25' text-anchor='middle'%3E200x200%3C/text%3E%3C/svg%3E"
+                                         alt="1:1 square" class="object-fit-img object-fit-scale-down">
+                                </div>
+                                <p class="object-fit-label">scale-down</p>
+                                <p class="object-fit-desc">Smart Scale</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Core Code Examples</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ========== object-fit 5 Values ========== */
+
+/* Key Points:
+   1) aspect-ratio applies to "container", locking frame ratio
+   2) img fills container (width/height: 100%), object-fit determines content fit */
+
+/* 16:9 Demo Container (Frame) */
+.object-fit-container {
+    aspect-ratio: 16 / 9;
+    background: #f0f0f0;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Demo Image (Photo) */
+.object-fit-img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* cover: Fill container, may crop (commonly used) */
+.object-fit-img.object-fit-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* contain: Full display, may have whitespace */
+.object-fit-img.object-fit-contain {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background: #fff;
+}
+
+/* fill: Stretch to fill, will distort (not recommended) */
+.object-fit-img.object-fit-fill {
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+}
+
+/* none: No scaling, draw at original size (will be cropped by container) */
+.object-fit-img.object-fit-none {
+    width: 100%;
+    height: 100%;
+    object-fit: none;
+    object-position: center;
+}
+
+/* scale-down: Large img ≈ contain, small img ≈ none */
+.object-fit-img.object-fit-scale-down {
+    width: 100%;
+    height: 100%;
+    object-fit: scale-down;
+    object-position: center;
+    background: #fff;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Common Scenario Guide <span class="recommend-tag tag-4">Practical Tips ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        How should object-fit be chosen in different scenarios?
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div style="background: #e8f8f0; padding: 12px; border-radius: 6px; border-left: 4px solid #27ae60;">
+                                <p style="font-size: 13px; margin: 0 0 5px;"><strong>Scenario 1: User Avatar</strong></p>
+                                <p style="font-size: 12px; color: #666; margin: 0;">
+                                    Use <code>aspect-ratio: 1/1</code> + <code>object-fit: cover</code><br>
+                                    <span style="color: #27ae60;">→ Ensure square display, no distortion, automatic crop</span>
+                                </p>
+                            </div>
+                            <div style="background: #e8f4fd; padding: 12px; border-radius: 6px; border-left: 4px solid #3498db;">
+                                <p style="font-size: 13px; margin: 0 0 5px;"><strong>Scenario 2: E-commerce Product Images</strong></p>
+                                <p style="font-size: 12px; color: #666; margin: 0;">
+                                    Use <code>aspect-ratio: 1/1</code> or <code>4/3</code> + <code>object-fit: cover</code><br>
+                                    <span style="color: #3498db;">→ Unified product image size, better page neatness</span>
+                                </p>
+                            </div>
+                            <div style="background: #fff3cd; padding: 12px; border-radius: 6px; border-left: 4px solid #e67e22;">
+                                <p style="font-size: 13px; margin: 0 0 5px;"><strong>Scenario 3: Video Thumbnails</strong></p>
+                                <p style="font-size: 12px; color: #666; margin: 0;">
+                                    Use <code>aspect-ratio: 16/9</code> + <code>object-fit: cover</code><br>
+                                    <span style="color: #e67e22;">→ Unified video thumbnail ratio, fill display</span>
+                                </p>
+                            </div>
+                            <div style="background: #f8e8f0; padding: 12px; border-radius: 6px; border-left: 4px solid #9b59b6;">
+                                <p style="font-size: 13px; margin: 0 0 5px;"><strong>Scenario 4: Charts/QR Codes</strong></p>
+                                <p style="font-size: 12px; color: #666; margin: 0;">
+                                    Use <code>aspect-ratio: 1/1</code> + <code>object-fit: contain</code><br>
+                                    <span style="color: #9b59b6;">→ Need to see complete content, whitespace is fine</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Practical Code Templates</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* ===== Common Scenario Templates ===== */
+
+/* Avatar Template: Square, center crop */
+.avatar {
+    width: 60px;
+    height: 60px;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 50%; /* Optional: Round avatar */
+}
+
+/* Product Card Template: Unified ratio */
+.product-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+/* Video Thumbnail Template: 16:9 */
+.video-thumbnail {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 8px;
+}
+
+/* Infographic Template: Full display */
+.infographic {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: contain;
+    background: #f8f9fa;
+    padding: 20px;
+}
+
+/* Gallery Grid Template */
+.gallery-item {
+    aspect-ratio: 1 / 1;
+    overflow: hidden; /* Crop overflow */
+    border-radius: 8px;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s; /* Optional: hover zoom effect */
+}
+
+.gallery-item img:hover {
+    transform: scale(1.05);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>object-position Additional Notes <span class="recommend-tag tag-3">Advanced ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        When image is cropped, use <code>object-position</code> to control which part to show.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                            <div style="text-align: center;">
+                                <div style="width: 100%; aspect-ratio: 16/9; background: #3498db; border-radius: 6px; overflow: hidden;">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23e74c3c' width='400' height='400'/%3E%3Crect x='10' y='10' width='380' height='380' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='30' x='50%25' y='50%25' text-anchor='middle' dominant-baseline='middle'%3ECENTER%3C/text%3E%3Cpath d='M200 50 L200 130 M170 80 L200 130 L230 80' stroke='white' stroke-width='4' fill='none' opacity='0.6'/%3E%3Cpath d='M200 350 L200 270 M170 320 L200 270 L230 320' stroke='white' stroke-width='4' fill='none' opacity='0.6'/%3E%3Cpath d='M50 200 L130 200 M80 170 L130 200 L80 230' stroke='white' stroke-width='4' fill='none' opacity='0.6'/%3E%3Cpath d='M350 200 L270 200 M320 170 L270 200 L320 230' stroke='white' stroke-width='4' fill='none' opacity='0.6'/%3E%3C/svg%3E" alt="Demo" style="width: 100%; height: 100%; object-fit: cover; object-position: center;">
+                                </div>
+                                <p style="font-size: 12px; margin-top: 5px;">object-position: center</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="width: 100%; aspect-ratio: 16/9; background: #3498db; border-radius: 6px; overflow: hidden;">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23e74c3c' width='400' height='400'/%3E%3Crect x='10' y='10' width='380' height='380' fill='none' stroke='white' stroke-width='4'/%3E%3Cpath d='M200 40 L200 100 M170 70 L200 40 L230 70' stroke='white' stroke-width='6' fill='none'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='30' x='50%25' y='140' text-anchor='middle' font-weight='bold'%3ETOP%3C/text%3E%3Ctext fill='white' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle' opacity='0.3'%3Ecenter%3C/text%3E%3C/svg%3E" alt="Demo" style="width: 100%; height: 100%; object-fit: cover; object-position: top;">
+                                </div>
+                                <p style="font-size: 12px; margin-top: 5px;">object-position: top</p>
+                            </div>
+                            <div style="text-align: center;">
+                                <div style="width: 100%; aspect-ratio: 16/9; background: #3498db; border-radius: 6px; overflow: hidden;">
+                                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400' viewBox='0 0 400 400'%3E%3Crect fill='%23e74c3c' width='400' height='400'/%3E%3Crect x='10' y='10' width='380' height='380' fill='none' stroke='white' stroke-width='4'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='30' x='50%25' y='270' text-anchor='middle' font-weight='bold'%3EBOTTOM%3C/text%3E%3Cpath d='M200 360 L200 300 M170 330 L200 360 L230 330' stroke='white' stroke-width='6' fill='none'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle' opacity='0.3'%3Ecenter%3C/text%3E%3C/svg%3E" alt="Demo" style="width: 100%; height: 100%; object-fit: cover; object-position: bottom;">
+                                </div>
+                                <p style="font-size: 12px; margin-top: 5px;">object-position: bottom</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">object-position Usage</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* object-position Syntax and Values */
+
+/* Keyword Values */
+.position-center { object-position: center; }
+.position-top { object-position: top; }
+.position-bottom { object-position: bottom; }
+.position-left { object-position: left; }
+.position-right { object-position: right; }
+
+/* Percentage Values - Based on Container */
+.position-50-50 { object-position: 50% 50%; }   /* Same as center */
+.position-50-0 { object-position: 50% 0%; }     /* Top center */
+.position-0-100 { object-position: 0% 100%; }   /* Bottom left */
+
+/* Pixel Values */
+.position-0-0 { object-position: 0px 0px; }
+.position-20-40 { object-position: 20px 40px; }
+
+/* Practical Example: Person photos usually have important head */
+.portrait-photo {
+    object-fit: cover;
+    object-position: 50% 30%; /* Show more upper body */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Fluid Functions -->
+        <div id="tab-fluid" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>min() / max() / clamp() <span class="recommend-tag tag-5">Core ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Three powerful fluid design functions that make layouts automatically adjust based on viewport width.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="function-card function-min">
+                                <strong>min(value1, value2)</strong><br>
+                                <span style="font-size: 13px;">Takes the <strong>smaller</strong> of value1 and value2</span><br>
+                                <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">width: min(50%, 400px)</code>
+                                <p style="font-size: 12px; margin-top: 8px;">Effect: Width takes smaller of 50% container and 400px, i.e., <strong>max limited to 400px</strong></p>
+                            </div>
+                            <div class="function-card function-max">
+                                <strong>max(value1, value2)</strong><br>
+                                <span style="font-size: 13px;">Takes the <strong>larger</strong> of value1 and value2</span><br>
+                                <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">width: max(50%, 300px)</code>
+                                <p style="font-size: 12px; margin-top: 8px;">Effect: Width takes larger of 50% container and 300px, i.e., <strong>min guaranteed at 300px</strong></p>
+                            </div>
+                            <div class="function-card function-clamp">
+                                <strong>clamp(min, preferred, max)</strong><br>
+                                <span style="font-size: 13px;">Within min and max range, prefer <strong>preferred</strong> value</span><br>
+                                <code style="background: rgba(0,0,0,0.2); padding: 2px 6px; border-radius: 4px;">font-size: clamp(1rem, 2vw, 2rem)</code>
+                                <p style="font-size: 12px; margin-top: 8px;">Effect: Font size scales fluidly between 1rem and 2rem based on 2vw</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* min() - Take smaller of two values, limit max width */
+.box {
+    width: min(50%, 400px);
+    /* When container > 800px, 50% > 400px, use 400px */
+    /* When container < 800px, 50% < 400px, use 50% */
+}
+
+/* max() - Take larger of two values, ensure min width */
+.box {
+    width: max(50%, 300px);
+    /* When container > 600px, 50% > 300px, use 50% */
+    /* When container < 600px, 50% < 300px, use 300px */
+}
+
+/* clamp() - Fluid scaling within range */
+.box {
+    width: clamp(200px, 50%, 600px);
+    /* When calculated < 200px, use 200px */
+    /* When calculated > 600px, use 600px */
+    /* Otherwise use 50% */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Combined Usage Examples <span class="recommend-tag tag-4">Advanced ⭐⭐⭐⭐☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Combine multiple functions to create complex responsive effects.
+                    </p>
+                    <div class="demo-box">
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="padding: 15px; background: #f8f4fc; border-radius: 8px;">
+                                <strong>Responsive Card</strong>
+                                <div style="margin-top: 10px; padding: 10px; background: #3498db; color: white; border-radius: 4px; width: min(100%, 500px);">
+                                    width: min(100%, 500px)
+                                </div>
+                            </div>
+                            <div style="padding: 15px; background: #f8f4fc; border-radius: 8px;">
+                                <strong>Safe Reading Width</strong>
+                                <div style="margin-top: 10px; padding: 10px; background: #27ae60; color: white; border-radius: 4px; width: max(90%, 320px);">
+                                    width: max(90%, 320px)
+                                </div>
+                            </div>
+                            <div style="padding: 15px; background: #f8f4fc; border-radius: 8px;">
+                                <strong>Fluid Margin</strong>
+                                <div style="margin-top: 10px; padding: 10px; background: #3498db; color: white; border-radius: 4px; margin: clamp(10px, 3vw, 30px);">
+                                    margin: clamp(10px, 3vw, 30px)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Complete Example</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Responsive Card Component */
+.card {
+    /* Width between 280px and 600px */
+    width: clamp(280px, 60vw, 600px);
+
+    /* Padding between 1rem and 2rem */
+    padding: clamp(1rem, 2vw, 2rem);
+
+    /* Font size between 0.875rem and 1.125rem */
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1.125rem);
+
+    /* Border radius between 4px and 16px */
+    border-radius: clamp(4px, 1vw, 16px);
+}
+
+/* Responsive Hero */
+.hero {
+    min-height: min(80vh, 600px);
+    padding: max(2rem, 5vh);
+}
+
+/* Responsive Button */
+.btn {
+    padding: max(0.5rem, 1vh) max(1rem, 2vw);
+    font-size: max(14px, 0.8rem + 0.5vw);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Safe Areas -->
+        <div id="tab-safe" class="tab-pane">
+            <div class="demo-code-row">
+                <div>
+                    <h3>Mobile Safe Areas <span class="recommend-tag tag-3">Learn ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        Use env() function to adapt to notches, rounded corners, and safe areas.
+                    </p>
+                    <div class="demo-box">
+                        <div class="safe-area-demo">
+                            <div class="safe-area-indicator">
+                                <span class="safe-area-label">Safe Area Boundary</span>
+                            </div>
+                            <p><strong>Safe Area Demo</strong></p>
+                            <p style="font-size: 13px; opacity: 0.8;">
+                                Inside red border is safe-area-inset-* safe area<br>
+                                Real effect visible on actual device
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* iPhone Notch Safe Area */
+.safe-top {
+    padding-top: env(safe-area-inset-top);
+}
+
+.safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-left {
+    padding-left: env(safe-area-inset-left);
+}
+
+.safe-right {
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Complete Safe Area Adaptation */
+body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Fixed Bottom Navigation Adaptation */
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="demo-code-row">
+                <div>
+                    <h3>Dynamic Viewport Units <span class="recommend-tag tag-3">New Feature ⭐⭐⭐☆☆</span></h3>
+                    <p style="margin-bottom: 15px; color: #666;">
+                        svh / lvh / dvh solve viewport issues caused by mobile address bars.
+                    </p>
+                    <div class="demo-box">
+                        <table class="comparison-table">
+                            <tr>
+                                <th>Unit</th>
+                                <th>Description</th>
+                                <th>Typical Use</th>
+                            </tr>
+                            <tr>
+                                <td><code>100svh</code></td>
+                                <td>Smallest viewport height (address bar expanded)</td>
+                                <td>Ensure content always visible</td>
+                            </tr>
+                            <tr>
+                                <td><code>100lvh</code></td>
+                                <td>Largest viewport height (address bar collapsed)</td>
+                                <td>Fullscreen background</td>
+                            </tr>
+                            <tr>
+                                <td><code>100dvh</code></td>
+                                <td>Dynamic viewport height</td>
+                                <td>Best experience</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Fullscreen Layout - Ensure content always visible */
+.fullscreen {
+    min-height: 100svh;
+}
+
+/* Modal - Adapt to keyboard pop-up */
+.modal {
+    max-height: 100svh;
+    overflow-y: auto;
+}
+
+/* Hero Section - Use max height */
+.hero {
+    height: 100lvh;
+}
+
+/* Best Practice - Use dynamic units */
+.responsive-element {
+    height: 100dvh;
+}
+
+/* Fallback写法 */
+.element {
+    height: 100vh; /* Fallback */
+    height: 100dvh; /* Modern browsers */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Learning Summary -->
+        <div id="tab-summary" class="tab-pane">
+            <section style="background-color: #2c3e50; color: white;">
+                <h2 style="color: white; border-left-color: white;">Class 8 Learning Summary</h2>
+
+                <h3 style="color: #fff;">Core Mastery (Essential)</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>✅ <strong>Container Queries</strong> - ⭐⭐⭐⭐⭐ <br>`@container` lets components respond based on parent container.</li>
+                    <li>✅ <strong>aspect-ratio</strong> - ⭐⭐⭐⭐⭐ <br>Easily maintain element ratios, no more fixed heights.</li>
+                    <li>✅ <strong>clamp()</strong> - ⭐⭐⭐⭐⭐ <br>Core of fluid design, enables true responsive scaling.</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Auxiliary Skills</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>🔸 <strong>min() / max()</strong> - ⭐⭐⭐⭐☆ <br>Limit max/min values, simplify responsive calculations.</li>
+                    <li>🔸 <strong>Safe Areas</strong> - ⭐⭐⭐☆☆ <br>`env(safe-area-*)` for notch screen adaptation.</li>
+                    <li>🔸 <strong>Dynamic Viewport Units</strong> - ⭐⭐⭐☆☆ <br>`svh`/`lvh`/`dvh` solve mobile viewport issues.</li>
+                </ul>
+
+                <h3 style="color: #fff; margin-top: 15px;">Advanced Path</h3>
+                <ul style="padding-left: 20px; line-height: 2;">
+                    <li>Combine container queries with media queries</li>
+                    <li>Build complete fluid design system</li>
+                    <li>Provide graceful degradation for older browsers</li>
+                    <li>Combine CSS Grid with container queries for complex layouts</li>
+                </ul>
+
+                <p style="margin-top: 15px;"><strong>Next:</strong> CSS Variables, Position</p>
+                <a href="javascript:void(0);" onclick="openDocModal()" style="display: inline-block; margin-top: 10px; padding: 10px 20px; background: white; color: #2c3e50; text-decoration: none; border-radius: 6px;">View Full Documentation</a>
+            </section>
+        </div>
+    </div>
+
+    <!-- Markdown Document Modal -->
+    <div id="docModal" class="modal-overlay">
+        <div class="modal-container">
+            <div class="modal-header">
+                <span class="modal-title">Advanced Responsive Design - Complete Documentation</span>
+                <button class="modal-close" onclick="closeDocModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="markdownContent" class="markdown-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Markdown Content -->
+    <script type="text/plain" id="mdContent">
+# Advanced Responsive Design
+
+> **Recommendation**: ⭐⭐⭐⭐☆ (4/5)
+> Master container queries, aspect ratios, fluid design and other modern CSS techniques, **essential for advancement**.
+
+---
+
+## 1. Container Queries Overview
+
+> 💡 **Next-generation responsive technology**, based on parent container instead of viewport
+
+Container queries are a major upgrade to responsive design, allowing elements to adjust styles based on their parent container's size rather than viewport size. This is especially important for component-based development.
+
+### 1.1 Why Container Queries Are Needed
+
+Limitations of media queries:
+- Can only respond based on viewport
+- Same component behaves the same in different page locations
+- Difficult to achieve true component reuse
+
+Advantages of container queries:
+- Respond based on parent container size
+- Components can adapt to different scenarios
+- More flexible component-based design
+
+```css
+/* Traditional media query - based on viewport */
+@media (min-width: 768px) {
+    .card {
+        display: flex;
+    }
+}
+
+/* Container query - based on parent container */
+.card-container {
+    container-type: inline-size;
+    container-name: card;
+}
+
+@container card (min-width: 400px) {
+    .card {
+        display: flex;
+    }
+}
+```
+
+### 1.2 Basic Usage of Container Queries
+
+**Recommendation**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **High** ⭐ Must Learn
+**Use Case**: Component-based responsive design
+
+```css
+/* 1. Define container */
+.card-wrapper {
+    container-type: inline-size;
+    container-name: card;
+}
+
+/* 2. Use container query */
+@container card (min-width: 300px) {
+    .card {
+        flex-direction: row;
+    }
+}
+
+@container card (min-width: 500px) {
+    .card {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+```
+
+---
+
+## 2. Aspect Ratio
+
+> 💡 **Modern CSS solution**, easily maintain element proportions
+
+The `aspect-ratio` property lets you easily create elements that maintain specific aspect ratios, perfect for images, videos, and card layouts.
+
+### 2.1 Basic Usage
+
+**Recommendation**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Must Learn
+**Use Case**: Image containers, video players, card thumbnails
+
+```css
+/* Maintain 16:9 aspect ratio */
+.video-container {
+    aspect-ratio: 16 / 9;
+    width: 100%;
+}
+
+/* Maintain square */
+.square {
+    aspect-ratio: 1 / 1;
+}
+
+/* Maintain 4:3 */
+.photo-frame {
+    aspect-ratio: 4 / 3;
+}
+
+/* Responsive ratio - use narrower ratio on small screens */
+.portrait-card {
+    aspect-ratio: 3 / 4;
+}
+
+@media (min-width: 768px) {
+    .portrait-card {
+        aspect-ratio: 16 / 9;
+    }
+}
+```
+
+### 2.2 Using with object-fit
+
+```css
+/* Image fills container while maintaining ratio */
+.responsive-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* Responsive video */
+.video-wrapper {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16 / 9;
+}
+
+.video-wrapper video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+```
+
+### 2.3 Complex Aspect Ratio Scenarios
+
+```css
+/* Common social media card ratios */
+.instagram-post {
+    aspect-ratio: 1 / 1;           /* Square */
+}
+
+.twitter-card {
+    aspect-ratio: 16 / 9;          /* Landscape 16:9 */
+}
+
+.story-format {
+    aspect-ratio: 9 / 16;          /* Portrait 9:16 */
+}
+
+/* Responsive gallery card */
+.gallery-item {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+}
+
+.gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.gallery-item:hover img {
+    transform: scale(1.05);
+}
+```
+
+---
+
+## 3. min()/max()/clamp() Advanced Applications
+
+> 💡 **Core fluid design functions**, goodbye to fixed breakpoints
+
+These three CSS math functions let you create truly fluid, adaptive layouts without relying on fixed breakpoints.
+
+### 3.1 clamp() Function Details
+
+**Recommendation**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Must Learn
+**Use Case**: Fluid typography, responsive spacing, elastic sizing
+
+```css
+/* Basic syntax */
+clamp(min, preferred, max)
+
+/* Fluid typography - scales between 1rem and 2rem based on viewport */
+h1 {
+    font-size: clamp(1.5rem, 5vw, 3rem);
+}
+
+/* Fluid padding */
+.card {
+    padding: clamp(1rem, 3vw, 2rem);
+}
+
+/* Fluid width */
+.container {
+    width: clamp(300px, 90vw, 1200px);
+}
+
+/* Fluid line height */
+body {
+    line-height: clamp(1.5, 2vw + 0.5, 1.8);
+}
+```
+
+### 3.2 min() Function
+
+```css
+/* Take smaller value - limit max size */
+.box {
+    width: min(50%, 500px);
+    /* Takes smaller of 50% and 500px */
+}
+
+/* Responsive margin */
+.content {
+    margin-left: min(5vw, 40px);
+}
+
+/* Fluid grid column width */
+.grid-item {
+    width: min(300px, 100%);
+}
+```
+
+### 3.3 max() Function
+
+```css
+/* Take larger value - ensure min size */
+.box {
+    width: max(50%, 300px);
+    /* Takes larger of 50% and 300px */
+}
+
+/* Minimum reading width */
+.article {
+    max-width: 70ch;
+    width: max(90%, 320px);
+}
+
+/* Ensure clickable area */
+button {
+    padding: max(0.5rem, 2vh) max(1rem, 4vw);
+}
+```
+
+### 3.4 Combined Usage
+
+```css
+/* Complex fluid layout */
+.card {
+    /* Width between 280px and 600px, adaptive based on viewport */
+    width: clamp(280px, 60vw, 600px);
+
+    /* Padding between 1rem and 2rem */
+    padding: clamp(1rem, 2vw, 2rem);
+
+    /* Font size between 0.875rem and 1.125rem */
+    font-size: clamp(0.875rem, 0.5vw + 0.75rem, 1.125rem);
+
+    /* Border radius adjusts with viewport, max 16px */
+    border-radius: clamp(4px, 1vw, 16px);
+}
+
+/* Responsive Hero section */
+.hero {
+    min-height: min(80vh, 600px);
+    padding: max(2rem, 5vh);
+}
+```
+
+---
+
+## 4. Responsive Typography System
+
+> 💡 **Build complete fluid typography system**, one setting, multi-device adaptation
+
+### 4.1 Viewport-Based Fluid Typography
+
+```css
+/* Base setup - use vw unit for fluid typography */
+html {
+    font-size: calc(16px + 0.5vw);
+}
+
+body {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+/* Fluid typography for all heading levels */
+h1 {
+    font-size: clamp(2rem, 5vw, 4rem);
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    line-height: 1.2;
+}
+
+h3 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+    line-height: 1.3;
+}
+
+h4 {
+    font-size: clamp(1rem, 2vw, 1.5rem);
+}
+```
+
+### 4.2 Elastic Spacing System
+
+```css
+/* Use CSS variables to establish spacing system */
+:root {
+    --space-xs: clamp(0.25rem, 1vw, 0.5rem);
+    --space-sm: clamp(0.5rem, 2vw, 1rem);
+    --space-md: clamp(1rem, 3vw, 1.5rem);
+    --space-lg: clamp(1.5rem, 4vw, 2rem);
+    --space-xl: clamp(2rem, 6vw, 3rem);
+    --space-2xl: clamp(3rem, 8vw, 4rem);
+}
+
+/* Apply spacing */
+.section {
+    padding: var(--space-lg) var(--space-md);
+}
+
+.card {
+    padding: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.button {
+    padding: var(--space-sm) var(--space-md);
+}
+```
+
+### 4.3 Responsive Font Scaling
+
+```css
+/* Fine control for small text */
+.caption {
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    line-height: 1.4;
+}
+
+/* Body content */
+.body-text {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    line-height: 1.6;
+    max-width: 65ch; /* Optimal reading width */
+}
+
+/* Lead text */
+.lead {
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: 500;
+}
+```
+
+---
+
+## 5. Mobile Safe Areas
+
+> 💡 **Adapt to notch screens and rounded corners**, ensure content isn't obscured
+
+### 5.1 CSS Environment Variables
+
+```css
+/* iPhone notch and rounded corner safe areas */
+.safe-area {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Global adaptation */
+body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+}
+
+/* Fixed positioning element adaptation */
+.fixed-bottom {
+    position: fixed;
+    bottom: 0;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+```
+
+### 5.2 Complete Mobile Adaptation
+
+```css
+/* Viewport adaptation - disable default zoom */
+@viewport {
+    width: device-width;
+    zoom: 1;
+}
+
+/* Touch optimization */
+.touch-target {
+    min-height: 44px;  /* iOS recommended min touch area */
+    min-width: 44px;
+}
+
+/* Button touch area */
+.button {
+    padding: 12px 24px;
+    min-height: 44px;
+}
+
+/* Prevent touch delay */
+touch-action {
+    touch-action: manipulation;
+}
+
+/* Adapt to iPhone Notch */
+.header {
+    padding-top: env(safe-area-inset-top);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+/* Adapt to bottom gesture bar */
+.bottom-nav {
+    padding-bottom: env(safe-area-inset-bottom);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #fff;
+}
+```
+
+### 5.3 Dynamic Viewport Units
+
+```css
+/* Most modern browsers support */
+.dynamic-viewport {
+    /* svh - smallest viewport height (address bar expanded) */
+    height: 100svh;
+
+    /* lvh - largest viewport height (address bar collapsed) */
+    height: 100lvh;
+
+    /* dvh - dynamic viewport height */
+    height: 100dvh;
+}
+
+/* Recommended usage - ensure content always visible */
+.fullscreen {
+    min-height: 100svh;
+}
+
+/* Handle keyboard popup */
+.modal {
+    max-height: 100svh;
+    overflow-y: auto;
+}
+```
+
+---
+
+## 6. Container Query Practice
+
+> 💡 **Best practices for component-based responsiveness**
+
+### 6.1 Responsive Card Component
+
+```css
+/* Define card container */
+.card-list {
+    container-type: inline-size;
+    container-name: card-list;
+}
+
+/* Card base styles */
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Container query breakpoints */
+@container card-list (max-width: 300px) {
+    .card {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .card-image {
+        width: 80px;
+        height: 80px;
+        flex-shrink: 0;
+    }
+
+    .card-content {
+        padding-left: 1rem;
+    }
+}
+
+@container card-list (min-width: 300px) and (max-width: 500px) {
+    .card {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+    }
+}
+
+@container card-list (min-width: 500px) {
+    .card-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+}
+```
+
+### 6.2 Responsive Form Component
+
+```css
+.form-container {
+    container-type: inline-size;
+    container-name: form;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    font-weight: 500;
+}
+
+.form-input {
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Small container: label and input side by side */
+@container form (max-width: 400px) {
+    .form-group {
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .form-label {
+        width: 80px;
+        flex-shrink: 0;
+    }
+
+    .form-input {
+        flex: 1;
+    }
+}
+
+/* Medium container: two column layout */
+@container form (min-width: 400px) {
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+}
+
+/* Large container: three column layout */
+@container form (min-width: 700px) {
+    .form-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+```
+
+### 6.3 Responsive Navigation Component
+
+```css
+.nav-container {
+    container-type: inline-size;
+    container-name: nav;
+}
+
+.nav-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-item a {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: #333;
+    text-decoration: none;
+}
+
+/* Small container: icons only */
+@container nav (max-width: 300px) {
+    .nav-item a::before {
+        content: attr(data-icon);
+        font-size: 1.25rem;
+    }
+
+    .nav-item span {
+        display: none;
+    }
+}
+
+/* Medium container: icon + text */
+@container nav (min-width: 300px) {
+    .nav-item a {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+}
+
+/* Large container: expanded navigation */
+@container nav (min-width: 600px) {
+    .nav-menu {
+        flex-wrap: nowrap;
+        justify-content: center;
+    }
+}
+```
+
+---
+
+## 7. Print Style Adaptation
+
+> 💡 **Make web pages more professional when printing**
+
+```css
+/* Print styles base setup */
+@media print {
+    /* Hide non-print content */
+    .no-print,
+    .header,
+    .footer,
+    .sidebar,
+    .nav {
+        display: none !important;
+    }
+
+    /* Reset layout */
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+        color: #000;
+        background: #fff;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Show URL for links */
+    a[href^="http"]::after {
+        content: " (" attr(href) ")";
+        font-size: 0.8em;
+        color: #666;
+    }
+
+    /* Images prevent page break */
+    img {
+        max-width: 100% !important;
+        page-break-inside: avoid;
+    }
+
+    /* Headings not at page bottom */
+    h1, h2, h3, h4 {
+        page-break-after: avoid;
+    }
+
+    /* Table setup */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td, th {
+        border: 1px solid #000;
+        padding: 0.5rem;
+    }
+
+    /* Code block handling */
+    pre {
+        page-break-inside: avoid;
+        white-space: pre-wrap;
+    }
+}
+```
+
+---
+
+## 8. Performance Optimization Tips
+
+> 💡 **Fast loading is the best user experience**
+
+### 8.1 Reduce Reflows and Repaints
+
+```css
+/* Use transform and opacity for animation optimization */
+.animated-element {
+    will-change: transform, opacity;
+    transform: translateZ(0); /* Enable hardware acceleration */
+}
+
+/* Avoid forced synchronous layout */
+.bad-example {
+    width: calc(100% - 50px); /* May trigger reflow */
+}
+
+.good-example {
+    width: 100%;
+    margin-right: -50px; /* Use negative margin instead */
+}
+```
+
+### 8.2 Image Optimization
+
+```css
+/* Use srcset for responsive images */
+.responsive-img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Lazy load images */
+.lazy-img {
+    loading: lazy;
+    decoding: async;
+}
+
+/* Reserve space to avoid layout shift */
+.image-placeholder {
+    aspect-ratio: 16 / 9;
+    background: #f0f0f0;
+}
+
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+```
+
+---
+
+## 9. Quick Reference
+
+> 📋 **Save for reference**
+
+| Technique | Recommendation | Use Case |
+|-----------|----------------|----------|
+| `@container` | ⭐⭐⭐⭐⭐ | Component-based responsive design |
+| `aspect-ratio` | ⭐⭐⭐⭐⭐ | Maintain element proportions |
+| `clamp()` | ⭐⭐⭐⭐⭐ | Fluid typography and sizing |
+| `min()` | ⭐⭐⭐⭐☆ | Limit max values |
+| `max()` | ⭐⭐⭐⭐☆ | Ensure min values |
+| `env(safe-area-*)` | ⭐⭐⭐☆☆ | Mobile safe areas |
+| `100svh/100dvh` | ⭐⭐⭐☆☆ | Dynamic viewport height |
+| `@media print` | ⭐⭐☆☆☆ | Print styles |
+
+---
+
+## 10. FAQ
+
+> ❓ **Troubleshooting**
+
+### Q: How to choose between container queries and media queries?
+
+A: **Media queries** are suitable for overall page layout and viewport-related design; **container queries** are suitable for independent component adaptation in different containers. It's recommended to use both together - media queries for page-level layout, container queries for component internal styles.
+
+### Q: How is browser compatibility?
+
+A: Container queries and aspect-ratio are well supported in modern browsers. For older browsers, you can use `@supports` for fallback:
+
+```css
+.card {
+    /* Modern browsers */
+    container-type: inline-size;
+    container-name: card;
+}
+
+/* Older browser fallback */
+@supports not (container-type: inline-size) {
+    .card {
+        display: flex;
+        flex-wrap: wrap;
+    }
+}
+```
+
+### Q: What if clamp() calculation expressions are too complex?
+
+A: You can use CSS variables to simplify:
+
+```css
+:root {
+    --fluid-scale: 0.5vw;
+}
+
+h1 {
+    font-size: calc(2rem + var(--fluid-scale));
+    /* or */
+    font-size: clamp(2rem, 2rem + var(--fluid-scale), 4rem);
+}
+```
+
+### Q: How to test mobile safe areas?
+
+A: Enable device simulation in Chrome DevTools, select iPhone or notch screen device, and observe the actual effect of safe-area-inset-*. You can also use BrowserStack for real device testing.
+
+---
+
+## 11. Advanced Practice: Complete Responsive Page Template
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Responsive Design Template</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        /* ========== Base Setup ========== */
+        :root {
+            --primary-color: #3498db;
+            --text-color: #333;
+            --bg-color: #f5f5f5;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background: var(--bg-color);
+            padding: env(safe-area-inset-left) env(safe-area-inset-right);
+        }
+
+        /* ========== Container Query Cards ========== */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: clamp(1rem, 2vw, 2rem);
+            padding: clamp(1rem, 3vw, 2rem);
+        }
+
+        .card-wrapper {
+            container-type: inline-size;
+            container-name: card;
+        }
+
+        .card {
+            background: white;
+            border-radius: clamp(4px, 1vw, 12px);
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .card-image {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            object-fit: cover;
+        }
+
+        .card-content {
+            padding: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .card-title {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-text {
+            font-size: clamp(0.875rem, 1.5vw, 1rem);
+            color: #666;
+        }
+
+        /* Container query response */
+        @container card (max-width: 300px) {
+            .card {
+                display: flex;
+                flex-direction: row;
+            }
+
+            .card-image {
+                width: 100px;
+                aspect-ratio: 1;
+            }
+        }
+
+        /* ========== Responsive Form ========== */
+        .form-section {
+            padding: clamp(1rem, 3vw, 2rem);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-wrapper {
+            container-type: inline-size;
+            container-name: form;
+        }
+
+        .form-group {
+            margin-bottom: clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: clamp(0.5rem, 1.5vw, 0.75rem);
+            border: 1px solid #ddd;
+            border-radius: clamp(4px, 0.5vw, 8px);
+            font-size: clamp(0.875rem, 1.5vw, 1rem);
+        }
+
+        @container form (min-width: 500px) {
+            .form-row {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* ========== Responsive Navigation ========== */
+        .header {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1rem;
+            padding-top: calc(1rem + env(safe-area-inset-top));
+        }
+
+        .nav-wrapper {
+            container-type: inline-size;
+            container-name: nav;
+        }
+
+        .nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            display: block;
+            padding: 0.5rem 1rem;
+            color: var(--text-color);
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #f0f0f0;
+        }
+
+        @container nav (max-width: 400px) {
+            .nav-list {
+                justify-content: center;
+            }
+
+            .nav-link {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.875rem;
+            }
+        }
+
+        @container nav (min-width: 600px) {
+            .nav-list {
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="nav-wrapper" style="max-width: 1200px; margin: 0 auto;">
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="#" class="nav-link">Home</a></li>
+                    <li><a href="#" class="nav-link">Products</a></li>
+                    <li><a href="#" class="nav-link">Services</a></li>
+                    <li><a href="#" class="nav-link">About</a></li>
+                    <li><a href="#" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="card-grid" style="max-width: 1200px; margin: 0 auto;">
+            <div class="card-wrapper">
+                <article class="card">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'%3E%3Crect fill='%233498db' width='400' height='225'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle'%3ECard 1%3C/text%3E%3C/svg%3E" alt="Card 1" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Responsive Card 1</h2>
+                        <p class="card-text">This card uses container queries and fluid design, automatically adjusting layout based on container width.</p>
+                    </div>
+                </article>
+            </div>
+            <div class="card-wrapper">
+                <article class="card">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'%3E%3Crect fill='%2327ae60' width='400' height='225'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle'%3ECard 2%3C/text%3E%3C/svg%3E" alt="Card 2" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Responsive Card 2</h2>
+                        <p class="card-text">Try resizing the browser window and observe how the card layout changes.</p>
+                    </div>
+                </article>
+            </div>
+            <div class="card-wrapper">
+                <article class="card">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='225' viewBox='0 0 400 225'%3E%3Crect fill='%23e67e22' width='400' height='225'/%3E%3Ctext fill='white' font-family='sans-serif' font-size='24' x='50%25' y='50%25' text-anchor='middle'%3ECard 3%3C/text%3E%3C/svg%3E" alt="Card 3" class="card-image">
+                    <div class="card-content">
+                        <h2 class="card-title">Responsive Card 3</h2>
+                        <p class="card-text">The aspect-ratio property ensures images always maintain a 16:9 ratio.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="form-section">
+            <div class="form-wrapper">
+                <form>
+                    <h2 style="margin-bottom: 1.5rem;">Contact Form</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Name</label>
+                            <input type="text" class="form-input" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-input" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-input" rows="4" placeholder="Enter your message"></textarea>
+                    </div>
+                    <button type="submit" class="form-input" style="background: var(--primary-color); color: white; border: none; cursor: pointer; font-weight: 500;">
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
+```
+
+</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
+    <script>
+        // Tabs switching
+        function openTab(evt, tabName) {
+            var i, tabPanes, tabBtns;
+            tabPanes = document.getElementsByClassName('tab-pane');
+            for (i = 0; i < tabPanes.length; i++) {
+                tabPanes[i].classList.remove('active');
+            }
+            tabBtns = document.getElementsByClassName('tab-btn');
+            for (i = 0; i < tabBtns.length; i++) {
+                tabBtns[i].classList.remove('active');
+            }
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+        }
+
+        // Code display toggle
+        function toggleCode(btn) {
+            var codeBlock = btn.parentElement.nextElementSibling;
+            if (codeBlock.style.display === 'none') {
+                codeBlock.style.display = 'block';
+                btn.textContent = 'Hide Code';
+                btn.classList.add('active');
+            } else {
+                codeBlock.style.display = 'none';
+                btn.textContent = 'Show Code';
+                btn.classList.remove('active');
+            }
+        }
+
+        // clamp() demo update
+        function updateClampDemo(width) {
+            document.getElementById('clamp-width-val').textContent = width + 'px';
+            document.getElementById('clamp-demo-container').style.width = width + 'px';
+
+            // Calculate font size (assuming base 16px, 2vw per 100px)
+            var vw = width / 100;
+            var fontSize = 16 + (vw * 2);
+            if (fontSize > 32) fontSize = 32;
+            if (fontSize < 16) fontSize = 16;
+
+            document.getElementById('font-size-val').textContent = fontSize.toFixed(1) + 'px';
+        }
+
+        // Container query demo update
+        function updateContainerDemo(width) {
+            document.getElementById('container-width-val').textContent = width + 'px';
+            document.getElementById('container-query-wrapper').style.width = width + 'px';
+
+            var layoutMode = document.getElementById('layout-mode');
+            var card = document.getElementById('container-query-demo');
+
+            if (width <= 250) {
+                layoutMode.textContent = 'Extra Small - Compact Layout';
+                card.style.fontSize = '12px';
+            } else if (width <= 400) {
+                layoutMode.textContent = 'Small Container - Horizontal';
+                card.style.fontSize = '14px';
+            } else if (width <= 550) {
+                layoutMode.textContent = 'Medium Container - Grid';
+                card.style.fontSize = '14px';
+            } else {
+                layoutMode.textContent = 'Large Container - Wide Grid';
+                card.style.fontSize = '14px';
+            }
+        }
+
+        // Initialize demos
+        document.addEventListener('DOMContentLoaded', function() {
+            updateClampDemo(500);
+            updateContainerDemo(400);
+        });
+
+        // Document modal logic
+        function openDocModal() {
+            var modal = document.getElementById('docModal');
+            var contentDiv = document.getElementById('markdownContent');
+
+            modal.classList.add('active');
+
+            var mdScript = document.getElementById('mdContent');
+            var markdown = mdScript.textContent;
+
+            marked.setOptions({
+                highlight: function(code, lang) {
+                    if (Prism.languages[lang]) {
+                        return Prism.highlight(code, Prism.languages[lang], lang);
+                    }
+                    return code;
+                },
+                breaks: true,
+                gfm: true
+            });
+
+            contentDiv.innerHTML = marked.parse(markdown);
+
+            if (typeof Prism !== 'undefined') {
+                Prism.highlightAllUnder(contentDiv);
+            }
+        }
+
+        function closeDocModal() {
+            document.getElementById('docModal').classList.remove('active');
+        }
+
+        // Bind close events
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) closeDocModal();
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeDocModal();
+        });
+    </script>
+</body>
+</html>

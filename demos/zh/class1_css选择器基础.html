@@ -255,6 +255,30 @@
         .priority-demo p.text { color: green !important; }
         #special-text.text { color: purple !important; }
         .priority-result { padding: 20px !important; background-color: #34495e !important; color: white !important; border-radius: 8px !important; margin: 15px 0 !important; }
+
+        /* 7. 分组选择器样式 */
+        .group-demo .shared-heading {
+            color: #e74c3c !important;
+            font-weight: bold !important;
+            border-bottom: 2px solid #e74c3c !important;
+            padding-bottom: 5px !important;
+            margin: 15px 0 !important;
+        }
+        .group-demo .shared-text {
+            color: #7f8c8d !important;
+            padding: 8px 12px !important;
+            margin: 5px 0 !important;
+            background: #f8f9fa !important;
+            border-radius: 4px !important;
+            border-left: 3px solid #3498db !important;
+        }
+        .group-demo .box {
+            padding: 15px !important;
+            margin: 10px 0 !important;
+            border: 2px solid #27ae60 !important;
+            border-radius: 6px !important;
+            background: #e8f8f5 !important;
+        }
     </style>
 </head>
 <body>
@@ -279,6 +303,7 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="openTab(event, 'tab1')">📋 基础选择器</button>
             <button class="tab-btn" onclick="openTab(event, 'tab2')">🔗 组合选择器</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab7')">📋 分组选择器</button>
             <button class="tab-btn" onclick="openTab(event, 'tab3')">📎 属性选择器</button>
             <button class="tab-btn" onclick="openTab(event, 'tab4')">🎭 伪类选择器</button>
             <button class="tab-btn" onclick="openTab(event, 'tab5')">✨ 伪元素选择器</button>
@@ -514,6 +539,110 @@
 .sibling-demo h4 ~ p {
     color: #7f8c8d;
     padding: 5px 0;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: 分组选择器 -->
+        <div id="tab7" class="tab-pane">
+            <h2>2.5 分组选择器（逗号）</h2>
+
+            <!-- 分组选择器基础 -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>分组选择器 <span class="recommend-tag tag-high">热门 ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">场景：多个元素共享相同样式、减少代码重复</p>
+                    <div class="demo-box group-demo">
+                        <h2 class="shared-heading">h2 标题（红色加粗带下划线）</h2>
+                        <h3 class="shared-heading">h3 标题（同样的样式）</h3>
+                        <h4 class="shared-heading">h4 标题（同样的样式）</h4>
+                        <p class="shared-text">p 段落（灰色背景蓝左边框）</p>
+                        <span class="shared-text">span 文本（同样的样式）</span>
+                        <div class="box">div 盒子（绿色边框）</div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS 代码</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 分组选择器：多个选择器共享相同样式 */
+h2.shared-heading,
+h3.shared-heading,
+h4.shared-heading {
+    color: #e74c3c;
+    font-weight: bold;
+    border-bottom: 2px solid #e74c3c;
+}
+
+/* 类选择器和元素选择器混用 */
+p.shared-text,
+span.shared-text {
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-left: 3px solid #3498db;
+}
+
+/* 优点：避免重复写相同的样式 */
+.box {
+    padding: 15px;
+    border: 2px solid #27ae60;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分组选择器优势 -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>代码对比 <span class="recommend-tag tag-high">⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">使用分组选择器 vs 不使用</p>
+                    <div class="demo-box">
+                        <p><strong>❌ 不使用分组（代码重复）：</strong></p>
+                        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 12px;">
+h2 { font-weight: bold; color: #333; margin: 10px 0; }
+h3 { font-weight: bold; color: #333; margin: 10px 0; }
+h4 { font-weight: bold; color: #333; margin: 10px 0; }
+                        </pre>
+                        <p><strong>✅ 使用分组（代码简洁）：</strong></p>
+                        <pre style="background: #27ae60; color: white; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 12px;">
+h2, h3, h4 { font-weight: bold; color: #333; margin: 10px 0; }
+                        </pre>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">使用技巧</span>
+                        <button class="toggle-btn" onclick="toggleCode(this)">显示代码</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* 技巧1：可以换行写，更易读 */
+.title,
+.subtitle,
+.header,
+h1,
+h2,
+h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* 技巧2：可以和后代选择器结合 */
+.container h1,
+.container h2,
+.container h3 {
+    border-bottom: 1px solid #ccc;
+}
+
+/* 技巧3：可以和伪类结合 */
+.btn:hover,
+.btn:focus,
+.btn:active {
+    background-color: #2980b9;
 }</code></pre>
                     </div>
                 </div>
@@ -1186,6 +1315,40 @@ h2 ~ p {
   color: gray;
 }
 ```
+
+---
+
+### 2.5 分组选择器（逗号）
+
+**推荐指数**: ⭐⭐⭐⭐⭐（5/5）
+**使用频率**：**极高** ⭐ 几乎每天都会用到
+**使用场景**：多个元素共享相同样式、减少代码重复、统一标题/段落样式
+
+使用**逗号**将多个选择器分组，为它们应用相同的样式规则。
+
+```css
+/* 为多个标题设置相同的样式 */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* 类选择器和元素选择器也可以混用 */
+.title, .header, h1 {
+  color: #333;
+  padding: 10px;
+}
+
+/* 组合选择器和分组选择器结合使用 */
+.container h1, .container h2, .container h3 {
+  border-bottom: 1px solid #ccc;
+}
+```
+
+**特点**：
+- 逗号前后可以有空格，也可以没有
+- 分组选择器可以包含任意类型的选择器
+- 可以大幅减少重复代码，提高代码可维护性
 
 ---
 

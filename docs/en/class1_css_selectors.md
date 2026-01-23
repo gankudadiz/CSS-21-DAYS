@@ -219,6 +219,38 @@ h2 ~ p {
 }
 ```
 
+### 2.5 Group Selector (comma)
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Used almost daily
+**Scenario**: Multiple elements share same styles, reduce code duplication, unify heading/paragraph styles
+
+Use **comma** to group multiple selectors and apply the same style rules to them.
+
+```css
+/* Apply same styles to multiple headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Class selectors and element selectors can be mixed */
+.title, .header, h1 {
+  color: #333;
+  padding: 10px;
+}
+
+/* Combine combinators with group selectors */
+.container h1, .container h2, .container h3 {
+  border-bottom: 1px solid #ccc;
+}
+```
+
+**Note**:
+- Spaces around commas are optional
+- Group selectors can contain any type of selectors
+- Greatly reduces code duplication and improves maintainability
+
 ---
 
 ## 3. Attribute Selectors

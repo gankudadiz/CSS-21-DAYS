@@ -181,6 +181,30 @@
         #special-text.text { color: purple !important; }
         .priority-result { padding: 20px !important; background-color: #34495e !important; color: white !important; border-radius: 8px !important; margin: 15px 0 !important; }
 
+        /* 7. Group Selector Styles */
+        .group-demo .shared-heading {
+            color: #e74c3c !important;
+            font-weight: bold !important;
+            border-bottom: 2px solid #e74c3c !important;
+            padding-bottom: 5px !important;
+            margin: 15px 0 !important;
+        }
+        .group-demo .shared-text {
+            color: #7f8c8d !important;
+            padding: 8px 12px !important;
+            margin: 5px 0 !important;
+            background: #f8f9fa !important;
+            border-radius: 4px !important;
+            border-left: 3px solid #3498db !important;
+        }
+        .group-demo .box {
+            padding: 15px !important;
+            margin: 10px 0 !important;
+            border: 2px solid #27ae60 !important;
+            border-radius: 6px !important;
+            background: #e8f8f5 !important;
+        }
+
         /* ========== Modal Styles ========== */
         .modal-overlay {
             display: none;
@@ -281,6 +305,7 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="window.openTab(event, 'tab1')">📋 Basic Selectors</button>
             <button class="tab-btn" onclick="window.openTab(event, 'tab2')">🔗 Combinators</button>
+            <button class="tab-btn" onclick="window.openTab(event, 'tab7')">📋 Group Selector</button>
             <button class="tab-btn" onclick="window.openTab(event, 'tab3')">📎 Attribute</button>
             <button class="tab-btn" onclick="window.openTab(event, 'tab4')">🎭 Pseudo-classes</button>
             <button class="tab-btn" onclick="window.openTab(event, 'tab5')">✨ Pseudo-elements</button>
@@ -516,6 +541,110 @@
 .sibling-demo h4 ~ p {
     color: #7f8c8d;
     padding: 5px 0;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 7: Group Selector -->
+        <div id="tab7" class="tab-pane">
+            <h2>2.5 Group Selector (comma)</h2>
+
+            <!-- Group Selector Basics -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>Group Selector <span class="recommend-tag tag-high">Essential ⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Scenario: Multiple elements share same styles, reduce code duplication</p>
+                    <div class="demo-box group-demo">
+                        <h2 class="shared-heading">h2 Heading (red bold with underline)</h2>
+                        <h3 class="shared-heading">h3 Heading (same style)</h3>
+                        <h4 class="shared-heading">h4 Heading (same style)</h4>
+                        <p class="shared-text">p Paragraph (gray bg blue left border)</p>
+                        <span class="shared-text">span Text (same style)</span>
+                        <div class="box">div Box (green border)</div>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">CSS Code</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Group selector: Multiple selectors share same styles */
+h2.shared-heading,
+h3.shared-heading,
+h4.shared-heading {
+    color: #e74c3c;
+    font-weight: bold;
+    border-bottom: 2px solid #e74c3c;
+}
+
+/* Class selectors and element selectors mixed */
+p.shared-text,
+span.shared-text {
+    padding: 8px 12px;
+    margin: 5px 0;
+    background: #f8f9fa;
+    border-left: 3px solid #3498db;
+}
+
+/* Benefit: Avoid writing same styles repeatedly */
+.box {
+    padding: 15px;
+    border: 2px solid #27ae60;
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group Selector Benefits -->
+            <div class="demo-code-row">
+                <div>
+                    <h3>Code Comparison <span class="recommend-tag tag-high">⭐⭐⭐⭐⭐</span></h3>
+                    <p style="color: #666; font-size: 12px; margin: 5px 0;">Group selector vs No group selector</p>
+                    <div class="demo-box">
+                        <p><strong>❌ Without grouping (code duplication):</strong></p>
+                        <pre style="background: #2d2d2d; color: #f8f8f2; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 12px;">
+h2 { font-weight: bold; color: #333; margin: 10px 0; }
+h3 { font-weight: bold; color: #333; margin: 10px 0; }
+h4 { font-weight: bold; color: #333; margin: 10px 0; }
+                        </pre>
+                        <p><strong>✅ With grouping (concise code):</strong></p>
+                        <pre style="background: #27ae60; color: white; padding: 10px; border-radius: 4px; margin: 10px 0; font-size: 12px;">
+h2, h3, h4 { font-weight: bold; color: #333; margin: 10px 0; }
+                        </pre>
+                    </div>
+                </div>
+                <div class="code-section">
+                    <div class="code-header">
+                        <span class="code-title">Tips</span>
+                        <button class="toggle-btn" onclick="window.toggleCode(this)">Show Code</button>
+                    </div>
+                    <div class="code-block" style="display:none;">
+<pre><code class="language-css">/* Tip 1: Can write on separate lines for readability */
+.title,
+.subtitle,
+.header,
+h1,
+h2,
+h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Tip 2: Can combine with descendant selectors */
+.container h1,
+.container h2,
+.container h3 {
+    border-bottom: 1px solid #ccc;
+}
+
+/* Tip 3: Can combine with pseudo-classes */
+.btn:hover,
+.btn:focus,
+.btn:active {
+    background-color: #2980b9;
 }</code></pre>
                     </div>
                 </div>
@@ -1188,6 +1317,38 @@ h2 ~ p {
   color: gray;
 }
 ```
+
+### 2.5 Group Selector (comma)
+
+**Rating**: ⭐⭐⭐⭐⭐ (5/5)
+**Frequency**: **Very High** ⭐ Used almost daily
+**Scenario**: Multiple elements share same styles, reduce code duplication, unify heading/paragraph styles
+
+Use **comma** to group multiple selectors and apply the same style rules to them.
+
+```css
+/* Apply same styles to multiple headings */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+/* Class selectors and element selectors can be mixed */
+.title, .header, h1 {
+  color: #333;
+  padding: 10px;
+}
+
+/* Combine combinators with group selectors */
+.container h1, .container h2, .container h3 {
+  border-bottom: 1px solid #ccc;
+}
+```
+
+**Note**:
+- Spaces around commas are optional
+- Group selectors can contain any type of selectors
+- Greatly reduces code duplication and improves maintainability
 
 ---
 
